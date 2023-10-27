@@ -16,6 +16,7 @@ app.get("/", (req, res) => {
 });
 
 // Users
+// Get
 app.get("/tasks", async (req, res) => {
     try {
         const result = await taskServices.getTasks();
@@ -25,6 +26,14 @@ app.get("/tasks", async (req, res) => {
         res.status(500).send("An error ocurred in the server.");
         console.log("bad");
     }
+});
+
+// Post
+app.post("/tasks", async (req, res) => {
+    const task = req.body;
+    const savedTask = await taskServices.addTask(task);
+    if (savedTask) res.status(201).send(savedTask);
+    else res.status(500).end();
 });
 
 app.listen(port, () => {

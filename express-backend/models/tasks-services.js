@@ -17,10 +17,21 @@ mongoose
 async function getTasks() {
   let result;
   result = await TaskSchema.find();
-  console.log('Model is using database: ', TaskSchema.db.name);
   return result;
+}
+
+async function addTask(task) {
+  try {
+    const taskToAdd = new TaskSchema(task);
+    const savedTask = await taskToAdd.save();
+    return savedTask;
+  } catch (error) {
+    console.log(error);
+    return false;
+  }
 }
 
 export default {
   getTasks,
+  addTask,
 };
