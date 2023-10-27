@@ -20,8 +20,9 @@ app.get("/", (req, res) => {
 app.get("/tasks", async (req, res) => {
     try {
         const date = req.query["date"];
-        console.log(date);
-        const result = await taskServices.getTasks(date);
+        const flagged = req.query["flagged"];
+        const status = req.query["status"];
+        const result = await taskServices.getTasks(date, flagged, status);
         res.send({ tasks_list: result });
     } catch (error) {
         console.log(error);
