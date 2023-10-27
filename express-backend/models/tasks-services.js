@@ -8,7 +8,7 @@ dotenv.config();
 // uncomment the following line to view mongoose debug messages
 mongoose.set("debug", true);
 mongoose
-  .connect("mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PWD + "@" + process.env.MONGO_CLUSTER + "/?retryWrites=true&w=majority", {
+  .connect("mongodb+srv://" + process.env.MONGO_USER + ":" + process.env.MONGO_PWD + "@" + process.env.MONGO_CLUSTER + "/" + process.env.MONGO_DB, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
