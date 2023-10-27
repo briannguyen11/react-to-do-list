@@ -14,9 +14,15 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-async function getTasks() {
+async function getTasks(date) {
   let result;
-  result = await TaskSchema.find();
+  console.log(date);
+  if (date === undefined) {
+    result = await TaskSchema.find();
+  }
+  else {
+    result = await findTaskByDate(date);
+  }
   return result;
 }
 
@@ -31,7 +37,12 @@ async function addTask(task) {
   }
 }
 
+async function findTaskByDate(date) {
+  return await TaskSchema.find({ date: date });
+}
+
 export default {
   getTasks,
   addTask,
+  findTaskByDate,
 };

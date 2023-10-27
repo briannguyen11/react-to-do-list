@@ -19,7 +19,9 @@ app.get("/", (req, res) => {
 // Get
 app.get("/tasks", async (req, res) => {
     try {
-        const result = await taskServices.getTasks();
+        const date = req.query["date"];
+        console.log(date);
+        const result = await taskServices.getTasks(date);
         res.send({ tasks_list: result });
     } catch (error) {
         console.log(error);
