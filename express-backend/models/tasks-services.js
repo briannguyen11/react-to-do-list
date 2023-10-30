@@ -14,13 +14,15 @@ mongoose
   })
   .catch((error) => console.log(error));
 
-async function getTasks(date, flagged, status) {
+async function getTasks(user, date, flagged, status) {
   let result;
-  if (date !== undefined) {
+  if (user !== undefined) {
+    result = await findTaskByUser(user);
+  }
+  else if (date !== undefined) {
     result = await findTaskByDate(date);
   }
   else if (flagged !== undefined) {
-    console.log(typeof (flagged));
     result = await findTaskByFlag(flagged);
   }
   else if (status !== undefined) {
@@ -41,6 +43,10 @@ async function addTask(task) {
     console.log(error);
     return false;
   }
+}
+
+async function findTaskByUser(user) {
+  return await TaskSchema.find({ user: user });
 }
 
 async function findTaskByDate(date) {
