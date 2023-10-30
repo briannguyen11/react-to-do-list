@@ -17,7 +17,18 @@ mongoose
 async function getTasks(user, date, flagged, status) {
   let result;
   if (user !== undefined) {
-    result = await findTaskByUser(user);
+    if (date !== undefined) {
+      result = await findTaskByUserAndDate(user, date);
+    }
+    else if (flagged !== undefined) {
+      result = await findTaskByUserAndFlag(user, flagged);
+    }
+    else if (status !== undefined) {
+      result = await findTaskByUserAndStatus(user, status);
+    }
+    else {
+      result = await findTaskByUser(user);
+    }
   }
   else if (date !== undefined) {
     result = await findTaskByDate(date);
@@ -45,8 +56,22 @@ async function addTask(task) {
   }
 }
 
+
+// Filter functions
 async function findTaskByUser(user) {
   return await TaskSchema.find({ user: user });
+}
+
+async function findTaskByUserAndDate(user, date) {
+  return await TaskSchema.find({ user: user, date: date });
+}
+
+async function findTaskByUserAndFlag(user, flag) {
+  return await TaskSchema.find({ user: user }, { flag: flag });
+}
+
+async function findTaskByUserAndStatus(user, status) {
+  return await TaskSchema.find({ user: user, status: status });
 }
 
 async function findTaskByDate(date) {
@@ -64,5 +89,4 @@ async function findTaskByStatus(status) {
 export default {
   getTasks,
   addTask,
-  findTaskByDate,
 };
