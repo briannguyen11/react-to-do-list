@@ -11,7 +11,8 @@
 - Database access uses mongoose
 
 ### Linting and Style Guidelines
-- Project is using eslint with prettierrc, should support formatting through vscode and formatting on save as long as it is enabled
+- Project is using ESlint with prettierrc, should support formatting through vscode and formatting on save as long as it is enabled
+- ESlint and Prettier vscode extensions used
 - Basic Guidelines:
     - Tab width of 4
     - Use semicolons	
