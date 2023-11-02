@@ -1,0 +1,7 @@
+{
+    "extends": "../.eslintrc.json", // Extend the common configuration
+    "env": {
+        "node": true
+    }
+    // Add backend-specific rules if needed
+}

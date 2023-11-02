@@ -1,0 +1,19 @@
+{
+    "extends": "../.eslintrc.json", // Extend the common configuration
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "jest": true
+    },
+    "plugins": ["react"],
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "rules": {
+        "react/prop-types": 0,
+        "react/react-in-jsx-scope": "off"
+    }
+    // Add frontend-specific rules if needed
+}
