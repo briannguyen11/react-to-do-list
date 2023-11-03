@@ -19,13 +19,13 @@ app.get("/", (req, res) => {
 app.get("/tasks", async (req, res) => {
     try {
         const user = req.query["user"];
-        const categories = req.query["categories"];
+        const category = req.query["categories"];
         const date = req.query["date"];
         const flagged = req.query["flagged"];
         const completed = req.query["completed"];
         const result = await taskServices.getTasks(
             user,
-            categories,
+            category,
             date,
             flagged,
             completed

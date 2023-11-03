@@ -18,11 +18,11 @@ mongoose
     )
     .catch((error) => console.log(error));
 
-async function getTasks(user, categories, date, flagged, completed) {
+async function getTasks(user, category, date, flagged, completed) {
     let result;
     if (user !== undefined) {
-        if (categories !== undefined) {
-            result = await findTaskByUserAndCategory(user, categories);
+        if (category !== undefined) {
+            result = await findTaskByUserAndCategory(user, category);
         } else if (date !== undefined) {
             result = await findTaskByUserAndDate(user, date);
         } else if (flagged !== undefined) {
@@ -73,7 +73,7 @@ async function findTaskByUserAndStatus(user, completed) {
 }
 
 async function findTaskByUserAndCategory(user, category) {
-    return await TaskSchema.find({ user, category });
+    return await TaskSchema.find({ user, categories: { $in: [category] } });
 }
 
 async function findTaskByDate(date) {
