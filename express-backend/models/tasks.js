@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const TaskSchema = new mongoose.Schema(
+const taskModel = new mongoose.Schema(
     {
         user: {
             type: String,
@@ -63,4 +63,4 @@ const TaskSchema = new mongoose.Schema(
     { collection: "tasks_list" }
 );
 
-export default mongoose.model("Tasks", TaskSchema);
+export default mongoose.model("Tasks", taskModel);
