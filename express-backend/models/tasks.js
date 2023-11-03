@@ -35,6 +35,11 @@ const TaskSchema = new mongoose.Schema(
                     );
             },
         },
+        categories: {
+            type: [String],
+            required: true,
+            trim: true,
+        },
         date: {
             type: String,
             required: true,
