@@ -29,13 +29,29 @@ async function addUser(user) {
     return saveduser;
 }
 
-async function addTaskToUser(user_id, task_id) {
+async function addTaskToUser(userId, taskId) {
     // eslint-disable-next-line no-unused-vars
-    const taskToAdd = await taskModel.find({ _id: task_id });
-    const updatedUser = await userModel.findByIdAndUpdate(user_id, {
-        $push: { tasks: task_id },
+    const taskToAdd = await taskModel.find({ _id: taskId });
+    const updatedUser = await userModel.findByIdAndUpdate(userId, {
+        $push: { tasks: taskId },
     });
     return updatedUser;
+}
+
+async function deleteTaskFromUser(userId, taskId) {
+    // Find and delete the task
+    await taskModel.findByIdAndDelete(taskId);
+
+    // Find the user by ID
+    const user = await userModel.findById(userId);
+
+    // Remove the taskId from the user's tasks array
+    user.tasks = user.tasks.filter(
+        (userTaskId) => userTaskId.toString() !== taskId
+    );
+
+    // Save the updated user
+    return await user.save();
 }
 
 async function deleteUser(id) {
@@ -56,5 +72,6 @@ export default {
     addUser,
     addTaskToUser,
     deleteUser,
+    deleteTaskFromUser,
     findById,
 };
