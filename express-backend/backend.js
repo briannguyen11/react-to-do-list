@@ -83,6 +83,19 @@ app.post("/users", async (req, res) => {
     else res.status(500).end();
 });
 
+app.patch("/users/:id", async (req, res) => {
+    const userId = req.params["id"];
+    const taskToAdd = req.body._id;
+    console.log(taskToAdd);
+    console.log(userId);
+    const result = await userServices.addTaskToUser(userId, taskToAdd);
+    if (result) res.status(204).end();
+    else if (result === 404) res.status(404).send("Resource not found.");
+    else if (result === 500) {
+        res.status(500).send("An error ocurred in the server.");
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
