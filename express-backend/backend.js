@@ -97,8 +97,6 @@ app.post("/users", async (req, res) => {
 app.patch("/users/:id", async (req, res) => {
     const userId = req.params["id"];
     const taskToAdd = req.body._id;
-    console.log(taskToAdd);
-    console.log(userId);
     const result = await userServices.addTaskToUser(userId, taskToAdd);
     if (result) res.status(204).end();
     else if (result === 404) res.status(404).send("Resource not found.");
@@ -106,6 +104,31 @@ app.patch("/users/:id", async (req, res) => {
         res.status(500).send("An error ocurred in the server.");
     }
 });
+
+app.delete("/users/:id", async (req, res) => {
+    const taskToDelete = req.body._id;
+    console.log(taskToDelete);
+    if (deleteTaskById(taskToDelete)) res.status(204).end();
+    else res.status(404).send("Resource not found.");
+});
+
+async function deleteTaskById(id) {
+    try {
+        if (await taskServices.deleteTask(id)) return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+}
+
+// async function deleteUserById(id) {
+//     try {
+//         if (await userServices.deleteUser(id)) return true;
+//     } catch (error) {
+//         console.log(error);
+//         return false;
+//     }
+// }
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
