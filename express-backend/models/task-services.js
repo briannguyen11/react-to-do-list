@@ -1,22 +1,4 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
 import taskModel from "./task.js";
-
-// Configure environment variables
-dotenv.config();
-
-// uncomment the following line to view mongoose debug messages
-mongoose.set("debug", true);
-mongoose
-    .connect(
-        // eslint-disable-next-line no-undef
-        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    )
-    .catch((error) => console.log(error));
 
 async function getTasks(user, category, date, flagged, completed) {
     let result;
