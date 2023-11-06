@@ -26,6 +26,10 @@ async function getTasks(user, category, date, flagged, completed) {
     return result;
 }
 
+async function findTaskById(id) {
+    return await taskModel.findById(id);
+}
+
 async function addTask(task) {
     try {
         const taskToAdd = new taskModel(task);
@@ -72,5 +76,6 @@ async function findTaskByStatus(completed) {
 
 export default {
     getTasks,
+    findTaskById,
     addTask,
 };
