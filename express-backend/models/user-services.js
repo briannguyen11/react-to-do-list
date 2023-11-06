@@ -23,6 +23,12 @@ async function getUsersAndTasks(username) {
     return result;
 }
 
+async function addUser(user) {
+    const userToAdd = new userModel(user);
+    const saveduser = await userToAdd.save();
+    return saveduser;
+}
+
 async function findUserByName(username) {
     return await userModel.find({ username });
 }
@@ -30,4 +36,5 @@ async function findUserByName(username) {
 export default {
     getUsers,
     getUsersAndTasks,
+    addUser,
 };

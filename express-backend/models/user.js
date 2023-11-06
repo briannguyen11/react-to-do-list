@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const ObjectId = Schema.Types.ObjectId;
 // const ObjectId = Schema.ObjectId;
 // eslint-disable-next-line no-unused-vars
-import Task from "./task";
+import Task from "./task.js";
 
 const UserSchema = new Schema(
     {
