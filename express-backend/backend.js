@@ -96,8 +96,8 @@ app.post("/users", async (req, res) => {
 
 app.patch("/users/:id", async (req, res) => {
     const userId = req.params["id"];
-    const taskToAdd = req.body._id;
-    const result = await userServices.addTaskToUser(userId, taskToAdd);
+    const taskId = req.body._id;
+    const result = await userServices.addTaskToUser(userId, taskId);
     if (result) res.status(204).end();
     else if (result === 404) res.status(404).send("Resource not found.");
     else if (result === 500) {
@@ -106,9 +106,10 @@ app.patch("/users/:id", async (req, res) => {
 });
 
 app.delete("/users/:id", async (req, res) => {
-    const taskToDelete = req.body._id;
-    console.log(taskToDelete);
-    if (deleteTaskById(taskToDelete)) res.status(204).end();
+    const userId = req.params["id"];
+    const taskId = req.body._id;
+    const result = userServices.deleteTaskFromUser(userId, taskId);
+    if (result) res.status(204).end();
     else res.status(404).send("Resource not found.");
 });
 
