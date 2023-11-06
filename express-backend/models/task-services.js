@@ -41,6 +41,10 @@ async function addTask(task) {
     }
 }
 
+async function deleteTask(id) {
+    return await taskModel.findByIdAndDelete(id);
+}
+
 // Filter functions
 async function findTaskByUser(user) {
     return await taskModel.find({ user });
@@ -78,4 +82,5 @@ export default {
     getTasks,
     findTaskById,
     addTask,
+    deleteTask,
 };

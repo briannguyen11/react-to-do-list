@@ -38,11 +38,15 @@ async function addTaskToUser(user_id, task_id) {
     return updatedUser;
 }
 
+async function deleteUser(id) {
+    return await userModel.findByIdAndDelete(id);
+}
+
 async function findUserByName(username) {
     return await userModel.find({ username });
 }
 
-async function findUserById(id) {
+async function findById(id) {
     return await userModel.findById(id);
 }
 
@@ -51,5 +55,6 @@ export default {
     getUsersAndTasks,
     addUser,
     addTaskToUser,
-    findUserById,
+    deleteUser,
+    findById,
 };
