@@ -46,6 +46,17 @@ app.get("/users", async (req, res) => {
     }
 });
 
+app.get("/usersAndTasks", async (req, res) => {
+    try {
+        const user = req.query["user"];
+        const result = await userServices.getUsersAndTasks(user);
+        res.send({ user_list: result });
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error ocurred in the server.");
+    }
+});
+
 app.get("/tasks", async (req, res) => {
     try {
         const user = req.query["user"];
