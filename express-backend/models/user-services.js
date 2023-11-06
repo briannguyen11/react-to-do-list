@@ -1,5 +1,5 @@
 import userModel from "./user.js";
-// import taskModel from "./task.js";
+import taskModel from "./task.js";
 
 async function getUsers(username) {
     let result;
@@ -29,12 +29,27 @@ async function addUser(user) {
     return saveduser;
 }
 
+async function addTaskToUser(user_id, task_id) {
+    // eslint-disable-next-line no-unused-vars
+    const taskToAdd = await taskModel.find({ _id: task_id });
+    const updatedUser = await userModel.findByIdAndUpdate(user_id, {
+        $push: { tasks: task_id },
+    });
+    return updatedUser;
+}
+
 async function findUserByName(username) {
     return await userModel.find({ username });
+}
+
+async function findUserById(id) {
+    return await userModel.findById(id);
 }
 
 export default {
     getUsers,
     getUsersAndTasks,
     addUser,
+    addTaskToUser,
+    findUserById,
 };
