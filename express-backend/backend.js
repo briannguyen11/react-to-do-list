@@ -1,13 +1,31 @@
+import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
+import dotenv from "dotenv";
 
-import taskServices from "./models/tasks-services.js";
+import taskServices from "./models/task-services.js";
 
 const app = express();
 const port = 8000;
 
 app.use(cors());
 app.use(express.json());
+
+// Configure environment variables
+dotenv.config();
+
+// uncomment the following line to view mongoose debug messages
+mongoose.set("debug", true);
+mongoose
+    .connect(
+        // eslint-disable-next-line no-undef
+        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}`,
+        {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+        }
+    )
+    .catch((error) => console.log(error));
 
 // Get requests
 // Root
