@@ -1,6 +1,9 @@
 import mongoose from "mongoose";
+const Schema = mongoose.Schema;
+// eslint-disable-next-line no-unused-vars
+const ObjectId = Schema.ObjectId;
 
-const taskModel = new mongoose.Schema(
+const TaskSchema = new Schema(
     {
         user: {
             type: String,
@@ -63,4 +66,4 @@ const taskModel = new mongoose.Schema(
     { collection: "tasks_list" }
 );
 
-export default mongoose.model("Tasks", taskModel);
+export default mongoose.model("Task", TaskSchema);

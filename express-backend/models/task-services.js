@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import taskModel from "./tasks.js";
+import taskModel from "./task.js";
 
 // Configure environment variables
 dotenv.config();
