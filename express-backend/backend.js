@@ -113,14 +113,14 @@ app.delete("/users/:id", async (req, res) => {
     else res.status(404).send("Resource not found.");
 });
 
-async function deleteTaskById(id) {
-    try {
-        if (await taskServices.deleteTask(id)) return true;
-    } catch (error) {
-        console.log(error);
-        return false;
-    }
-}
+// async function deleteTaskById(id) {
+//     try {
+//         if (await taskServices.deleteTask(id)) return true;
+//     } catch (error) {
+//         console.log(error);
+//         return false;
+//     }
+// }
 
 // async function deleteUserById(id) {
 //     try {
