@@ -28,13 +28,14 @@ mongoose
     )
     .catch((error) => console.log(error));
 
-// Get requests
-// Root
+// Root:
+// GET:
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-// Users
-// Get
+
+// Users:
+// GET:
 app.get("/users", async (req, res) => {
     try {
         const user = req.query["user"];
@@ -46,17 +47,38 @@ app.get("/users", async (req, res) => {
     }
 });
 
-app.get("/usersAndTasks", async (req, res) => {
-    try {
-        const user = req.query["user"];
-        const result = await userServices.getUsersAndTasks(user);
-        res.send({ user_list: result });
-    } catch (error) {
-        console.log(error);
+// POST:
+app.post("/users", async (req, res) => {
+    const user = req.body;
+    const userTask = await userServices.addUser(user);
+    if (userTask) res.status(201).send(userTask);
+    else res.status(500).end();
+});
+
+// Users with id:
+// PATCH:
+app.patch("/users/:id", async (req, res) => {
+    const userId = req.params["id"];
+    const taskId = req.body._id;
+    const result = await userServices.addTaskToUser(userId, taskId);
+    if (result) res.status(204).end();
+    else if (result === 404) res.status(404).send("Resource not found.");
+    else if (result === 500) {
         res.status(500).send("An error ocurred in the server.");
     }
 });
 
+// DELETE:
+app.delete("/users/:id", async (req, res) => {
+    const userId = req.params["id"];
+    const taskId = req.body._id;
+    const result = userServices.deleteTaskFromUser(userId, taskId);
+    if (result) res.status(204).end();
+    else res.status(404).send("Resource not found.");
+});
+
+// Tasks:
+// GET:
 app.get("/tasks", async (req, res) => {
     try {
         const user = req.query["user"];
@@ -79,7 +101,7 @@ app.get("/tasks", async (req, res) => {
     }
 });
 
-// Post
+// POST:
 app.post("/tasks", async (req, res) => {
     const task = req.body;
     const savedTask = await taskServices.addTask(task);
@@ -87,30 +109,17 @@ app.post("/tasks", async (req, res) => {
     else res.status(500).end();
 });
 
-app.post("/users", async (req, res) => {
-    const user = req.body;
-    const userTask = await userServices.addUser(user);
-    if (userTask) res.status(201).send(userTask);
-    else res.status(500).end();
-});
-
-app.patch("/users/:id", async (req, res) => {
-    const userId = req.params["id"];
-    const taskId = req.body._id;
-    const result = await userServices.addTaskToUser(userId, taskId);
-    if (result) res.status(204).end();
-    else if (result === 404) res.status(404).send("Resource not found.");
-    else if (result === 500) {
+// Users and Tasks:
+// GET:
+app.get("/usersAndTasks", async (req, res) => {
+    try {
+        const user = req.query["user"];
+        const result = await userServices.getUsersAndTasks(user);
+        res.send({ user_list: result });
+    } catch (error) {
+        console.log(error);
         res.status(500).send("An error ocurred in the server.");
     }
-});
-
-app.delete("/users/:id", async (req, res) => {
-    const userId = req.params["id"];
-    const taskId = req.body._id;
-    const result = userServices.deleteTaskFromUser(userId, taskId);
-    if (result) res.status(204).end();
-    else res.status(404).send("Resource not found.");
 });
 
 // async function deleteTaskById(id) {
