@@ -14,6 +14,7 @@
 - Project is using ESlint with prettierrc, should support formatting through vscode and formatting on save as long as it is enabled
 - ESlint and Prettier vscode extensions used
 - Basic Guidelines:
+    - Lower camel case 
     - Tab width of 4
     - Use semicolons	
     - Double quotes
