@@ -14,15 +14,22 @@ app.use(express.json());
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
-
 // Users
 // Get
 app.get("/tasks", async (req, res) => {
     try {
+        const user = req.query["user"];
+        const category = req.query["categories"];
         const date = req.query["date"];
         const flagged = req.query["flagged"];
-        const status = req.query["status"];
-        const result = await taskServices.getTasks(date, flagged, status);
+        const completed = req.query["completed"];
+        const result = await taskServices.getTasks(
+            user,
+            category,
+            date,
+            flagged,
+            completed
+        );
         res.send({ tasks_list: result });
     } catch (error) {
         console.log(error);
@@ -42,4 +49,3 @@ app.post("/tasks", async (req, res) => {
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
-

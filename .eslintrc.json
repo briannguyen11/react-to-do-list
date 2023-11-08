@@ -1,0 +1,27 @@
+{
+    "extends": [
+        "eslint:recommended",
+        "plugin:prettier/recommended"
+    ],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "ecmaFeatures": {
+            "globalReturn": false,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
+    "rules": {
+        "prettier/prettier": [
+            "error",
+            {
+                "trailingComma": "es5",
+                "tabWidth": 4,
+                "semi": true,
+                "singleQuote": false,
+                "bracketSpacing": true,
+                "printWidth": 80
+            }
+        ]
+    }
+}
