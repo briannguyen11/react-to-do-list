@@ -39,7 +39,7 @@ const TaskSchema = new Schema(
             },
         },
         categories: {
-            type: [String],
+            type: String,
             required: true,
             trim: true,
         },
