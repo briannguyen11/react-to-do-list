@@ -1,22 +1,4 @@
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import TaskSchema from "./tasks.js";
-
-// Configure environment variables
-dotenv.config();
-
-// uncomment the following line to view mongoose debug messages
-mongoose.set("debug", true);
-mongoose
-    .connect(
-        // eslint-disable-next-line no-undef
-        `mongodb+srv://${process.env.MONGO_USER}:${process.env.MONGO_PWD}@${process.env.MONGO_CLUSTER}/${process.env.MONGO_DB}`,
-        {
-            useNewUrlParser: true,
-            useUnifiedTopology: true,
-        }
-    )
-    .catch((error) => console.log(error));
+import taskModel from "./task.js";
 
 async function getTasks(user, category, date, flagged, completed) {
     let result;
@@ -39,14 +21,18 @@ async function getTasks(user, category, date, flagged, completed) {
     } else if (completed !== undefined) {
         result = await findTaskByStatus(completed);
     } else {
-        result = await TaskSchema.find();
+        result = await taskModel.find();
     }
     return result;
 }
 
+async function findTaskById(id) {
+    return await taskModel.findById(id);
+}
+
 async function addTask(task) {
     try {
-        const taskToAdd = new TaskSchema(task);
+        const taskToAdd = new taskModel(task);
         const savedTask = await taskToAdd.save();
         return savedTask;
     } catch (error) {
@@ -55,40 +41,46 @@ async function addTask(task) {
     }
 }
 
+async function deleteTask(id) {
+    return await taskModel.findByIdAndDelete(id);
+}
+
 // Filter functions
 async function findTaskByUser(user) {
-    return await TaskSchema.find({ user });
+    return await taskModel.find({ user });
 }
 
 async function findTaskByUserAndDate(user, date) {
-    return await TaskSchema.find({ user, date });
+    return await taskModel.find({ user, date });
 }
 
 async function findTaskByUserAndFlag(user, flag) {
-    return await TaskSchema.find({ user }, { flag });
+    return await taskModel.find({ user }, { flag });
 }
 
 async function findTaskByUserAndStatus(user, completed) {
-    return await TaskSchema.find({ user, completed });
+    return await taskModel.find({ user, completed });
 }
 
 async function findTaskByUserAndCategory(user, category) {
-    return await TaskSchema.find({ user, categories: { $in: [category] } });
+    return await taskModel.find({ user, categories: { $in: [category] } });
 }
 
 async function findTaskByDate(date) {
-    return await TaskSchema.find({ date });
+    return await taskModel.find({ date });
 }
 
 async function findTaskByFlag(flagged) {
-    return await TaskSchema.find({ flagged });
+    return await taskModel.find({ flagged });
 }
 
 async function findTaskByStatus(completed) {
-    return await TaskSchema.find({ completed });
+    return await taskModel.find({ completed });
 }
 
 export default {
     getTasks,
+    findTaskById,
     addTask,
+    deleteTask,
 };
