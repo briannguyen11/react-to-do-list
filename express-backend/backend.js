@@ -61,7 +61,7 @@ app.post("/users/:id", async (req, res) => {
     const userId = req.params["id"];
     const task = req.body;
     const result = await userServices.newTaskToUser(userId, task);
-    if (result) res.status(204).end();
+    if (result) res.status(201).send(result);
     else if (result === 404) res.status(404).send("Resource not found.");
     else if (result === 500) {
         res.status(500).send("An error ocurred in the server.");
