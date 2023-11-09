@@ -62,7 +62,7 @@
     - String, required
   - flagged:
     - Boolean, required
-  - completed: **POTENTIALLY CHANGE TO NON-BOOLEAN FOR MORE THAN 2 STATES**
-    - Boolean, required
+  - completed:
+    - String, required
 <p>
 </details>
