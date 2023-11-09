@@ -85,13 +85,13 @@ app.get("/tasks", async (req, res) => {
         const category = req.query["categories"];
         const date = req.query["date"];
         const flagged = req.query["flagged"];
-        const completed = req.query["completed"];
+        const status = req.query["status"];
         const result = await taskServices.getTasks(
             user,
             category,
             date,
             flagged,
-            completed
+            status
         );
         res.send({ tasks_list: result });
     } catch (error) {
