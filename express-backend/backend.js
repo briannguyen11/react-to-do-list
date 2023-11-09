@@ -59,8 +59,8 @@ app.post("/users", async (req, res) => {
 // PATCH:
 app.patch("/users/:id", async (req, res) => {
     const userId = req.params["id"];
-    const taskId = req.body._id;
-    const result = await userServices.addTaskToUser(userId, taskId);
+    const task = req.body;
+    const result = await userServices.newTaskToUser(userId, task);
     if (result) res.status(204).end();
     else if (result === 404) res.status(404).send("Resource not found.");
     else if (result === 500) {
@@ -121,24 +121,6 @@ app.get("/usersAndTasks", async (req, res) => {
         res.status(500).send("An error ocurred in the server.");
     }
 });
-
-// async function deleteTaskById(id) {
-//     try {
-//         if (await taskServices.deleteTask(id)) return true;
-//     } catch (error) {
-//         console.log(error);
-//         return false;
-//     }
-// }
-
-// async function deleteUserById(id) {
-//     try {
-//         if (await userServices.deleteUser(id)) return true;
-//     } catch (error) {
-//         console.log(error);
-//         return false;
-//     }
-// }
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
