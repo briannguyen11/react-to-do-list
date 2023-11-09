@@ -60,8 +60,8 @@ const TaskSchema = new Schema(
             type: Boolean,
             required: true,
         },
-        completed: {
-            type: Boolean,
+        status: {
+            type: String,
             required: true,
         },
     },

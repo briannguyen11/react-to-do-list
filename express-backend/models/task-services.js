@@ -1,6 +1,6 @@
 import taskModel from "./task.js";
 
-async function getTasks(user, category, date, flagged, completed) {
+async function getTasks(user, category, date, flagged, status) {
     let result;
     if (user !== undefined) {
         if (category !== undefined) {
@@ -9,8 +9,8 @@ async function getTasks(user, category, date, flagged, completed) {
             result = await findTaskByUserAndDate(user, date);
         } else if (flagged !== undefined) {
             result = await findTaskByUserAndFlag(user, flagged);
-        } else if (completed !== undefined) {
-            result = await findTaskByUserAndStatus(user, completed);
+        } else if (status !== undefined) {
+            result = await findTaskByUserAndStatus(user, status);
         } else {
             result = await findTaskByUser(user);
         }
@@ -18,8 +18,8 @@ async function getTasks(user, category, date, flagged, completed) {
         result = await findTaskByDate(date);
     } else if (flagged !== undefined) {
         result = await findTaskByFlag(flagged);
-    } else if (completed !== undefined) {
-        result = await findTaskByStatus(completed);
+    } else if (status !== undefined) {
+        result = await findTaskByStatus(status);
     } else {
         result = await taskModel.find();
     }
@@ -58,8 +58,8 @@ async function findTaskByUserAndFlag(user, flag) {
     return await taskModel.find({ user }, { flag });
 }
 
-async function findTaskByUserAndStatus(user, completed) {
-    return await taskModel.find({ user, completed });
+async function findTaskByUserAndStatus(user, status) {
+    return await taskModel.find({ user, status });
 }
 
 async function findTaskByUserAndCategory(user, category) {
@@ -74,8 +74,8 @@ async function findTaskByFlag(flagged) {
     return await taskModel.find({ flagged });
 }
 
-async function findTaskByStatus(completed) {
-    return await taskModel.find({ completed });
+async function findTaskByStatus(status) {
+    return await taskModel.find({ status });
 }
 
 export default {
