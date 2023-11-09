@@ -1,5 +1,6 @@
 import userModel from "./user.js";
 import taskModel from "./task.js";
+import taskServices from "./task-services.js";
 
 async function getUsers(username) {
     let result;
@@ -35,6 +36,24 @@ async function addUser(user) {
         return savedUser;
     } catch (error) {
         console.error(error.message);
+    }
+}
+
+async function newTaskToUser(userId, task) {
+    try {
+        console.log("HEY");
+        const taskToAdd = await taskServices.addTask(task);
+        console.log(taskToAdd);
+        if (!taskToAdd) {
+            throw new Error("Task not found");
+        }
+        const updatedUser = await userModel.findByIdAndUpdate(userId, {
+            $push: { tasks: taskToAdd._id },
+        });
+        return updatedUser;
+    } catch (error) {
+        console.error(error.message);
+        return null;
     }
 }
 
@@ -104,6 +123,7 @@ export default {
     getUsersAndTasks,
     addUser,
     addTaskToUser,
+    newTaskToUser,
     deleteUser,
     deleteTaskFromUser,
     findUserById,

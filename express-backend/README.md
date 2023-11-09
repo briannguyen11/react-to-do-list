@@ -15,7 +15,7 @@
 - Users with id: "/users/id:"
   - PATCH:
     - Accepts "id" of **user** from **params**
-    - Retrieves _id field of **existing task** from **body**
+    - Retrieves task to add from **body**
     - Attempts to add task to user 
   - DELETE:
     - Accepts "id" of **user** from **params**
