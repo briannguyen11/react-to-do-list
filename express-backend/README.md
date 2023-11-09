@@ -13,7 +13,7 @@
     - Accepts representation of user from **body**
     - Attempts to add user to database
 - Users with id: "/users/id:"
-  - PATCH:
+  - POST:
     - Accepts "id" of **user** from **params**
     - Retrieves task to add from **body**
     - Attempts to add task to user 

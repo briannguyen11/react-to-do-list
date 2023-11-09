@@ -56,8 +56,8 @@ app.post("/users", async (req, res) => {
 });
 
 // Users with id:
-// PATCH:
-app.patch("/users/:id", async (req, res) => {
+// POST:
+app.post("/users/:id", async (req, res) => {
     const userId = req.params["id"];
     const task = req.body;
     const result = await userServices.newTaskToUser(userId, task);
