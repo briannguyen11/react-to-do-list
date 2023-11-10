@@ -67,6 +67,7 @@ function TaskForm(props) {
 
     return (
         <form>
+            <h1>Add Task</h1>
             <TextField
                 label="Title"
                 variant="filled"
