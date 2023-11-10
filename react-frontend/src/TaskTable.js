@@ -7,16 +7,18 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Paper,
     TablePagination,
-    makeStyles,
     IconButton,
 } from "@mui/material";
 
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import ViewListIcon from "@mui/icons-material/ViewList";
+import StarPurple500Icon from "@mui/icons-material/StarPurple500";
+import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 function DeleteButton() {
     const handleDelete = () => {
         // Implement the delete logic here
@@ -59,41 +61,78 @@ function TaskTable(props) {
         setPage(0);
     };
 
-    const cellStyle = {
-        borderRight: "1px solid #ddd", // Adjust the border style as needed
+    const bodyCellStyle = (hasRightBorder) => ({
+        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
         padding: 8,
-    };
+        color: "#000",
+        fontFamily: "Montserrat , sans-serif",
+        fontSize: "16px",
+    });
 
-    const useStyles = makeStyles((theme) => ({
-        table: {
-            minWidth: 650,
-        },
-        headerCell: {
-            fontWeight: "bold",
-            borderRight: "1px solid #ddd",
-            padding: theme.spacing(2),
-        },
-        bodyCell: {
-            borderRight: "1px solid #ddd",
-            padding: theme.spacing(1),
-        },
-    }));
-
-    const classes = useStyles;
+    const headCellStyle = (hasRightBorder) => ({
+        borderBottom: "3px solid #ddd",
+        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
+        padding: 8,
+        color: "rgba(128, 128, 128, 0.8)",
+        fontFamily: "Montserrat , sans-serif",
+    });
 
     return (
-        <TableContainer component={Paper}>
+        <TableContainer>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell style={classes.headerCell}>Status</TableCell>
-                        <TableCell style={cellStyle}>Task Name</TableCell>
-                        <TableCell style={cellStyle}>Date</TableCell>
-                        <TableCell style={cellStyle}>Category</TableCell>
-                        <TableCell style={cellStyle} align="right">
+                        <TableCell style={headCellStyle(false)}>
+                            <ScatterPlotIcon
+                                style={{
+                                    marginRight: 6,
+                                    position: "relative",
+                                    top: "5",
+                                }}
+                            />
+                            Status
+                        </TableCell>
+                        <TableCell style={headCellStyle(false)}>
+                            <ModeEditIcon
+                                style={{
+                                    marginRight: 6,
+                                    position: "relative",
+                                    top: "6",
+                                }}
+                            />
+                            Task Name
+                        </TableCell>
+                        <TableCell style={headCellStyle(false)}>
+                            <CalendarMonthIcon
+                                style={{
+                                    marginRight: 6,
+                                    position: "relative",
+                                    top: "5",
+                                }}
+                            />
+                            Date
+                        </TableCell>
+                        <TableCell style={headCellStyle(false)}>
+                            <ViewListIcon
+                                style={{
+                                    marginRight: 6,
+                                    position: "relative",
+                                    top: "6",
+                                }}
+                            />
+                            Category
+                        </TableCell>
+                        <TableCell style={headCellStyle(false)} align="right">
+                            <StarPurple500Icon
+                                style={{
+                                    marginRight: 6,
+                                    position: "relative",
+                                    top: "5",
+                                }}
+                            />
                             Priority
                         </TableCell>
-                        <TableCell style={cellStyle} align="right">
+                        <TableCell style={headCellStyle(true)} align="right">
                             Delete
                         </TableCell>
                     </TableRow>
@@ -106,26 +145,41 @@ function TaskTable(props) {
                         )
                         .map((row, index) => (
                             <TableRow key={index}>
-                                <TableCell style={cellStyle} align="left">
+                                <TableCell
+                                    style={bodyCellStyle(false)}
+                                    align="left"
+                                >
                                     {String(row.completed)}
                                 </TableCell>
                                 <TableCell
-                                    style={cellStyle}
+                                    style={bodyCellStyle(false)}
                                     component="th"
                                     scope="row"
                                 >
                                     {row.title}
                                 </TableCell>
-                                <TableCell style={cellStyle} align="left">
+                                <TableCell
+                                    style={bodyCellStyle(false)}
+                                    align="left"
+                                >
                                     {row.date}
                                 </TableCell>
-                                <TableCell style={cellStyle} align="right">
+                                <TableCell
+                                    style={bodyCellStyle(false)}
+                                    align="right"
+                                >
                                     {row.category}
                                 </TableCell>
-                                <TableCell style={cellStyle} align="right">
+                                <TableCell
+                                    style={bodyCellStyle(false)}
+                                    align="right"
+                                >
                                     <FlagToggleButton />
                                 </TableCell>
-                                <TableCell style={cellStyle} align="right">
+                                <TableCell
+                                    style={bodyCellStyle(true)}
+                                    align="right"
+                                >
                                     <DeleteButton />
                                 </TableCell>
                             </TableRow>

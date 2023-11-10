@@ -4,8 +4,7 @@ import axios from "axios";
 import TaskForm from "./TaskFrom";
 import TaskTable from "./TaskTable";
 import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
-import Container from "@mui/material/Container";
-import { Button } from "@mui/material";
+import { Button, Container } from "@mui/material";
 
 function TaskPage() {
     const [tasks, setTasks] = useState([]);
@@ -61,7 +60,15 @@ function TaskPage() {
     }
 
     return (
-        <Container maxWidth="lg">
+        <Container
+            maxWidth="lg"
+            style={{
+                position: "absolute",
+                top: "40%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            }}
+        >
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.5 } }}
