@@ -7,19 +7,21 @@
   - GET: returns "Hello World"
 - Users: "/users"
   - GET:
-    - Accepts "user" from **query**
+    - Accepts user (this is username) from **query**
     - Retrieves specified user or all if none specified
   - POST:
     - Accepts representation of user from **body**
     - Attempts to add user to database
 - Users with id: "/users/id:"
+  - GET:
+    - Accepts id of **user** from **params** and optional task fields from **query**
+      - Only one filter at a time, works with status, date, category and flagged
+    - Returns a subset of the users task list filtered by task fields
   - POST:
-    - Accepts "id" of **user** from **params**
-    - Retrieves task to add from **body**
+    - Accepts id of **user** from **params** and task to add from **body**
     - Attempts to add task to user 
   - DELETE:
-    - Accepts "id" of **user** from **params**
-    - Retrieves _id field of **existing task** from **body**
+    - Accepts id of **user** from **params** and id of **existing task** from **query**
     - Attempts to delete task from task list and remove from user tasks field
 - Tasks: "/tasks
   - **Probably needs to change**
@@ -31,11 +33,6 @@
   - POST:
     - Accepts representation of task from **body**
     - Attempts to add the task to database
-- Users and Tasks: "/usersAndTasks"
-  - GET:
-    - Accepts "user" from "query"
-      - Change to use id?
-    - Retrieves specified user or all and populates user task fields
 </p>
 </details>
 <details>

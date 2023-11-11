@@ -36,6 +36,7 @@ app.get("/", (req, res) => {
 
 // Users:
 // GET:
+// Will return subset of users specified by query
 app.get("/users", async (req, res) => {
     try {
         const user = req.query["user"];
@@ -48,6 +49,7 @@ app.get("/users", async (req, res) => {
 });
 
 // POST:
+// Will add a new user to database
 app.post("/users", async (req, res) => {
     const user = req.body;
     const userTask = await userServices.addUser(user);
