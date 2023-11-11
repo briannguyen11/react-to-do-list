@@ -2,6 +2,7 @@ import userModel from "./user.js";
 import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
+// Given a username, returns a list of users with matching usernames
 async function getUsers(username) {
     let result;
     if (username === undefined) {
@@ -13,17 +14,7 @@ async function getUsers(username) {
     return result;
 }
 
-async function getUsersAndTasks(username) {
-    let result;
-    if (username === undefined) {
-        result = await userModel.find().populate("tasks");
-    } else {
-        result = await findUserAndTasksByName(username);
-    }
-
-    return result;
-}
-
+// Given an object representing a user, adds a new user to the database
 async function addUser(user) {
     try {
         const userToAdd = new userModel(user);
@@ -35,54 +26,76 @@ async function addUser(user) {
 
         return savedUser;
     } catch (error) {
-        console.error(error.message);
+        console.log(error);
     }
 }
 
-async function newTaskToUser(userId, task) {
+// Given a userId and optional task fields, returns subset of user tasks matching fields
+async function getUserTasks(userId, status, date, category, flagged) {
+    let result;
+
     try {
-        console.log("HEY");
+        const user = await findUserAndTasksById(userId);
+
+        if (!user) {
+            throw new Error("No user found");
+        }
+
+        const tasks = user.tasks;
+
+        if (status !== undefined) {
+            result = tasks.filter((task) => task.status === status);
+        } else if (date !== undefined) {
+            result = tasks.filter((task) => task.date === date);
+        } else if (category !== undefined) {
+            result = tasks.filter((task) => task.categories.includes(category));
+        } else if (flagged !== undefined) {
+            result = tasks.filter(
+                (task) => task.flagged === (flagged === "true")
+            );
+        } else {
+            result = tasks;
+        }
+    } catch (error) {
+        console.log(error);
+        result = null;
+    }
+
+    return result;
+}
+
+// Given a userId and an object representing a task, creates the task and adds it to the user
+async function addTaskToUser(userId, task) {
+    let updatedUser;
+    try {
         const taskToAdd = await taskServices.addTask(task);
-        console.log(taskToAdd);
+
         if (!taskToAdd) {
             throw new Error("Task not found");
         }
-        const updatedUser = await userModel.findByIdAndUpdate(userId, {
+
+        updatedUser = await userModel.findByIdAndUpdate(userId, {
             $push: { tasks: taskToAdd._id },
         });
-        return updatedUser;
+
+        updatedUser = await findUserById(userId);
     } catch (error) {
-        console.error(error.message);
-        return null;
+        console.log(error);
+        updatedUser = null;
     }
+
+    return updatedUser;
 }
 
-async function addTaskToUser(userId, taskId) {
-    try {
-        const taskToAdd = await taskModel.findById(taskId);
-        if (!taskToAdd) {
-            throw new Error("Task not found");
-        }
-        const updatedUser = await userModel.findByIdAndUpdate(userId, {
-            $push: { tasks: taskId },
-        });
-        return updatedUser;
-    } catch (error) {
-        console.error(error.message);
-        return null;
-    }
-}
-
+// Given a userId and a taskId, deletes the task and removes it from the user
 async function deleteTaskFromUser(userId, taskId) {
     try {
-        // Find and delete the task
         const deletedTask = await taskModel.findByIdAndDelete(taskId);
 
         if (!deletedTask) {
             throw new Error("Task not found");
         }
 
-        // Find the user by ID
         const user = await userModel.findById(userId);
 
         if (!user) {
@@ -97,7 +110,7 @@ async function deleteTaskFromUser(userId, taskId) {
         // Save the updated user
         return await user.save();
     } catch (error) {
-        console.error(error.meesage);
+        console.log(error);
         return null;
     }
 }
@@ -110,8 +123,8 @@ async function findUserByName(username) {
     return await userModel.find({ username });
 }
 
-async function findUserAndTasksByName(username) {
-    return await userModel.find({ username }).populate("tasks");
+async function findUserAndTasksById(userId) {
+    return await userModel.findById(userId).populate("tasks");
 }
 
 async function findUserById(id) {
@@ -119,12 +132,11 @@ async function findUserById(id) {
 }
 
 export default {
-    getUsers,
-    getUsersAndTasks,
     addUser,
-    addTaskToUser,
-    newTaskToUser,
+    getUsers,
     deleteUser,
+    addTaskToUser,
+    getUserTasks,
     deleteTaskFromUser,
     findUserById,
 };
