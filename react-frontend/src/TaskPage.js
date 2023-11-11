@@ -62,12 +62,12 @@ function TaskPage() {
     return (
         <Container
             maxWidth="lg"
-            style={{
-                position: "absolute",
-                top: "40%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-            }}
+            // style={{
+            //     position: "absolute",
+            //     top: "50%",
+            //     left: "50%",
+            //     transform: "translate(-50%, -50%)",
+            // }}
         >
             <motion.div
                 initial={{ opacity: 0 }}
