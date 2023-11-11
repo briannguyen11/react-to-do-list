@@ -13,7 +13,9 @@
     },
     "rules": {
         "react/prop-types": 0,
-        "react/react-in-jsx-scope": "off"
+        "react/react-in-jsx-scope": "off",
+        "react/jsx-uses-react": "error",   
+        "react/jsx-uses-vars": "error" 
     }
     // Add frontend-specific rules if needed
 }
