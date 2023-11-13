@@ -167,7 +167,7 @@ function TaskTable(props) {
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
-                                    align="right"
+                                    align="left"
                                 >
                                     {row.category}
                                 </TableCell>

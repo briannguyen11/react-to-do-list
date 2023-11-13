@@ -6,7 +6,7 @@ import TaskTable from "./TaskTable";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Button } from "@mui/material";
 
-function TaskPage() {
+function HomePage() {
     const [tasks, setTasks] = useState([]);
     const [showTaskForm, setShowTaskForm] = useState(false);
 
@@ -14,6 +14,9 @@ function TaskPage() {
         setShowTaskForm(!showTaskForm);
     };
 
+    /**
+     *  GETs all tasks from the DB
+     */
     async function fetchAll() {
         try {
             const response = await axios.get("http://localhost:8000/tasks");
@@ -30,6 +33,9 @@ function TaskPage() {
         });
     }, []);
 
+    /**
+     *  POSTs operation for inserting new task
+     */
     async function makePostCall(task) {
         try {
             const response = await axios.post(
@@ -47,6 +53,32 @@ function TaskPage() {
             if (result && result.status === 201) {
                 const newTask = result.data;
                 setTasks([...tasks, newTask]);
+            }
+        });
+    }
+
+    /**
+     *  DELETE operation to delete task
+     */
+    async function makeDeleteCall(id) {
+        try {
+            const response = await axios.delete(
+                `http://localhost:8000/tasks/${id}`
+            );
+            console.log(response);
+            return response;
+        } catch (error) {
+            console.log(error);
+            return false;
+        }
+    }
+    function removeOneTask(id) {
+        makeDeleteCall(id).then((result) => {
+            if (result && result.status === 204) {
+                const updated = tasks.filter((task) => task._id !== id);
+                setTasks(updated);
+            } else if (result.status === 404) {
+                console.log("Task not found.");
             }
         });
     }
@@ -94,7 +126,10 @@ function TaskPage() {
                         <h1>CROO List</h1>
                         <FilterBar />
                         <div style={{ marginTop: 16 }}>
-                            <TaskTable taskData={tasks} />
+                            <TaskTable
+                                taskData={tasks}
+                                removeTask={removeOneTask}
+                            />
                         </div>
                     </Grid>
 
@@ -148,4 +183,4 @@ function TaskPage() {
     );
 }
 
-export default TaskPage;
+export default HomePage;
