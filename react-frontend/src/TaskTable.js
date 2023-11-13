@@ -15,10 +15,11 @@ import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
-import ModeEditIcon from "@mui/icons-material/ModeEdit";
-import ViewListIcon from "@mui/icons-material/ViewList";
+import AssignmentIcon from "@mui/icons-material/Assignment";
+import WindowIcon from "@mui/icons-material/Window";
 import StarPurple500Icon from "@mui/icons-material/StarPurple500";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
+
 function DeleteButton() {
     const handleDelete = () => {
         // Implement the delete logic here
@@ -93,7 +94,7 @@ function TaskTable(props) {
                             Status
                         </TableCell>
                         <TableCell style={headCellStyle(false)}>
-                            <ModeEditIcon
+                            <AssignmentIcon
                                 style={{
                                     marginRight: 6,
                                     position: "relative",
@@ -113,7 +114,7 @@ function TaskTable(props) {
                             Date
                         </TableCell>
                         <TableCell style={headCellStyle(false)}>
-                            <ViewListIcon
+                            <WindowIcon
                                 style={{
                                     marginRight: 6,
                                     position: "relative",
@@ -122,7 +123,7 @@ function TaskTable(props) {
                             />
                             Category
                         </TableCell>
-                        <TableCell style={headCellStyle(false)} align="right">
+                        <TableCell style={headCellStyle(false)} align="left">
                             <StarPurple500Icon
                                 style={{
                                     marginRight: 6,
@@ -132,7 +133,7 @@ function TaskTable(props) {
                             />
                             Priority
                         </TableCell>
-                        <TableCell style={headCellStyle(true)} align="right">
+                        <TableCell style={headCellStyle(true)} align="left">
                             Delete
                         </TableCell>
                     </TableRow>
@@ -149,7 +150,7 @@ function TaskTable(props) {
                                     style={bodyCellStyle(false)}
                                     align="left"
                                 >
-                                    {String(row.completed)}
+                                    {row.status}
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
@@ -162,7 +163,7 @@ function TaskTable(props) {
                                     style={bodyCellStyle(false)}
                                     align="left"
                                 >
-                                    {row.date}
+                                    {new Date(row.date).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
@@ -172,13 +173,13 @@ function TaskTable(props) {
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
-                                    align="right"
+                                    align="left"
                                 >
                                     <FlagToggleButton />
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(true)}
-                                    align="right"
+                                    align="left"
                                 >
                                     <DeleteButton />
                                 </TableCell>
