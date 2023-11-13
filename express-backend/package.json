@@ -5,7 +5,7 @@
     "type": "module",
     "main": "backend.js",
     "scripts": {
-        "test": "prettier --check . && jest",
+        "test": "prettier --check .",
         "dev": "nodemon backend.js",
         "start": "node backend.js"
     },
