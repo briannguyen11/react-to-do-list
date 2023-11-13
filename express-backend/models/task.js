@@ -46,15 +46,9 @@ const TaskSchema = new Schema(
             },
         ],
         date: {
-            type: String,
+            type: Date,
             required: true,
             trim: true,
-            validate(value) {
-                if (value.length < 2)
-                    throw new Error(
-                        "Invalid task, must be at least 2 characters."
-                    );
-            },
         },
         flagged: {
             type: Boolean,
