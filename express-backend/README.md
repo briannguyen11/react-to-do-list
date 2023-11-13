@@ -33,11 +33,11 @@
         -   Accepts "user", "categories", "date", "flagged" and "completed" from **query**
         -   Retrieves tasks, can be filtered by user as well as user and other field
     -   POST: - Accepts representation of task from **body** - Attempts to add the task to database
-    </p>
-    </details>
-    <details>
-    <summary>Models</summary>
-    <p>
+</p>
+</details>
+<details>
+<summary>Models</summary>
+<p>
 
 -   User:
     -   username:
@@ -60,5 +60,5 @@
     -   flagged:
         -   Boolean, required
     -   completed: - String, required
-    <p>
-    </details>
+<p>
+</details>
