@@ -38,7 +38,7 @@ const TaskSchema = new Schema(
                     );
             },
         },
-        categories: [
+        category: [
             {
                 type: String,
                 required: true,
