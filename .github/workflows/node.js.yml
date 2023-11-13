@@ -30,7 +30,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: express-backend/package-lock.json
-    - run: npm install eslint prettier --save-dev
+    - run: npm install eslint-plugin-prettier@latest --save-dev
     - run: npm ci
     - run: npm run build --if-present
     - run: npm test
