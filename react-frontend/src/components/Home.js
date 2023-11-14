@@ -6,7 +6,7 @@ import TaskTable from "./TaskTable";
 import Grid from "@mui/material/Unstable_Grid2";
 import { Button } from "@mui/material";
 
-function HomePage() {
+function Home() {
     const [tasks, setTasks] = useState([]);
     const [showTaskForm, setShowTaskForm] = useState(false);
 
@@ -183,4 +183,4 @@ function HomePage() {
     );
 }
 
-export default HomePage;
+export default Home;

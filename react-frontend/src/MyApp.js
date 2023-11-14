@@ -1,17 +1,20 @@
 import React from "react";
-// import { BrowserRouter, Link, Route, Routes, Naviate } from "react-router-dom";
-import HomePage from "./Home";
+// import { Route, Routes, Router } from "react-router-dom";
+import Home from "./components/Home";
 import { Container } from "@mui/material";
 // import Login from "./Login";
 function MyApp() {
     return (
         <Container style={{ height: "100vh" }}>
-            <HomePage />
+            <Home />
         </Container>
-        // <Routes>
-        //     <Route path="/" element={<HomePage />} />
-        //     <Route path="/login" element={<Login />} />
-        // </Routes>
+        // <Router>
+        //     <Routes>
+        //         <Route path="/" element={<Login />} />
+        //         <Route path="/signup" element={<Signup />} />
+        //         <Route path="/home" element={<Home />} />
+        //     </Routes>
+        // </Router>
     );
 }
 
