@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 import TaskForm from "./TaskFrom";
 import TaskTable from "./TaskTable";
 import Grid from "@mui/material/Unstable_Grid2";
-import { Button } from "@mui/material";
+import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
+import { Button, Container } from "@mui/material";
 
 function Home() {
+    const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
     const [showTaskForm, setShowTaskForm] = useState(false);
 
@@ -19,10 +21,11 @@ function Home() {
      */
     async function fetchAll() {
         try {
-            const response = await axios.get("http://localhost:8000/tasks");
+            const response = await axios.get(
+                `http://localhost:8000/users/${userId}`
+            );
             return response.data.tasks_list;
         } catch (error) {
-            //We're not handling errors. Just logging into the console.
             console.log(error);
             return false;
         }
@@ -110,7 +113,7 @@ function Home() {
     }
 
     return (
-        <>
+        <Container style={{ height: "100vh" }}>
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: { duration: 0.5 } }}
@@ -179,7 +182,7 @@ function Home() {
                     </AnimatePresence>
                 </Grid>
             </motion.div>
-        </>
+        </Container>
     );
 }
 

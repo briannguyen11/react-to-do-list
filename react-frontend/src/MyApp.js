@@ -1,20 +1,20 @@
 import React from "react";
-// import { Route, Routes, Router } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
-import { Container } from "@mui/material";
-// import Login from "./Login";
+import Login from "./components/Login";
+import SignUp from "./components/SignUp";
+// import { Container } from "@mui/material";
 function MyApp() {
     return (
-        <Container style={{ height: "100vh" }}>
-            <Home />
-        </Container>
-        // <Router>
-        //     <Routes>
-        //         <Route path="/" element={<Login />} />
-        //         <Route path="/signup" element={<Signup />} />
-        //         <Route path="/home" element={<Home />} />
-        //     </Routes>
-        // </Router>
+        // <Login />
+
+        <Router>
+            <Routes>
+                <Route path="/" element={<Login />} />
+                <Route path="/signup" element={<SignUp />} />
+                <Route path="/home/:userId" element={<Home />} />
+            </Routes>
+        </Router>
     );
 }
 

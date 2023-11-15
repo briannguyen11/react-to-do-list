@@ -2,13 +2,13 @@ import userModel from "./user.js";
 import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
-// Given a username, returns a list of users with matching usernames
-async function getUsers(username) {
+// Given a email, returns a list of users with matching emails
+async function getUsers(email) {
     let result;
-    if (username === undefined) {
+    if (email === undefined) {
         result = await userModel.find();
     } else {
-        result = await findUserByName(username);
+        result = await findUserByName(email);
     }
 
     return result;
@@ -17,6 +17,13 @@ async function getUsers(username) {
 // Given an object representing a user, adds a new user to the database
 async function addUser(user) {
     try {
+        // Check if a user with the same email already exists
+        const existingUser = await userModel.findOne({ email: user.email });
+        if (existingUser) {
+            return { status: "exists" };
+        }
+
+        // If no existing user, proceed to add the new user
         const userToAdd = new userModel(user);
         const savedUser = await userToAdd.save();
 
@@ -24,9 +31,10 @@ async function addUser(user) {
             throw new Error("Failed to add user");
         }
 
-        return savedUser;
+        return { status: "success", userId: savedUser._id };
     } catch (error) {
         console.log(error);
+        return { status: "fail" };
     }
 }
 
@@ -119,8 +127,8 @@ async function deleteUser(id) {
     return await userModel.findByIdAndDelete(id);
 }
 
-async function findUserByName(username) {
-    return await userModel.find({ username });
+async function findUserByName(email) {
+    return await userModel.find({ email });
 }
 
 async function findUserAndTasksById(userId) {

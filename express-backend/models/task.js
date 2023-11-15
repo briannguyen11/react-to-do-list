@@ -12,7 +12,7 @@ const TaskSchema = new Schema(
             validate(value) {
                 if (value.length < 2)
                     throw new Error(
-                        "Invalid username, must be at least 2 characters."
+                        "Invalid user, must be at least 2 characters."
                     );
             },
         },
@@ -23,7 +23,7 @@ const TaskSchema = new Schema(
             validate(value) {
                 if (value.length < 2)
                     throw new Error(
-                        "Invalid task, must be at least 2 characters."
+                        "Invalid title, must be at least 2 characters."
                     );
             },
         },

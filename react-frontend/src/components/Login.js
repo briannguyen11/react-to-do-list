@@ -4,12 +4,13 @@ import { Button, TextField, Typography, Container } from "@mui/material";
 
 function Login() {
     // Handle your submit function
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Implement your sign in logic here
-    };
+    // const handleSubmit = (event) => {
+    //     event.preventDefault();
+    //     // Implement your sign in logic here
+    // };
 
     return (
+        // <h1>Login</h1>
         <Container component="main" maxWidth="xs">
             <div
                 style={{
@@ -26,7 +27,7 @@ function Login() {
                 >
                     ToDo Croo
                 </Typography>
-                <form onSubmit={handleSubmit}>
+                <form>
                     <TextField
                         variant="outlined"
                         margin="normal"

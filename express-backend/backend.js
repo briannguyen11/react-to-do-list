@@ -52,9 +52,14 @@ app.get("/users", async (req, res) => {
 // Will add a new user to database
 app.post("/users", async (req, res) => {
     const user = req.body;
-    const userTask = await userServices.addUser(user);
-    if (userTask) res.status(201).send(userTask);
-    else res.status(500).end();
+    const result = await userServices.addUser(user);
+    if (result.status === "success") {
+        res.status(201).send(result.userId).end(); // 201 Created
+    } else if (result.status === "exists") {
+        res.status(409).end(); // 409 Conflict
+    } else {
+        res.status(500).end(); // 500 Internal Server Error
+    }
 });
 
 // Users with id:

@@ -1,13 +1,69 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
+import axios from "axios";
 
 function SignUp() {
-    // Handle your submit function
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Implement your sign up logic here
-    };
+    const navigate = useNavigate();
+    const [userData, setUserData] = useState({
+        email: "",
+        password: "",
+        confirmPassword: "",
+    });
+
+    function handleChange(event) {
+        setUserData({
+            ...userData,
+            [event.target.name]: event.target.value,
+        });
+    }
+
+    async function createUser(user) {
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/users",
+                user
+            );
+            return response;
+        } catch (error) {
+            if (error.response && error.response.status === 409) {
+                alert("User already exists");
+            } else {
+                console.error("Unexpected error:", error);
+            }
+            return false;
+        }
+    }
+
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+        try {
+            // Confirm passwords
+            if (user.password !== user.confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            // Request to create user
+            const response = await createUser(user);
+
+            // Handle request result
+            if (response && response.status === 201) {
+                // Successful creation of user
+                const newUserId = response.data;
+                navigate(`/home/${newUserId}`);
+                setUserData({
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                });
+            } else {
+                console.error("Failed to create user");
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
+        }
+    }
 
     return (
         <Container component="main" maxWidth="xs">
@@ -26,48 +82,39 @@ function SignUp() {
                 >
                     ToDo Croo
                 </Typography>
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={(e) => handleSubmit(e, userData)}>
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        id="email"
-                        label="Email Address"
+                        type="text"
+                        label="Email"
                         name="email"
-                        autoComplete="email"
+                        value={userData.email}
+                        onChange={handleChange}
                     />
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        autoComplete="username"
-                    />
-                    <TextField
-                        variant="outlined"
-                        margin="normal"
-                        required
-                        fullWidth
-                        name="password"
+                        type="password"
                         label="Password"
-                        type="password"
-                        id="password"
-                        autoComplete="new-password"
+                        name="password"
+                        value={userData.password}
+                        onChange={handleChange}
                     />
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        name="confirmPassword"
-                        label="Confirm Password"
                         type="password"
-                        id="confirm-password"
-                        autoComplete="new-password"
+                        label="Confirm Password"
+                        name="confirmPassword"
+                        value={userData.confirmPassword}
+                        onChange={handleChange}
                     />
                     <Button
                         type="submit"
