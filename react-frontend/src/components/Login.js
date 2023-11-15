@@ -1,16 +1,65 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
+import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
 
 function Login() {
-    // Handle your submit function
-    // const handleSubmit = (event) => {
-    //     event.preventDefault();
-    //     // Implement your sign in logic here
-    // };
+    const navigate = useNavigate();
+    const [userLogin, setUserLogin] = useState({
+        email: "",
+        password: "",
+    });
+
+    function handleChange(event) {
+        setUserLogin({
+            ...userLogin,
+            [event.target.name]: event.target.value,
+        });
+    }
+
+    async function checkUser(user) {
+        try {
+            const response = await axios.post(
+                "http://localhost:8000/login",
+                user
+            );
+            return response;
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                alert("Incorrect password");
+            } else if (error.response && error.response.status === 404) {
+                alert("User does not exist");
+            } else {
+                console.error("Unexpected error:", error);
+            }
+            return false;
+        }
+    }
+
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+        try {
+            // Request to check user login
+            const response = await checkUser(user);
+
+            // Handle request result
+            if (response && response.status === 200) {
+                // Successful login
+                const userId = response.data;
+                navigate(`/home/${userId}`);
+                setUserLogin({
+                    email: "",
+                    password: "",
+                });
+            } else {
+                console.error("Failed to login");
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
+        }
+    }
 
     return (
-        // <h1>Login</h1>
         <Container component="main" maxWidth="xs">
             <div
                 style={{
@@ -27,28 +76,28 @@ function Login() {
                 >
                     ToDo Croo
                 </Typography>
-                <form>
+                <form onSubmit={(e) => handleSubmit(e, userLogin)}>
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        id="username"
-                        label="Username"
-                        name="username"
-                        autoComplete="username"
-                        autoFocus
+                        type="text"
+                        label="Email"
+                        name="email"
+                        value={userLogin.email}
+                        onChange={handleChange}
                     />
                     <TextField
                         variant="outlined"
                         margin="normal"
                         required
                         fullWidth
-                        name="password"
-                        label="Password"
                         type="password"
-                        id="password"
-                        autoComplete="current-password"
+                        label="Password"
+                        name="password"
+                        value={userLogin.password}
+                        onChange={handleChange}
                     />
                     <Button
                         type="submit"

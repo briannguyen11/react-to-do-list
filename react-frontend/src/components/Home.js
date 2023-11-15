@@ -20,6 +20,7 @@ function Home() {
      *  GETs all tasks from the DB
      */
     async function fetchAll() {
+        console.log(userId);
         try {
             const response = await axios.get(
                 `http://localhost:8000/users/${userId}`

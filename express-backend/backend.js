@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 
 import taskServices from "./models/task-services.js";
 import userServices from "./models/user-services.js";
+import user from "./models/user.js";
 
 const app = express();
 const port = 8000;
@@ -34,6 +35,20 @@ app.get("/", (req, res) => {
     res.send("Hello World!");
 });
 
+// Login:
+// POST:
+app.post("/login", async (req, res) => {
+    const user = req.body;
+    const result = await userServices.validateUser(user);
+    if (result.status === "valid") {
+        res.status(200).send(result.userId).end(); // Successful Login
+    } else if (result.status === "invalid") {
+        res.status(401).end(); // Wrong Passownd
+    } else if (result.status === "nonexistent") {
+        res.status(404).end(); // User does not exist
+    } else [res.status(500).send("An error occured in the server.")];
+});
+
 // Users:
 // GET:
 // Will return subset of users specified by query
@@ -49,7 +64,7 @@ app.get("/users", async (req, res) => {
 });
 
 // POST:
-// Will add a new user to database
+// Will add a new user to database (SIGNUP)
 app.post("/users", async (req, res) => {
     const user = req.body;
     const result = await userServices.addUser(user);
@@ -79,7 +94,7 @@ app.get("/users/:id", async (req, res) => {
             category,
             flagged
         );
-        res.send({ task_list: result });
+        res.status(200).send({ tasks_list: result });
     } catch (error) {
         console.log(error);
         res.status(500).send("An error ocurred in the server.");

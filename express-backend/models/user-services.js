@@ -3,6 +3,25 @@ import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
 // Given a email, returns a list of users with matching emails
+async function validateUser(user) {
+    try {
+        const existingUser = await userModel.findOne({ email: user.email });
+        if (existingUser) {
+            if (existingUser.password === user.password) {
+                return { status: "valid", userId: existingUser._id };
+            } else {
+                return { status: "invalid" };
+            }
+        } else {
+            return { status: "nonexistent" };
+        }
+    } catch (error) {
+        console.log(error);
+        return { status: "fail" };
+    }
+}
+
+// Given a email, returns a list of users with matching emails
 async function getUsers(email) {
     let result;
     if (email === undefined) {
@@ -140,6 +159,7 @@ async function findUserById(id) {
 }
 
 export default {
+    validateUser,
     addUser,
     getUsers,
     deleteUser,
