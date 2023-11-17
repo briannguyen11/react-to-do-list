@@ -73,9 +73,13 @@ async function getUserTasks(userId, status, date, category, flagged) {
         if (status !== undefined) {
             result = tasks.filter((task) => task.status === status);
         } else if (date !== undefined) {
-            result = tasks.filter((task) => task.date === date);
+            const queryDate = new Date(date);
+            result = tasks.filter((task) => {
+                const taskDate = new Date(task.date);
+                return queryDate.getTime() === taskDate.getTime();
+            });
         } else if (category !== undefined) {
-            result = tasks.filter((task) => task.categories.includes(category));
+            result = tasks.filter((task) => task.category === category);
         } else if (flagged !== undefined) {
             result = tasks.filter(
                 (task) => task.flagged === (flagged === "true")

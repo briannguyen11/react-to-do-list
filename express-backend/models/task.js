@@ -38,13 +38,11 @@ const TaskSchema = new Schema(
                     );
             },
         },
-        category: [
-            {
-                type: String,
-                required: true,
-                trim: true,
-            },
-        ],
+        category: {
+            type: String,
+            required: false,
+            trim: true,
+        },
         date: {
             type: Date,
             required: true,
