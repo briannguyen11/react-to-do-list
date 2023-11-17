@@ -20,7 +20,6 @@ function Home() {
      *  GETs all tasks from the DB
      */
     async function fetchAll() {
-        console.log(userId);
         try {
             const response = await axios.get(
                 `http://localhost:8000/users/${userId}`
@@ -43,7 +42,7 @@ function Home() {
     async function makePostCall(task) {
         try {
             const response = await axios.post(
-                "http://localhost:8000/tasks",
+                `http://localhost:8000/users/${userId}`,
                 task
             );
             return response;
@@ -175,7 +174,11 @@ function Home() {
                                             height: "100%",
                                         }}
                                     >
-                                        <TaskForm handleSubmit={updateList} />
+                                        <TaskForm
+                                            handleSubmit={updateList}
+                                            exitForm={toggleTaskForm}
+                                            userId={userId}
+                                        />
                                     </Grid>
                                 </motion.div>
                             </>

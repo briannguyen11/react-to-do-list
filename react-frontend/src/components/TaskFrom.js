@@ -274,7 +274,7 @@ function SelectPrioirty({ name, value, onChange }) {
 
 function TaskForm(props) {
     const [taskData, setTaskData] = useState({
-        user: "JohnJoe", // debug
+        user: props.userId,
         title: "",
         category: "Personal",
         description: "",
@@ -301,6 +301,7 @@ function TaskForm(props) {
             flagged: false,
             status: "Not Started",
         });
+        props.exitForm();
     }
 
     return (

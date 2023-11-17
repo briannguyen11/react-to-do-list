@@ -50,8 +50,8 @@ function SignUp() {
             // Handle request result
             if (response && response.status === 201) {
                 // Successful creation of user
-                const newUserId = response.data;
-                navigate(`/home/${newUserId}`);
+                const userId = response.data;
+                navigate(`/home/${userId}`);
                 setUserData({
                     email: "",
                     password: "",
