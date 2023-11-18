@@ -41,6 +41,34 @@ async function addTask(task) {
     }
 }
 
+async function updateTask(id, task) {
+    let updatedTask;
+    try {
+        const oldTask = taskModel.findById(id);
+
+        if (!oldTask) {
+            throw new Error("Task not found");
+        }
+
+        if (!task) {
+            throw new Error("Provided task is not defined");
+        }
+
+        console.log("YAY");
+
+        updatedTask = await taskModel.findByIdAndUpdate(id, task, {
+            new: true,
+        });
+    } catch (error) {
+        console.log(error);
+        updatedTask = null;
+    }
+
+    console.log(updatedTask);
+
+    return updatedTask;
+}
+
 async function deleteTask(id) {
     return await taskModel.findByIdAndDelete(id);
 }
@@ -83,4 +111,5 @@ export default {
     findTaskById,
     addTask,
     deleteTask,
+    updateTask,
 };

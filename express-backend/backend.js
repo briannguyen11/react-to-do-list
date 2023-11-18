@@ -156,6 +156,15 @@ app.post("/tasks", async (req, res) => {
     else res.status(500).end();
 });
 
+// Tasks with id
+app.put("/tasks/:id", async (req, res) => {
+    const task = req.body;
+    const taskId = req.params["id"];
+    const updatedTask = await taskServices.updateTask(taskId, task);
+    if (updatedTask) res.status(200).send(updatedTask);
+    else res.status(500).end();
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
 });
