@@ -1,7 +1,16 @@
 {
-    "extends": "../.eslintrc.json", // Extend the common configuration
+    "extends": ["eslint:recommended", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "ecmaFeatures": {
+            "globalReturn": false,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
     "env": {
-        "node": true
+        "node": true,
+        "es2021": true,
+        "jest": true
     }
-    // Add backend-specific rules if needed
 }

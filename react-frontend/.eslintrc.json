@@ -1,5 +1,13 @@
 {
-    "extends": "../.eslintrc.json", // Extend the common configuration
+    "extends": ["eslint:recommended", "plugin:react/recommended", "plugin:prettier/recommended"],
+    "parserOptions": {
+        "ecmaVersion": 2021,
+        "ecmaFeatures": {
+            "globalReturn": false,
+            "jsx": true
+        },
+        "sourceType": "module"
+    },
     "env": {
         "browser": true,
         "es2021": true,
@@ -14,8 +22,7 @@
     "rules": {
         "react/prop-types": 0,
         "react/react-in-jsx-scope": "off",
-        "react/jsx-uses-react": "error",   
-        "react/jsx-uses-vars": "error" 
+        "react/jsx-uses-react": "error",
+        "react/jsx-uses-vars": "error"
     }
-    // Add frontend-specific rules if needed
 }
