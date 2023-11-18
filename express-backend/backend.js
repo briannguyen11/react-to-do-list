@@ -144,7 +144,6 @@ app.get("/tasks", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("An error ocurred in the server.");
-        console.log("bad");
     }
 });
 

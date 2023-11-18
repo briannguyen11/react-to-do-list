@@ -54,8 +54,6 @@ async function updateTask(id, task) {
             throw new Error("Provided task is not defined");
         }
 
-        console.log("YAY");
-
         updatedTask = await taskModel.findByIdAndUpdate(id, task, {
             new: true,
         });
@@ -63,9 +61,6 @@ async function updateTask(id, task) {
         console.log(error);
         updatedTask = null;
     }
-
-    console.log(updatedTask);
-
     return updatedTask;
 }
 
