@@ -84,9 +84,9 @@ function TaskTable(props) {
             case "Personal":
                 return "#ffdddd"; // Red background for Personal
             case "Work":
-                return "#ffffcc"; // Yellow background for Work
+                return "#ffebbd"; // Yellow background for Work
             case "School":
-                return "#d9ffd9"; // Green background for School
+                return "#d2e7d6"; // Green background for School
             case "Sports":
                 return "#c7e1ff"; // Blue background for Sports
             default:
@@ -126,7 +126,7 @@ function TaskTable(props) {
                     <TableRow>
                         <TableCell
                             style={headCellStyle(false)}
-                            sx={{ width: "10%" }}
+                            sx={{ width: "5%" }}
                         >
                             <ScatterPlotIcon
                                 style={{
@@ -205,7 +205,7 @@ function TaskTable(props) {
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
-                                    sx={{ width: "10%" }}
+                                    sx={{ width: "5%" }}
                                 >
                                     <Select
                                         value={row.status}
@@ -221,11 +221,7 @@ function TaskTable(props) {
                                                 {
                                                     border: "none", // Remove outline for outlined variant
                                                 },
-                                            backgroundColor: getStatusColor(
-                                                row.status
-                                            ).backgroundColor,
-                                            borderRadius: 8, // Set border-radius
-                                            height: 35,
+                                            height: 25,
                                         }}
                                     >
                                         {statuses.map((status) => (
@@ -233,18 +229,30 @@ function TaskTable(props) {
                                                 key={status}
                                                 value={status}
                                             >
-                                                <CircleIcon
+                                                <span
                                                     style={{
-                                                        color: getStatusColor(
-                                                            status
-                                                        ).iconColor,
-                                                        fontSize: "14px",
-                                                        marginRight: "4px",
-                                                        verticalAlign: "middle",
-                                                        marginTop: "-4px",
+                                                        backgroundColor:
+                                                            getStatusColor(
+                                                                status
+                                                            ).backgroundColor,
+                                                        display: "flex",
+                                                        alignItems: "center",
+                                                        borderRadius: 32,
+                                                        padding:
+                                                            "4px 15px 4px 10px", // top right bottom left
                                                     }}
-                                                />
-                                                {status}
+                                                >
+                                                    <CircleIcon
+                                                        style={{
+                                                            color: getStatusColor(
+                                                                status
+                                                            ).iconColor,
+                                                            fontSize: "14px",
+                                                            marginRight: "4px",
+                                                        }}
+                                                    />
+                                                    {status}
+                                                </span>
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -273,6 +281,8 @@ function TaskTable(props) {
                                             backgroundColor: getCategoryColor(
                                                 row.category
                                             ),
+                                            borderRadius: 8,
+                                            padding: "4px 15px 4px 10px", // top right bottom left
                                         }}
                                     >
                                         {row.category}
