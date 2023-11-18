@@ -9,6 +9,8 @@ import {
     TableBody,
     TablePagination,
     IconButton,
+    Select,
+    MenuItem,
 } from "@mui/material";
 
 import BookmarkIcon from "@mui/icons-material/Bookmark";
@@ -19,6 +21,7 @@ import AssignmentIcon from "@mui/icons-material/Assignment";
 import WindowIcon from "@mui/icons-material/Window";
 import StarPurple500Icon from "@mui/icons-material/StarPurple500";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
+import CircleIcon from "@mui/icons-material/Circle";
 
 function DeleteButton() {
     const handleDelete = () => {
@@ -53,7 +56,45 @@ function TaskTable(props) {
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const handleChangePage = (event, newPage) => {
+    const statuses = ["Not Started", "In Progress", "Done"];
+
+    const handleStatusChange = (index, newStatus) => {
+        // Add logic to update the status in your data structure
+        // For example, call a function passed as a prop to update the status.
+        // props.onStatusChange(index, newStatus);
+        console.log(index);
+        console.log(newStatus);
+    };
+
+    const getStatusColor = (status) => {
+        switch (status) {
+            case "Not Started":
+                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
+            case "In Progress":
+                return { backgroundColor: "#ffebbd", iconColor: "#cc7722" };
+            case "Done":
+                return { backgroundColor: "#d2e7d6", iconColor: "#50835c" };
+            default:
+                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
+        }
+    };
+
+    const getCategoryColor = (category) => {
+        switch (category) {
+            case "Personal":
+                return "#ffdddd"; // Red background for Personal
+            case "Work":
+                return "#ffffcc"; // Yellow background for Work
+            case "School":
+                return "#d9ffd9"; // Green background for School
+            case "Sports":
+                return "#c7e1ff"; // Blue background for Sports
+            default:
+                return "#f0f0f0"; // Default background color
+        }
+    };
+
+    const handleChangePage = (newPage) => {
         setPage(newPage);
     };
 
@@ -83,7 +124,10 @@ function TaskTable(props) {
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
-                        <TableCell style={headCellStyle(false)}>
+                        <TableCell
+                            style={headCellStyle(false)}
+                            sx={{ width: "10%" }}
+                        >
                             <ScatterPlotIcon
                                 style={{
                                     marginRight: 6,
@@ -103,7 +147,10 @@ function TaskTable(props) {
                             />
                             Task Name
                         </TableCell>
-                        <TableCell style={headCellStyle(false)}>
+                        <TableCell
+                            style={headCellStyle(false)}
+                            sx={{ width: "15%" }}
+                        >
                             <CalendarMonthIcon
                                 style={{
                                     marginRight: 6,
@@ -113,7 +160,10 @@ function TaskTable(props) {
                             />
                             Date
                         </TableCell>
-                        <TableCell style={headCellStyle(false)}>
+                        <TableCell
+                            style={headCellStyle(false)}
+                            sx={{ width: "15%" }}
+                        >
                             <WindowIcon
                                 style={{
                                     marginRight: 6,
@@ -123,7 +173,10 @@ function TaskTable(props) {
                             />
                             Category
                         </TableCell>
-                        <TableCell style={headCellStyle(false)} align="left">
+                        <TableCell
+                            style={headCellStyle(false)}
+                            sx={{ width: "10%" }}
+                        >
                             <StarPurple500Icon
                                 style={{
                                     marginRight: 6,
@@ -133,7 +186,10 @@ function TaskTable(props) {
                             />
                             Priority
                         </TableCell>
-                        <TableCell style={headCellStyle(true)} align="left">
+                        <TableCell
+                            style={headCellStyle(true)}
+                            sx={{ width: "10%" }}
+                        >
                             Delete
                         </TableCell>
                     </TableRow>
@@ -149,8 +205,49 @@ function TaskTable(props) {
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
+                                    sx={{ width: "10%" }}
                                 >
-                                    {row.status}
+                                    <Select
+                                        value={row.status}
+                                        onChange={(e) =>
+                                            handleStatusChange(
+                                                index,
+                                                e.target.value
+                                            )
+                                        }
+                                        IconComponent={() => null}
+                                        sx={{
+                                            "& .MuiOutlinedInput-notchedOutline":
+                                                {
+                                                    border: "none", // Remove outline for outlined variant
+                                                },
+                                            backgroundColor: getStatusColor(
+                                                row.status
+                                            ).backgroundColor,
+                                            borderRadius: 8, // Set border-radius
+                                            height: 35,
+                                        }}
+                                    >
+                                        {statuses.map((status) => (
+                                            <MenuItem
+                                                key={status}
+                                                value={status}
+                                            >
+                                                <CircleIcon
+                                                    style={{
+                                                        color: getStatusColor(
+                                                            status
+                                                        ).iconColor,
+                                                        fontSize: "14px",
+                                                        marginRight: "4px",
+                                                        verticalAlign: "middle",
+                                                        marginTop: "-4px",
+                                                    }}
+                                                />
+                                                {status}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
@@ -162,24 +259,36 @@ function TaskTable(props) {
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
+                                    sx={{ width: "15%" }}
                                 >
                                     {new Date(row.date).toLocaleDateString()}
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
+                                    sx={{ width: "15%" }}
                                 >
-                                    {row.category}
+                                    <span
+                                        style={{
+                                            backgroundColor: getCategoryColor(
+                                                row.category
+                                            ),
+                                        }}
+                                    >
+                                        {row.category}
+                                    </span>
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
+                                    sx={{ width: "10%" }}
                                 >
                                     <FlagToggleButton />
                                 </TableCell>
                                 <TableCell
                                     style={bodyCellStyle(true)}
                                     align="left"
+                                    sx={{ width: "10%" }}
                                 >
                                     <DeleteButton />
                                 </TableCell>

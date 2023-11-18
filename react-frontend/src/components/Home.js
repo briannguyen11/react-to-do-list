@@ -51,7 +51,7 @@ function Home() {
             return false;
         }
     }
-    function updateList(task) {
+    function addToList(task) {
         makePostCall(task).then((result) => {
             if (result && result.status === 201) {
                 const newTask = result.data;
@@ -175,7 +175,7 @@ function Home() {
                                         }}
                                     >
                                         <TaskForm
-                                            handleSubmit={updateList}
+                                            handleSubmit={addToList}
                                             exitForm={toggleTaskForm}
                                             userId={userId}
                                         />
