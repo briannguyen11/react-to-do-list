@@ -23,18 +23,6 @@ import StarPurple500Icon from "@mui/icons-material/StarPurple500";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function DeleteButton() {
-    const handleDelete = () => {
-        // Implement the delete logic here
-    };
-
-    return (
-        <IconButton onClick={handleDelete} color="secondary">
-            <DeleteOutlineIcon />
-        </IconButton>
-    );
-}
-
 function FlagToggleButton() {
     const [isFlagged, setIsFlagged] = useState(false);
 
@@ -48,6 +36,19 @@ function FlagToggleButton() {
                 {isFlagged ? <BookmarkIcon /> : <BookmarkBorderOutlinedIcon />}
             </IconButton>
         </div>
+    );
+}
+
+function DeleteButton(props) {
+    const { taskId, removeOneTask } = props;
+    const handleDelete = () => {
+        removeOneTask(taskId);
+    };
+
+    return (
+        <IconButton onClick={handleDelete} color="secondary">
+            <DeleteOutlineIcon />
+        </IconButton>
     );
 }
 
@@ -300,7 +301,10 @@ function TaskTable(props) {
                                     align="left"
                                     sx={{ width: "10%" }}
                                 >
-                                    <DeleteButton />
+                                    <DeleteButton
+                                        taskId={row._id}
+                                        removeOneTask={props.removeOneTask}
+                                    />
                                 </TableCell>
                             </TableRow>
                         ))}

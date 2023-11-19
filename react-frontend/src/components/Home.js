@@ -30,6 +30,7 @@ function Home() {
             return false;
         }
     }
+
     useEffect(() => {
         fetchAll().then((result) => {
             if (result) setTasks(result);
@@ -51,6 +52,7 @@ function Home() {
             return false;
         }
     }
+
     function addToList(task) {
         makePostCall(task).then((result) => {
             if (result && result.status === 201) {
@@ -63,10 +65,10 @@ function Home() {
     /**
      *  DELETE operation to delete task
      */
-    async function makeDeleteCall(id) {
+    async function makeDeleteCall(taskId) {
         try {
             const response = await axios.delete(
-                `http://localhost:8000/tasks/${id}`
+                `http://localhost:8000/users/${userId}?id=${taskId}`
             );
             console.log(response);
             return response;
@@ -75,12 +77,13 @@ function Home() {
             return false;
         }
     }
-    function removeOneTask(id) {
-        makeDeleteCall(id).then((result) => {
+
+    function removeOneTask(taskId) {
+        makeDeleteCall(taskId).then((result) => {
             if (result && result.status === 204) {
-                const updated = tasks.filter((task) => task._id !== id);
+                const updated = tasks.filter((task) => task._id !== taskId);
                 setTasks(updated);
-            } else if (result.status === 404) {
+            } else if (result && result.status === 404) {
                 console.log("Task not found.");
             }
         });
@@ -131,7 +134,7 @@ function Home() {
                         <div style={{ marginTop: 16 }}>
                             <TaskTable
                                 taskData={tasks}
-                                removeTask={removeOneTask}
+                                removeOneTask={removeOneTask}
                             />
                         </div>
                     </Grid>
