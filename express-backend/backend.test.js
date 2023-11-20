@@ -2,10 +2,8 @@
 
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-// import taskServices from "./models/task-services.js";
+import taskServices from "./models/task-services.js";
 import userServices from "./models/user-services.js";
-
-console.log("HEY");
 
 let mongoServer;
 
@@ -69,5 +67,45 @@ describe("addUser", () => {
         const result = await userServices.getUsers();
 
         expect(result).toHaveLength(initial_length);
+    });
+});
+
+describe("addTaskToUser", () => {
+    // Write your tests for userService functions here
+    test("Should add a new task to a user", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = userToUpdate._id;
+
+        const taskToAdd = {
+            title: "Test Task",
+            description: "Testing ability to add a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: false,
+            status: "In progress",
+        };
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const addedTaskId = await userServices.addTaskToUser(userId, taskToAdd);
+
+        // Test that task was created
+        expect(addedTaskId).not.toBe(-1);
+
+        const addedTask = await taskServices.findTaskById(addedTaskId);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length has been updated
+        expect(updatedUser.tasks.length).toBeGreaterThan(initial_length);
+
+        // Test that fields match
+        expect(addedTask.title).toBe(taskToAdd.title);
+        expect(addedTask.description).toBe(taskToAdd.description);
+        expect(addedTask.category).toBe(taskToAdd.category);
+        expect(addedTask.date).toStrictEqual(taskToAdd.date);
+        expect(addedTask.flagged).toBe(taskToAdd.flagged);
+        expect(addedTask.status).toBe(taskToAdd.status);
     });
 });

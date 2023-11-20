@@ -5,17 +5,6 @@ const ObjectId = Schema.ObjectId;
 
 const TaskSchema = new Schema(
     {
-        user: {
-            type: String,
-            required: true,
-            trim: true,
-            validate(value) {
-                if (value.length < 2)
-                    throw new Error(
-                        "Invalid user, must be at least 2 characters."
-                    );
-            },
-        },
         title: {
             type: String,
             required: true,
