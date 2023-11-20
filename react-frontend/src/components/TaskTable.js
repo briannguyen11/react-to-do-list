@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-
+import { getStatusColor, getCategoryColor } from "../styles/ButtonDetails";
+import { bodyCellStyle, headCellStyle } from "../styles/TableDetails";
 import {
     TableContainer,
     Table,
@@ -12,7 +13,6 @@ import {
     Select,
     MenuItem,
 } from "@mui/material";
-
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
@@ -67,34 +67,6 @@ function TaskTable(props) {
         console.log(newStatus);
     };
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Not Started":
-                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
-            case "In Progress":
-                return { backgroundColor: "#ffebbd", iconColor: "#cc7722" };
-            case "Done":
-                return { backgroundColor: "#d2e7d6", iconColor: "#50835c" };
-            default:
-                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
-        }
-    };
-
-    const getCategoryColor = (category) => {
-        switch (category) {
-            case "Personal":
-                return "#ffdddd"; // Red background for Personal
-            case "Work":
-                return "#ffebbd"; // Yellow background for Work
-            case "School":
-                return "#d2e7d6"; // Green background for School
-            case "Sports":
-                return "#c7e1ff"; // Blue background for Sports
-            default:
-                return "#f0f0f0"; // Default background color
-        }
-    };
-
     const handleChangePage = (newPage) => {
         setPage(newPage);
     };
@@ -103,22 +75,6 @@ function TaskTable(props) {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);
     };
-
-    const bodyCellStyle = (hasRightBorder) => ({
-        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
-        padding: 8,
-        color: "#000",
-        fontFamily: "Montserrat , sans-serif",
-        fontSize: "16px",
-    });
-
-    const headCellStyle = (hasRightBorder) => ({
-        borderBottom: "3px solid #ddd",
-        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
-        padding: 8,
-        color: "rgba(128, 128, 128, 0.8)",
-        fontFamily: "Montserrat , sans-serif",
-    });
 
     return (
         <TableContainer>
@@ -230,13 +186,13 @@ function TaskTable(props) {
                                                 key={status}
                                                 value={status}
                                             >
-                                                <span
+                                                <div
                                                     style={{
                                                         backgroundColor:
                                                             getStatusColor(
                                                                 status
                                                             ).backgroundColor,
-                                                        display: "flex",
+                                                        display: "inline-flex",
                                                         alignItems: "center",
                                                         borderRadius: 32,
                                                         padding:
@@ -253,7 +209,7 @@ function TaskTable(props) {
                                                         }}
                                                     />
                                                     {status}
-                                                </span>
+                                                </div>
                                             </MenuItem>
                                         ))}
                                     </Select>

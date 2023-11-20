@@ -53,13 +53,19 @@ function Home() {
         }
     }
 
-    function addToList(task) {
-        makePostCall(task).then((result) => {
-            if (result && result.status === 201) {
-                const newTask = result.data;
-                setTasks([...tasks, newTask]);
+    async function addToList(task) {
+        const result = await makePostCall(task);
+        if (result && result.status === 201) {
+            const newTask = result.data;
+            console.log(newTask);
+
+            // Now, fetch the updated tasks after the POST request is complete
+            const updatedTasks = await fetchAll();
+
+            if (updatedTasks) {
+                setTasks(updatedTasks);
             }
-        });
+        }
     }
 
     /**

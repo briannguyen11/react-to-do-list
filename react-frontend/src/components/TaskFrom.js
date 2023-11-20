@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { getStatusColor, getCategoryColor } from "../styles/ButtonDetails";
 import {
     TextField,
     Button,
@@ -13,6 +14,8 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SubjectIcon from "@mui/icons-material/Subject";
 import WindowIcon from "@mui/icons-material/Window";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import CircleIcon from "@mui/icons-material/Circle";
 
 import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -53,6 +56,7 @@ function TitleInput({ name, value, onChange }) {
 }
 
 function SelectStatus({ name, value, onChange }) {
+    const statuses = ["Not Started", "In Progress", "Done"];
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
@@ -86,9 +90,34 @@ function SelectStatus({ name, value, onChange }) {
                             },
                         }}
                     >
-                        <MenuItem value="Not Started">Not Started</MenuItem>
+                        {/* <MenuItem value="Not Started">Not Started</MenuItem>
                         <MenuItem value="In Progress">In Progress</MenuItem>
-                        <MenuItem value="Done">Done</MenuItem>
+                        <MenuItem value="Done">Done</MenuItem> */}
+                        {statuses.map((status) => (
+                            <MenuItem key={status} value={status}>
+                                <div
+                                    style={{
+                                        backgroundColor:
+                                            getStatusColor(status)
+                                                .backgroundColor,
+                                        display: "inline-flex",
+                                        alignItems: "center",
+                                        borderRadius: 32,
+                                        padding: "4px 15px 4px 10px", // top right bottom left
+                                    }}
+                                >
+                                    <CircleIcon
+                                        style={{
+                                            color: getStatusColor(status)
+                                                .iconColor,
+                                            fontSize: "14px",
+                                            marginRight: "4px",
+                                        }}
+                                    />
+                                    {status}
+                                </div>
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </Grid>
@@ -97,6 +126,7 @@ function SelectStatus({ name, value, onChange }) {
 }
 
 function SelectCategory({ name, value, onChange }) {
+    const categories = ["Personal", "School", "Work", "Sports"];
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
@@ -130,10 +160,24 @@ function SelectCategory({ name, value, onChange }) {
                             },
                         }}
                     >
-                        <MenuItem value="Personal">Personal</MenuItem>
+                        {/* <MenuItem value="Personal">Personal</MenuItem>
                         <MenuItem value="Sports">Sports</MenuItem>
                         <MenuItem value="School">School</MenuItem>
-                        <MenuItem value="Work">Work</MenuItem>
+                        <MenuItem value="Work">Work</MenuItem> */}
+                        {categories.map((category) => (
+                            <MenuItem key={category} value={category}>
+                                <span
+                                    style={{
+                                        backgroundColor:
+                                            getCategoryColor(category),
+                                        borderRadius: 8,
+                                        padding: "4px 15px 4px 10px", // top right bottom left
+                                    }}
+                                >
+                                    {category}
+                                </span>
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
             </Grid>
@@ -291,7 +335,6 @@ function TaskForm(props) {
         }));
     }
     function submitForm() {
-        console.log(taskData);
         props.handleSubmit(taskData);
         setTaskData({
             title: "",
@@ -306,6 +349,7 @@ function TaskForm(props) {
 
     return (
         <form>
+            <KeyboardDoubleArrowRightIcon onClick={props.exitForm} />
             <TitleInput
                 name="title"
                 value={taskData.title}
