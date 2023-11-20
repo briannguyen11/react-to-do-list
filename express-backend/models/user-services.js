@@ -97,7 +97,6 @@ async function getUserTasks(userId, status, date, category, flagged) {
 
 // Given a userId and an object representing a task, creates the task and adds it to the user
 async function addTaskToUser(userId, task) {
-    let taskId = null;
     try {
         const taskToAdd = await taskServices.addTask(task);
 
@@ -105,17 +104,17 @@ async function addTaskToUser(userId, task) {
             throw new Error("Task not found");
         }
 
-        taskId = taskToAdd._id;
+        const taskId = taskToAdd._id;
 
         await userModel.findByIdAndUpdate(userId, {
             $push: { tasks: taskId },
         });
+
+        return taskId;
     } catch (error) {
         console.log(error);
-        return -1;
+        return null;
     }
-
-    return taskId;
 }
 
 // Given a userId and a taskId, deletes the task and removes it from the user
@@ -136,12 +135,10 @@ async function deleteTaskFromUser(userId, taskId) {
         await userModel.findByIdAndUpdate(userId, {
             $pull: { tasks: taskId },
         });
-
-        // Save the updated user
         return taskId;
     } catch (error) {
         console.log(error);
-        return -1;
+        return null;
     }
 }
 
