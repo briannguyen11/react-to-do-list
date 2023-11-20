@@ -88,14 +88,14 @@ describe("addTaskToUser", () => {
 
         const initial_length = userToUpdate.tasks.length;
 
-        const addedTaskId = await userServices.addTaskToUser(userId, taskToAdd);
+        const updatedUser = await userServices.addTaskToUser(userId, taskToAdd);
+
+        const addedTaskId = updatedUser.tasks[0].toString();
 
         // Test that task was created
         expect(addedTaskId).not.toBe(-1);
 
         const addedTask = await taskServices.findTaskById(addedTaskId);
-
-        const updatedUser = await userServices.findOneUserByName("ejendret");
 
         // Test that length has been updated
         expect(updatedUser.tasks.length).toBeGreaterThan(initial_length);
@@ -121,14 +121,10 @@ describe("deleteTaskFromUser", () => {
 
         const initial_length = userToUpdate.tasks.length;
 
-        const deletedTaskId = await userServices.deleteTaskFromUser(
+        const updatedUser = await userServices.deleteTaskFromUser(
             userId,
             taskId
         );
-
-        const updatedUser = await userServices.findOneUserByName("ejendret");
-
-        expect(deletedTaskId).toBe(taskId);
 
         expect(updatedUser.tasks.length).toBeLessThan(initial_length);
 

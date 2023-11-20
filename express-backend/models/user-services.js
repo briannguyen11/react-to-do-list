@@ -97,6 +97,7 @@ async function getUserTasks(userId, status, date, category, flagged) {
 
 // Given a userId and an object representing a task, creates the task and adds it to the user
 async function addTaskToUser(userId, task) {
+    let updatedUser;
     try {
         const taskToAdd = await taskServices.addTask(task);
 
@@ -110,15 +111,17 @@ async function addTaskToUser(userId, task) {
             $push: { tasks: taskId },
         });
 
-        return taskId;
+        updatedUser = await findUserById(userId);
     } catch (error) {
         console.log(error);
-        return null;
+        updatedUser = null;
     }
+    return updatedUser;
 }
 
 // Given a userId and a taskId, deletes the task and removes it from the user
 async function deleteTaskFromUser(userId, taskId) {
+    let updatedUser;
     try {
         const deletedTask = await taskModel.findByIdAndDelete(taskId);
 
@@ -135,11 +138,13 @@ async function deleteTaskFromUser(userId, taskId) {
         await userModel.findByIdAndUpdate(userId, {
             $pull: { tasks: taskId },
         });
-        return taskId;
+
+        updatedUser = await findUserById(userId);
     } catch (error) {
         console.log(error);
-        return null;
+        updatedUser = null;
     }
+    return updatedUser;
 }
 
 async function deleteUser(id) {
