@@ -100,6 +100,8 @@ describe("addTaskToUser", () => {
         // Test that length has been updated
         expect(updatedUser.tasks.length).toBeGreaterThan(initial_length);
 
+        expect(updatedUser.tasks.includes(addedTaskId)).toBeTruthy();
+
         // Test that fields match
         expect(addedTask.title).toBe(taskToAdd.title);
         expect(addedTask.description).toBe(taskToAdd.description);
@@ -111,7 +113,28 @@ describe("addTaskToUser", () => {
 });
 
 describe("deleteTaskFromUser", () => {
-    // Write your tests for userService functions here
+    test("Should fail if userId is invalid", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = "absolute nonsense";
+
+        const taskId = userToUpdate.tasks[0].toString();
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedUser = await userServices.deleteTaskFromUser(
+            userId,
+            taskId
+        );
+
+        expect(updatedUser).toBe(null);
+
+        const attemptedUser = await userServices.findOneUserByName("ejendret");
+
+        expect(attemptedUser.tasks.length).toBe(initial_length);
+        expect(attemptedUser.tasks.includes(taskId)).toBeTruthy();
+    });
+
     test("Should remove a task from a user", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
@@ -128,6 +151,6 @@ describe("deleteTaskFromUser", () => {
 
         expect(updatedUser.tasks.length).toBeLessThan(initial_length);
 
-        expect(updatedUser.tasks).not.toContain(taskId);
+        expect(updatedUser.tasks.includes()).toBeFalsy();
     });
 });

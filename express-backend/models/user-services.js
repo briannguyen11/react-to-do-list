@@ -123,16 +123,16 @@ async function addTaskToUser(userId, task) {
 async function deleteTaskFromUser(userId, taskId) {
     let updatedUser;
     try {
-        const deletedTask = await taskModel.findByIdAndDelete(taskId);
-
-        if (!deletedTask) {
-            throw new Error("Task not found");
-        }
-
         const user = await userModel.findById(userId);
 
         if (!user) {
             throw new Error("User not found");
+        }
+
+        const deletedTask = await taskModel.findByIdAndDelete(taskId);
+
+        if (!deletedTask) {
+            throw new Error("Task not found");
         }
 
         await userModel.findByIdAndUpdate(userId, {
