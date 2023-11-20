@@ -133,16 +133,15 @@ async function deleteTaskFromUser(userId, taskId) {
             throw new Error("User not found");
         }
 
-        // Remove the taskId from the user's tasks array
-        user.tasks = user.tasks.filter(
-            (userTaskId) => userTaskId.toString() !== taskId
-        );
+        await userModel.findByIdAndUpdate(userId, {
+            $pull: { tasks: taskId },
+        });
 
         // Save the updated user
-        return await user.save();
+        return taskId;
     } catch (error) {
         console.log(error);
-        return null;
+        return -1;
     }
 }
 

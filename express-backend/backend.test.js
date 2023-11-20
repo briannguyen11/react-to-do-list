@@ -83,7 +83,7 @@ describe("addTaskToUser", () => {
             category: "Personal",
             date: new Date("2023-11-19T05:00:00.000Z"),
             flagged: false,
-            status: "In progress",
+            status: "In Progress",
         };
 
         const initial_length = userToUpdate.tasks.length;
@@ -107,5 +107,31 @@ describe("addTaskToUser", () => {
         expect(addedTask.date).toStrictEqual(taskToAdd.date);
         expect(addedTask.flagged).toBe(taskToAdd.flagged);
         expect(addedTask.status).toBe(taskToAdd.status);
+    });
+});
+
+describe("deleteTaskFromUser", () => {
+    // Write your tests for userService functions here
+    test("Should remove a task from a user", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = userToUpdate._id;
+
+        const taskId = userToUpdate.tasks[0].toString();
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const deletedTaskId = await userServices.deleteTaskFromUser(
+            userId,
+            taskId
+        );
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        expect(deletedTaskId).toBe(taskId);
+
+        expect(updatedUser.tasks.length).toBeLessThan(initial_length);
+
+        expect(updatedUser.tasks).not.toContain(taskId);
     });
 });
