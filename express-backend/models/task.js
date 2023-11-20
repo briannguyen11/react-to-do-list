@@ -42,6 +42,7 @@ const TaskSchema = new Schema(
             type: String,
             required: false,
             trim: true,
+            enum: ["Personal", "Sports", "School", "Work"],
         },
         date: {
             type: Date,
