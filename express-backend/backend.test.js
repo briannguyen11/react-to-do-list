@@ -111,6 +111,36 @@ describe("addTaskToUser", () => {
 });
 
 describe("updateTask", () => {
+    test("Should fail if taskId is invalid", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const taskId = "absolute nonsense";
+
+        const updateTask = {
+            title: "Test Task",
+            description: "Testing ability to update a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedTask = await taskServices.updateTask(taskId, updateTask);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length hasn't changed
+        expect(updatedUser.tasks.length).toBe(initial_length);
+
+        // Check that invalid taskId is not in task
+        expect(updatedUser.tasks.includes(taskId)).toBeFalsy();
+
+        // Check that attempted update is null
+        expect(updatedTask).toBe(null);
+    });
+
     test("Should update an existing task", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
