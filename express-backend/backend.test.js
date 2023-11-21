@@ -135,6 +135,30 @@ describe("deleteTaskFromUser", () => {
         expect(attemptedUser.tasks.includes(taskId)).toBeTruthy();
     });
 
+    test("Should also fail if taskId is invalid", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = userToUpdate._id;
+
+        const taskId = "absolute nonsense";
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedUser = await userServices.deleteTaskFromUser(
+            userId,
+            taskId
+        );
+
+        expect(updatedUser).toBe(null);
+
+        const attemptedUser = await userServices.findOneUserByName("ejendret");
+
+        expect(attemptedUser.tasks.length).toBe(initial_length);
+        expect(
+            attemptedUser.tasks.includes(userToUpdate.tasks[0].toString())
+        ).toBeTruthy();
+    });
+
     test("Should remove a task from a user", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
