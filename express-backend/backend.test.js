@@ -69,6 +69,47 @@ describe("addUser", () => {
     });
 });
 
+describe("validateUser", () => {
+    test("Should return nonexistent if user cannot be found", async () => {
+        const userToValidate = {
+            email: "nonsense",
+            password: "secret",
+            tasks: [],
+        };
+
+        const result = await userServices.validateUser(userToValidate);
+
+        // Expect a nonexistent status
+        expect(result.status).toBe("nonexistent");
+    });
+
+    test("Should return invalid if user is found but password doesn't match", async () => {
+        const userToValidate = {
+            email: "ejendret",
+            password: "nonsense",
+            tasks: [],
+        };
+
+        const result = await userServices.validateUser(userToValidate);
+
+        // Expect an invalid status
+        expect(result.status).toBe("invalid");
+    });
+
+    test("Should return nonexistent if user cannot be found", async () => {
+        const userToValidate = {
+            email: "ejendret",
+            password: "secret",
+            tasks: [],
+        };
+
+        const result = await userServices.validateUser(userToValidate);
+
+        // Expect a successful status
+        expect(result.status).toBe("valid");
+    });
+});
+
 describe("addTaskToUser", () => {
     test("Should add a new task to a user", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");

@@ -2,7 +2,7 @@ import userModel from "./user.js";
 import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
-// Given a email, returns a list of users with matching emails
+// Given a user, returns valid status and user id if there is a user with matching email and password in database
 async function validateUser(user) {
     try {
         const existingUser = await userModel.findOne({ email: user.email });
@@ -21,7 +21,7 @@ async function validateUser(user) {
     }
 }
 
-// Given a email, returns a list of users with matching emails
+// Given an email, returns a list of users with matching emails
 async function getUsers(email) {
     let result;
     if (email === undefined) {
