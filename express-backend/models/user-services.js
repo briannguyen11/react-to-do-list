@@ -2,7 +2,7 @@ import userModel from "./user.js";
 import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
-// Given a email, returns a list of users with matching emails
+// Given a user, returns valid status and user id if there is a user with matching email and password in database
 async function validateUser(user) {
     try {
         const existingUser = await userModel.findOne({ email: user.email });
@@ -21,7 +21,7 @@ async function validateUser(user) {
     }
 }
 
-// Given a email, returns a list of users with matching emails
+// Given an email, returns a list of users with matching emails
 async function getUsers(email) {
     let result;
     if (email === undefined) {
@@ -105,8 +105,10 @@ async function addTaskToUser(userId, task) {
             throw new Error("Task not found");
         }
 
-        updatedUser = await userModel.findByIdAndUpdate(userId, {
-            $push: { tasks: taskToAdd._id },
+        const taskId = taskToAdd._id;
+
+        await userModel.findByIdAndUpdate(userId, {
+            $push: { tasks: taskId },
         });
 
         updatedUser = await findUserById(userId);
@@ -114,36 +116,35 @@ async function addTaskToUser(userId, task) {
         console.log(error);
         updatedUser = null;
     }
-
     return updatedUser;
 }
 
 // Given a userId and a taskId, deletes the task and removes it from the user
 async function deleteTaskFromUser(userId, taskId) {
+    let updatedUser;
     try {
-        const deletedTask = await taskModel.findByIdAndDelete(taskId);
-
-        if (!deletedTask) {
-            throw new Error("Task not found");
-        }
-
         const user = await userModel.findById(userId);
 
         if (!user) {
             throw new Error("User not found");
         }
 
-        // Remove the taskId from the user's tasks array
-        user.tasks = user.tasks.filter(
-            (userTaskId) => userTaskId.toString() !== taskId
-        );
+        const deletedTask = await taskModel.findByIdAndDelete(taskId);
 
-        // Save the updated user
-        return await user.save();
+        if (!deletedTask) {
+            throw new Error("Task not found");
+        }
+
+        await userModel.findByIdAndUpdate(userId, {
+            $pull: { tasks: taskId },
+        });
+
+        updatedUser = await findUserById(userId);
     } catch (error) {
         console.log(error);
-        return null;
+        updatedUser = null;
     }
+    return updatedUser;
 }
 
 async function deleteUser(id) {
@@ -152,6 +153,10 @@ async function deleteUser(id) {
 
 async function findUserByName(email) {
     return await userModel.find({ email });
+}
+
+async function findOneUserByName(email) {
+    return await userModel.findOne({ email });
 }
 
 async function findUserAndTasksById(userId) {
@@ -171,4 +176,5 @@ export default {
     getUserTasks,
     deleteTaskFromUser,
     findUserById,
+    findOneUserByName,
 };

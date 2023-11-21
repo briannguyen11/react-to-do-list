@@ -144,7 +144,6 @@ app.get("/tasks", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("An error ocurred in the server.");
-        console.log("bad");
     }
 });
 
@@ -153,6 +152,15 @@ app.post("/tasks", async (req, res) => {
     const task = req.body;
     const savedTask = await taskServices.addTask(task);
     if (savedTask) res.status(201).send(savedTask);
+    else res.status(500).end();
+});
+
+// Tasks with id
+app.put("/tasks/:id", async (req, res) => {
+    const task = req.body;
+    const taskId = req.params["id"];
+    const updatedTask = await taskServices.updateTask(taskId, task);
+    if (updatedTask) res.status(200).send(updatedTask);
     else res.status(500).end();
 });
 

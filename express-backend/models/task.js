@@ -5,17 +5,6 @@ const ObjectId = Schema.ObjectId;
 
 const TaskSchema = new Schema(
     {
-        user: {
-            type: String,
-            required: true,
-            trim: true,
-            validate(value) {
-                if (value.length < 2)
-                    throw new Error(
-                        "Invalid user, must be at least 2 characters."
-                    );
-            },
-        },
         title: {
             type: String,
             required: true,
@@ -42,6 +31,7 @@ const TaskSchema = new Schema(
             type: String,
             required: false,
             trim: true,
+            enum: ["Personal", "Sports", "School", "Work"],
         },
         date: {
             type: Date,
@@ -55,6 +45,7 @@ const TaskSchema = new Schema(
         status: {
             type: String,
             required: true,
+            enum: ["Not Started", "In Progress", "Done"],
         },
     },
     { collection: "tasks_list" }
