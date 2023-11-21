@@ -26,7 +26,6 @@ afterAll(async () => {
 });
 
 describe("addUser", () => {
-    // Write your tests for userService functions here
     test("Should add a new user to database", async () => {
         const userToAdd = {
             email: "ejendret",
@@ -71,7 +70,6 @@ describe("addUser", () => {
 });
 
 describe("addTaskToUser", () => {
-    // Write your tests for userService functions here
     test("Should add a new task to a user", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
@@ -109,6 +107,43 @@ describe("addTaskToUser", () => {
         expect(addedTask.date).toStrictEqual(taskToAdd.date);
         expect(addedTask.flagged).toBe(taskToAdd.flagged);
         expect(addedTask.status).toBe(taskToAdd.status);
+    });
+});
+
+describe("updateTask", () => {
+    test("Should update an existing task", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const taskId = userToUpdate.tasks[0].toString();
+
+        const updateTask = {
+            title: "Test Task",
+            description: "Testing ability to update a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedTask = await taskServices.updateTask(taskId, updateTask);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length hasn't changed
+        expect(updatedUser.tasks.length).toBe(initial_length);
+
+        // Check that taskId is still in user list
+        expect(updatedUser.tasks.includes(taskId)).toBeTruthy();
+
+        // Test that fields match
+        expect(updatedTask.title).toBe(updateTask.title);
+        expect(updatedTask.description).toBe(updateTask.description);
+        expect(updatedTask.category).toBe(updateTask.category);
+        expect(updatedTask.date).toStrictEqual(updateTask.date);
+        expect(updatedTask.flagged).toBe(updateTask.flagged);
+        expect(updatedTask.status).toBe(updateTask.status);
     });
 });
 
