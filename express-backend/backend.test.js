@@ -116,6 +116,20 @@ describe("addUser", () => {
 });
 
 describe("validateUser", () => {
+    test("Should return valid if user is found", async () => {
+        const userToValidate = {
+            email: "ejendret",
+            password: "secret",
+            tasks: [],
+        };
+
+        const result = await userServices.validateUser(userToValidate);
+
+        // Expect a successful status
+        expect(result.status).toBe("valid");
+        expect(result.userId).toBeDefined();
+    });
+
     test("Should return nonexistent if user cannot be found", async () => {
         const userToValidate = {
             email: "nonsense",
@@ -140,20 +154,6 @@ describe("validateUser", () => {
 
         // Expect an invalid status
         expect(result.status).toBe("invalid");
-    });
-
-    test("Should return valid if user is found", async () => {
-        const userToValidate = {
-            email: "ejendret",
-            password: "secret",
-            tasks: [],
-        };
-
-        const result = await userServices.validateUser(userToValidate);
-
-        // Expect a successful status
-        expect(result.status).toBe("valid");
-        expect(result.userId).toBeDefined();
     });
 
     test("Should return fail if an error occurs", async () => {
@@ -372,56 +372,6 @@ describe("getUserTasks", () => {
 });
 
 describe("updateTask", () => {
-    test("Should fail if taskId is invalid", async () => {
-        const userToUpdate = await userServices.findOneUserByName("ejendret");
-
-        const taskId = "653c0457a363dec30256a986";
-
-        const updateTask = {
-            title: "Test Task",
-            description: "Testing ability to update a task",
-            category: "Personal",
-            date: new Date("2023-11-19T05:00:00.000Z"),
-            flagged: true,
-            status: "In Progress",
-        };
-
-        const initial_length = userToUpdate.tasks.length;
-
-        const updatedTask = await taskServices.updateTask(taskId, updateTask);
-
-        const updatedUser = await userServices.findOneUserByName("ejendret");
-
-        // Test that length hasn't changed
-        expect(updatedUser.tasks.length).toBe(initial_length);
-
-        // Check that invalid taskId is not in task
-        expect(updatedUser.tasks.includes(taskId)).toBeFalsy();
-
-        // Check that attempted update is null
-        expect(updatedTask).toBe(null);
-    });
-
-    test("Should fail if task is not defined", async () => {
-        const userToUpdate = await userServices.findOneUserByName("ejendret");
-
-        const taskId = userToUpdate.tasks[0];
-
-        const updateTask = null;
-
-        const initial_length = userToUpdate.tasks.length;
-
-        const updatedTask = await taskServices.updateTask(taskId, updateTask);
-
-        const updatedUser = await userServices.findOneUserByName("ejendret");
-
-        // Test that length hasn't changed
-        expect(updatedUser.tasks.length).toBe(initial_length);
-
-        // Check that attempted update is null
-        expect(updatedTask).toBe(null);
-    });
-
     test("Should update an existing task", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
@@ -456,10 +406,79 @@ describe("updateTask", () => {
         expect(updatedTask.flagged).toBe(updateTask.flagged);
         expect(updatedTask.status).toBe(updateTask.status);
     });
+
+    test("Should return null taskId is invalid", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const taskId = "653c0457a363dec30256a986";
+
+        const updateTask = {
+            title: "Test Task",
+            description: "Testing ability to update a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedTask = await taskServices.updateTask(taskId, updateTask);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length hasn't changed
+        expect(updatedUser.tasks.length).toBe(initial_length);
+
+        // Check that invalid taskId is not in task
+        expect(updatedUser.tasks.includes(taskId)).toBeFalsy();
+
+        // Check that attempted update is null
+        expect(updatedTask).toBe(null);
+    });
+
+    test("Should return null if task is not defined", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const taskId = userToUpdate.tasks[0];
+
+        const updateTask = null;
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedTask = await taskServices.updateTask(taskId, updateTask);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length hasn't changed
+        expect(updatedUser.tasks.length).toBe(initial_length);
+
+        // Check that attempted update is null
+        expect(updatedTask).toBe(null);
+    });
 });
 
 describe("deleteTaskFromUser", () => {
-    test("Should fail if userId is invalid", async () => {
+    test("Should remove a task from a user", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = userToUpdate._id;
+
+        const taskId = userToUpdate.tasks[0].toString();
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedUser = await userServices.deleteTaskFromUser(
+            userId,
+            taskId
+        );
+
+        expect(updatedUser.tasks.length).toBeLessThan(initial_length);
+
+        expect(updatedUser.tasks.includes()).toBeFalsy();
+    });
+
+    test("Should return null userId is invalid", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
         const userId = "653c0457a363dec30256a986";
@@ -481,7 +500,7 @@ describe("deleteTaskFromUser", () => {
         expect(attemptedUser.tasks.includes(taskId)).toBeTruthy();
     });
 
-    test("Should also fail if taskId is invalid", async () => {
+    test("Should return null if taskId is invalid", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
         const userId = userToUpdate._id;
@@ -504,29 +523,10 @@ describe("deleteTaskFromUser", () => {
             attemptedUser.tasks.includes(userToUpdate.tasks[0].toString())
         ).toBeTruthy();
     });
-
-    test("Should remove a task from a user", async () => {
-        const userToUpdate = await userServices.findOneUserByName("ejendret");
-
-        const userId = userToUpdate._id;
-
-        const taskId = userToUpdate.tasks[0].toString();
-
-        const initial_length = userToUpdate.tasks.length;
-
-        const updatedUser = await userServices.deleteTaskFromUser(
-            userId,
-            taskId
-        );
-
-        expect(updatedUser.tasks.length).toBeLessThan(initial_length);
-
-        expect(updatedUser.tasks.includes()).toBeFalsy();
-    });
 });
 
 describe("addTask", () => {
-    it("Should return null if task is invalid", async () => {
+    test("Should return null if task is invalid", async () => {
         // Testing with invalid tasks
         const taskOne = {
             title: "Test Task",
