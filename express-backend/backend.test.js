@@ -2,6 +2,8 @@
 
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
+// import { jest } from "@jest/globals";
+// import taskModel from "./models/task.js";
 import taskServices from "./models/task-services.js";
 import userServices from "./models/user-services.js";
 
@@ -155,7 +157,7 @@ describe("updateTask", () => {
     test("Should fail if taskId is invalid", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
-        const taskId = "absolute nonsense";
+        const taskId = "653c0457a363dec30256a986";
 
         const updateTask = {
             title: "Test Task",
@@ -177,6 +179,26 @@ describe("updateTask", () => {
 
         // Check that invalid taskId is not in task
         expect(updatedUser.tasks.includes(taskId)).toBeFalsy();
+
+        // Check that attempted update is null
+        expect(updatedTask).toBe(null);
+    });
+
+    test("Should fail if task is not defined", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const taskId = userToUpdate.tasks[0];
+
+        const updateTask = null;
+
+        const initial_length = userToUpdate.tasks.length;
+
+        const updatedTask = await taskServices.updateTask(taskId, updateTask);
+
+        const updatedUser = await userServices.findOneUserByName("ejendret");
+
+        // Test that length hasn't changed
+        expect(updatedUser.tasks.length).toBe(initial_length);
 
         // Check that attempted update is null
         expect(updatedTask).toBe(null);
@@ -222,7 +244,7 @@ describe("deleteTaskFromUser", () => {
     test("Should fail if userId is invalid", async () => {
         const userToUpdate = await userServices.findOneUserByName("ejendret");
 
-        const userId = "absolute nonsense";
+        const userId = "653c0457a363dec30256a986";
 
         const taskId = userToUpdate.tasks[0].toString();
 
@@ -246,7 +268,7 @@ describe("deleteTaskFromUser", () => {
 
         const userId = userToUpdate._id;
 
-        const taskId = "absolute nonsense";
+        const taskId = "653c0457a363dec30256a986";
 
         const initial_length = userToUpdate.tasks.length;
 
@@ -282,5 +304,35 @@ describe("deleteTaskFromUser", () => {
         expect(updatedUser.tasks.length).toBeLessThan(initial_length);
 
         expect(updatedUser.tasks.includes()).toBeFalsy();
+    });
+});
+
+describe("addTask", () => {
+    it("should handle error when taskModel throws an error", async () => {
+        // Testing with invalid tasks
+        const taskOne = {
+            title: "Test Task",
+            description: "a",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
+        const taskTwo = {
+            title: "a",
+            description: "Testing with invalid tasks",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
+        const resultOne = await taskServices.addTask(taskOne);
+        const resultTwo = await taskServices.addTask(taskTwo);
+
+        // Expect return to be null
+        expect(resultOne).toBe(null);
+        expect(resultTwo).toBe(null);
     });
 });

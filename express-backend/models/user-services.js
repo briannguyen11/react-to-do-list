@@ -1,5 +1,4 @@
 import userModel from "./user.js";
-import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 
 // Given a user, returns valid status and user id if there is a user with matching email and password in database
@@ -129,7 +128,7 @@ async function deleteTaskFromUser(userId, taskId) {
             throw new Error("User not found");
         }
 
-        const deletedTask = await taskModel.findByIdAndDelete(taskId);
+        const deletedTask = await taskServices.deleteTask(taskId);
 
         if (!deletedTask) {
             throw new Error("Task not found");
