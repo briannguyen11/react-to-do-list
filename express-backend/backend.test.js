@@ -69,6 +69,50 @@ describe("addUser", () => {
 
         expect(result).toHaveLength(initial_length);
     });
+
+    test("Should fail if email is invalid", async () => {
+        const userToAdd = {
+            email: "a",
+            password: "secret",
+            tasks: [],
+        };
+
+        const initial = await userServices.getUsers();
+
+        const initial_length = initial.length;
+
+        const status = await userServices.addUser(userToAdd);
+
+        // Expect status to be exists
+        expect(status.status).toBe("fail");
+
+        // Expect user list to have not changed in length
+        const result = await userServices.getUsers();
+
+        expect(result).toHaveLength(initial_length);
+    });
+
+    test("Should fail if password is invalid", async () => {
+        const userToAdd = {
+            email: "jendemo",
+            password: "a",
+            tasks: [],
+        };
+
+        const initial = await userServices.getUsers();
+
+        const initial_length = initial.length;
+
+        const status = await userServices.addUser(userToAdd);
+
+        // Expect status to be exists
+        expect(status.status).toBe("fail");
+
+        // Expect user list to have not changed in length
+        const result = await userServices.getUsers();
+
+        expect(result).toHaveLength(initial_length);
+    });
 });
 
 describe("validateUser", () => {
@@ -98,7 +142,7 @@ describe("validateUser", () => {
         expect(result.status).toBe("invalid");
     });
 
-    test("Should return nonexistent if user cannot be found", async () => {
+    test("Should return valid if user is founds", async () => {
         const userToValidate = {
             email: "ejendret",
             password: "secret",
@@ -109,6 +153,7 @@ describe("validateUser", () => {
 
         // Expect a successful status
         expect(result.status).toBe("valid");
+        expect(result.userId).toBeDefined();
     });
 });
 
@@ -127,21 +172,35 @@ describe("addTaskToUser", () => {
             status: "In Progress",
         };
 
+        const taskToAddTwo = {
+            title: "Test Task Two",
+            description: "Also testing ability to add a task",
+            category: "Work",
+            date: new Date("2023-12-19T05:00:00.000Z"),
+            flagged: true,
+            status: "In Progress",
+        };
+
         const initial_length = userToUpdate.tasks.length;
 
         const updatedUser = await userServices.addTaskToUser(userId, taskToAdd);
+        const updatedUserTwo = await userServices.addTaskToUser(
+            userId,
+            taskToAddTwo
+        );
 
         const addedTaskId = updatedUser.tasks[0].toString();
-
-        // Test that task was created
-        expect(addedTaskId).not.toBe(-1);
+        const addedTaskIdTwo = updatedUserTwo.tasks[1].toString();
 
         const addedTask = await taskServices.findTaskById(addedTaskId);
+        const addedTaskTwo = await taskServices.findTaskById(addedTaskIdTwo);
 
         // Test that length has been updated
         expect(updatedUser.tasks.length).toBeGreaterThan(initial_length);
 
+        // Test that
         expect(updatedUser.tasks.includes(addedTaskId)).toBeTruthy();
+        expect(updatedUserTwo.tasks.includes(addedTaskIdTwo)).toBeTruthy();
 
         // Test that fields match
         expect(addedTask.title).toBe(taskToAdd.title);
@@ -150,6 +209,65 @@ describe("addTaskToUser", () => {
         expect(addedTask.date).toStrictEqual(taskToAdd.date);
         expect(addedTask.flagged).toBe(taskToAdd.flagged);
         expect(addedTask.status).toBe(taskToAdd.status);
+
+        expect(addedTaskTwo.title).toBe(taskToAddTwo.title);
+        expect(addedTaskTwo.description).toBe(taskToAddTwo.description);
+        expect(addedTaskTwo.category).toBe(taskToAddTwo.category);
+        expect(addedTaskTwo.date).toStrictEqual(taskToAddTwo.date);
+        expect(addedTaskTwo.flagged).toBe(taskToAddTwo.flagged);
+        expect(addedTaskTwo.status).toBe(taskToAddTwo.status);
+    });
+});
+
+describe("getUserTasks", () => {
+    test("Should return a user's tasks", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const tasks = await userServices.getUserTasks(userId);
+
+        expect(tasks).toHaveLength(2);
+        expect(tasks[0].title).toBe("Test Task");
+        expect(tasks[1].title).toBe("Test Task Two");
+    });
+
+    test("Should filter by status", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const tasks = await userServices.getUserTasks(userId, "In Progress");
+
+        expect(tasks).toHaveLength(2);
+        expect(tasks[0].title).toBe("Test Task");
+        expect(tasks[1].title).toBe("Test Task Two");
+    });
+
+    test("Should filter by date", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const date = new Date("2023-11-19T05:00:00.000Z");
+
+        const tasks = await userServices.getUserTasks(userId, null, date);
+
+        expect(tasks).toHaveLength(1);
+        expect(tasks[0].title).toBe("Test Task");
+    });
+
+    test("Should filter by date", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const date = new Date("2023-11-19T05:00:00.000Z");
+
+        const tasks = await userServices.getUserTasks(userId, null, date);
+
+        expect(tasks).toHaveLength(1);
+        expect(tasks[0].title).toBe("Test Task");
     });
 });
 

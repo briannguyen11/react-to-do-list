@@ -45,10 +45,6 @@ async function addUser(user) {
         const userToAdd = new userModel(user);
         const savedUser = await userToAdd.save();
 
-        if (savedUser !== userToAdd) {
-            throw new Error("Failed to add user");
-        }
-
         return { status: "success", userId: savedUser._id };
     } catch (error) {
         console.log(error);
@@ -69,17 +65,17 @@ async function getUserTasks(userId, status, date, category, flagged) {
 
         const tasks = user.tasks;
 
-        if (status !== undefined) {
+        if (status !== undefined && status !== null) {
             result = tasks.filter((task) => task.status === status);
-        } else if (date !== undefined) {
+        } else if (date !== undefined && date !== null) {
             const queryDate = new Date(date);
             result = tasks.filter((task) => {
                 const taskDate = new Date(task.date);
                 return queryDate.getTime() === taskDate.getTime();
             });
-        } else if (category !== undefined) {
+        } else if (category !== undefined && category !== null) {
             result = tasks.filter((task) => task.category === category);
-        } else if (flagged !== undefined) {
+        } else if (flagged !== undefined && flagged !== null) {
             result = tasks.filter(
                 (task) => task.flagged === (flagged === "true")
             );
