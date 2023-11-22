@@ -26,7 +26,7 @@ async function getUsers(email) {
     if (email === undefined) {
         result = await userModel.find();
     } else {
-        result = await findUserByName(email);
+        result = await userModel.find({ email: email });
     }
 
     return result;
@@ -76,6 +76,7 @@ async function getUserTasks(userId, status, date, category, flagged) {
         } else if (category !== undefined && category !== null) {
             result = tasks.filter((task) => task.category === category);
         } else if (flagged !== undefined && flagged !== null) {
+            console.log("HEY");
             result = tasks.filter(
                 (task) => task.flagged === (flagged === "true")
             );
@@ -94,7 +95,13 @@ async function getUserTasks(userId, status, date, category, flagged) {
 async function addTaskToUser(userId, task) {
     let updatedUser;
     try {
+        const user = await userModel.findById(userId);
+
         const taskToAdd = await taskServices.addTask(task);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
 
         if (!taskToAdd) {
             throw new Error("Task not found");
@@ -142,14 +149,6 @@ async function deleteTaskFromUser(userId, taskId) {
     return updatedUser;
 }
 
-async function deleteUser(id) {
-    return await userModel.findByIdAndDelete(id);
-}
-
-async function findUserByName(email) {
-    return await userModel.find({ email });
-}
-
 async function findOneUserByName(email) {
     return await userModel.findOne({ email });
 }
@@ -166,7 +165,6 @@ export default {
     validateUser,
     addUser,
     getUsers,
-    deleteUser,
     addTaskToUser,
     getUserTasks,
     deleteTaskFromUser,

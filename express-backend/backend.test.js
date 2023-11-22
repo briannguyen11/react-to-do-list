@@ -2,8 +2,8 @@
 
 import mongoose from "mongoose";
 import { MongoMemoryServer } from "mongodb-memory-server";
-// import { jest } from "@jest/globals";
-// import taskModel from "./models/task.js";
+import { jest } from "@jest/globals";
+import userModel from "./models/user.js";
 import taskServices from "./models/task-services.js";
 import userServices from "./models/user-services.js";
 
@@ -55,7 +55,7 @@ describe("addUser", () => {
             tasks: [],
         };
 
-        const initial = await userServices.getUsers();
+        const initial = await userServices.getUsers("ejendret");
 
         const initial_length = initial.length;
 
@@ -65,7 +65,7 @@ describe("addUser", () => {
         expect(status.status).toBe("exists");
 
         // Expect user list to have not changed in length
-        const result = await userServices.getUsers();
+        const result = await userServices.getUsers("ejendret");
 
         expect(result).toHaveLength(initial_length);
     });
@@ -142,7 +142,7 @@ describe("validateUser", () => {
         expect(result.status).toBe("invalid");
     });
 
-    test("Should return valid if user is founds", async () => {
+    test("Should return valid if user is found", async () => {
         const userToValidate = {
             email: "ejendret",
             password: "secret",
@@ -154,6 +154,27 @@ describe("validateUser", () => {
         // Expect a successful status
         expect(result.status).toBe("valid");
         expect(result.userId).toBeDefined();
+    });
+
+    test("Should return fail if an error occurs", async () => {
+        const userToValidate = {
+            email: "ejendret",
+            password: "secret",
+            tasks: [],
+        };
+
+        const originalFindOne = userModel.findOne;
+
+        userModel.findOne = jest
+            .fn()
+            .mockRejectedValue(new Error("Database error"));
+
+        const result = await userServices.validateUser(userToValidate);
+
+        userModel.findOne = originalFindOne;
+
+        // Expect a successful status
+        expect(result.status).toBe("fail");
     });
 });
 
@@ -217,6 +238,44 @@ describe("addTaskToUser", () => {
         expect(addedTaskTwo.flagged).toBe(taskToAddTwo.flagged);
         expect(addedTaskTwo.status).toBe(taskToAddTwo.status);
     });
+
+    test("Should return null if user to update is invalid", async () => {
+        const userId = "653c0457a363dec30256a986";
+
+        const taskToAdd = {
+            title: "Test Task",
+            description: "Testing ability to add a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: false,
+            status: "In Progress",
+        };
+
+        const updatedUser = await userServices.addTaskToUser(userId, taskToAdd);
+
+        // Test that returns null
+        expect(updatedUser).toBe(null);
+    });
+
+    test("Should return null if task to add is invalid", async () => {
+        const userToUpdate = await userServices.findOneUserByName("ejendret");
+
+        const userId = userToUpdate._id;
+
+        const taskToAdd = {
+            title: "a",
+            description: "Testing ability to add a task",
+            category: "Personal",
+            date: new Date("2023-11-19T05:00:00.000Z"),
+            flagged: false,
+            status: "In Progress",
+        };
+
+        const updatedUser = await userServices.addTaskToUser(userId, taskToAdd);
+
+        // Test that returns null
+        expect(updatedUser).toBe(null);
+    });
 });
 
 describe("getUserTasks", () => {
@@ -268,6 +327,47 @@ describe("getUserTasks", () => {
 
         expect(tasks).toHaveLength(1);
         expect(tasks[0].title).toBe("Test Task");
+    });
+
+    test("Should filter by category", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const tasks = await userServices.getUserTasks(
+            userId,
+            null,
+            null,
+            "Work"
+        );
+
+        expect(tasks).toHaveLength(1);
+        expect(tasks[0].title).toBe("Test Task Two");
+    });
+
+    test("Should filter by flagged", async () => {
+        const user = await userServices.findOneUserByName("ejendret");
+
+        const userId = user._id;
+
+        const tasks = await userServices.getUserTasks(
+            userId,
+            null,
+            null,
+            null,
+            "true"
+        );
+
+        expect(tasks).toHaveLength(1);
+        expect(tasks[0].title).toBe("Test Task Two");
+    });
+
+    test("Should fail if userId is invalid", async () => {
+        const userId = "653c0457a363dec30256a986";
+
+        const tasks = await userServices.getUserTasks(userId);
+
+        expect(tasks).toBe(null);
     });
 });
 
@@ -426,7 +526,7 @@ describe("deleteTaskFromUser", () => {
 });
 
 describe("addTask", () => {
-    it("should handle error when taskModel throws an error", async () => {
+    it("Should return null if task is invalid", async () => {
         // Testing with invalid tasks
         const taskOne = {
             title: "Test Task",
