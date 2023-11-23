@@ -60,7 +60,6 @@ async function addUser(user) {
 // Given a userId and optional task fields, returns subset of user tasks matching fields
 async function getUserTasks(userId, status, date, category, flagged) {
     let result;
-
     try {
         const user = await findUserAndTasksById(userId);
 

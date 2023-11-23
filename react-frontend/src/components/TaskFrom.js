@@ -8,11 +8,12 @@ import {
     Select,
 } from "@mui/material";
 
-import Grid from "@mui/material/Unstable_Grid2"; // Grid version 2
+import Grid from "@mui/material/Unstable_Grid2";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import SubjectIcon from "@mui/icons-material/Subject";
 import WindowIcon from "@mui/icons-material/Window";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import CircleIcon from "@mui/icons-material/Circle";
@@ -55,8 +56,7 @@ function TitleInput({ name, value, onChange }) {
     );
 }
 
-function SelectStatus({ name, value, onChange }) {
-    const statuses = ["Not Started", "In Progress", "Done"];
+function SelectStatus({ name, value, onChange, statuses }) {
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
@@ -90,9 +90,6 @@ function SelectStatus({ name, value, onChange }) {
                             },
                         }}
                     >
-                        {/* <MenuItem value="Not Started">Not Started</MenuItem>
-                        <MenuItem value="In Progress">In Progress</MenuItem>
-                        <MenuItem value="Done">Done</MenuItem> */}
                         {statuses.map((status) => (
                             <MenuItem key={status} value={status}>
                                 <div
@@ -125,8 +122,7 @@ function SelectStatus({ name, value, onChange }) {
     );
 }
 
-function SelectCategory({ name, value, onChange }) {
-    const categories = ["Personal", "School", "Work", "Sports"];
+function SelectCategory({ name, value, onChange, categories }) {
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
@@ -160,10 +156,6 @@ function SelectCategory({ name, value, onChange }) {
                             },
                         }}
                     >
-                        {/* <MenuItem value="Personal">Personal</MenuItem>
-                        <MenuItem value="Sports">Sports</MenuItem>
-                        <MenuItem value="School">School</MenuItem>
-                        <MenuItem value="Work">Work</MenuItem> */}
                         {categories.map((category) => (
                             <MenuItem key={category} value={category}>
                                 <span
@@ -230,6 +222,7 @@ function DescriptionInput({ name, value, onChange }) {
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
+
     return (
         <Grid container spacing={2}>
             {/* Left side */}
@@ -253,17 +246,28 @@ function DescriptionInput({ name, value, onChange }) {
                     value={value}
                     onChange={handleInputChange}
                     fullWidth
+                    multiline
+                    maxRows={4} // Set the maximum number of rows
                     variant="outlined"
                     InputProps={{
                         placeholder: "Empty",
                         sx: {
-                            "& fieldset": {
-                                border: "none", // Remove the TextField border
+                            "& .MuiOutlinedInput-notchedOutline": {
+                                border: "none", // Remove outline for outlined variant
                             },
+                            "&:focus-within": {
+                                "& .MuiOutlinedInput-notchedOutline": {
+                                    borderColor: "black", // Set the outline color when focused
+                                },
+                                boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)", // Add shadow effect on focus
+                            },
+                            width: "98%",
                         },
                     }}
                     sx={{
-                        "& input::placeholder": {
+                        "& textarea": {
+                            overflowWrap: "break-word",
+                            wordWrap: "break-word",
                             fontFamily: "Montserrat, sans-serif",
                         },
                     }}
@@ -289,7 +293,11 @@ function SelectPrioirty({ name, value, onChange }) {
                     alignItems: "center",
                 }}
             >
-                <BookmarkBorderOutlinedIcon sx={{ marginRight: "10px" }} />
+                {value ? (
+                    <BookmarkIcon sx={{ marginRight: "10px" }} />
+                ) : (
+                    <BookmarkBorderOutlinedIcon sx={{ marginRight: "10px" }} />
+                )}
                 <p>Prioirty</p>
             </Grid>
 
@@ -307,8 +315,8 @@ function SelectPrioirty({ name, value, onChange }) {
                             },
                         }}
                     >
-                        <MenuItem value="false">No</MenuItem>
-                        <MenuItem value="true">Yes</MenuItem>
+                        <MenuItem value={false}>No</MenuItem>
+                        <MenuItem value={true}>Yes</MenuItem>
                     </Select>
                 </FormControl>
             </Grid>
@@ -316,9 +324,9 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskForm(props) {
+function TaskForm({ userId, handleSubmit, exitForm, statuses, categories }) {
     const [taskData, setTaskData] = useState({
-        user: props.userId,
+        user: userId,
         title: "",
         category: "Personal",
         description: "",
@@ -335,7 +343,7 @@ function TaskForm(props) {
         }));
     }
     function submitForm() {
-        props.handleSubmit(taskData);
+        handleSubmit(taskData);
         setTaskData({
             title: "",
             category: "Personal",
@@ -344,12 +352,12 @@ function TaskForm(props) {
             flagged: false,
             status: "Not Started",
         });
-        props.exitForm();
+        exitForm();
     }
 
     return (
-        <form>
-            <KeyboardDoubleArrowRightIcon onClick={props.exitForm} />
+        <form id="TaskForm">
+            <KeyboardDoubleArrowRightIcon onClick={exitForm} />
             <TitleInput
                 name="title"
                 value={taskData.title}
@@ -359,11 +367,13 @@ function TaskForm(props) {
                 name="status"
                 value={taskData.status}
                 onChange={handleChange}
+                statuses={statuses}
             />
             <SelectCategory
                 name="category"
                 value={taskData.category}
                 onChange={handleChange}
+                categories={categories}
             />
             <SelectDate
                 name="date"

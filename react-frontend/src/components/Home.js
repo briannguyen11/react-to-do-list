@@ -3,26 +3,65 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import TaskForm from "./TaskFrom";
 import TaskTable from "./TaskTable";
+import ControlBar from "./ControlBar";
 import Grid from "@mui/material/Unstable_Grid2";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
-import { Button, Container } from "@mui/material";
+import { Container } from "@mui/material";
 
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
     const [showTaskForm, setShowTaskForm] = useState(false);
+    const statuses = ["Not Started", "In Progress", "Done"];
+    const categories = ["Personal", "School", "Work", "Sports"];
 
     const toggleTaskForm = () => {
         setShowTaskForm(!showTaskForm);
     };
 
+    const handleFilterChange = async (filterCriteria) => {
+        let status = null;
+        let category = null;
+
+        // Check if the selected filter is a status or category
+        if (statuses.includes(filterCriteria)) {
+            status = filterCriteria;
+        } else if (categories.includes(filterCriteria)) {
+            category = filterCriteria;
+        }
+
+        const filteredTasks = await fetchAll(
+            userId,
+            status,
+            null,
+            category,
+            null
+        );
+        setTasks(filteredTasks);
+    };
+
     /**
      *  GETs all tasks from the DB
      */
-    async function fetchAll() {
+    async function fetchAll(
+        userId,
+        status = null,
+        date = null,
+        category = null,
+        flagged = null
+    ) {
         try {
+            const queryParams = {
+                params: {
+                    status,
+                    date,
+                    category,
+                    flagged,
+                },
+            };
             const response = await axios.get(
-                `http://localhost:8000/users/${userId}`
+                `http://localhost:8000/users/${userId}`,
+                status || date || category || flagged ? queryParams : undefined
             );
             return response.data.tasks_list;
         } catch (error) {
@@ -32,7 +71,7 @@ function Home() {
     }
 
     useEffect(() => {
-        fetchAll().then((result) => {
+        fetchAll(userId).then((result) => {
             if (result) setTasks(result);
         });
     }, []);
@@ -56,12 +95,7 @@ function Home() {
     async function addToList(task) {
         const result = await makePostCall(task);
         if (result && result.status === 201) {
-            const newTask = result.data;
-            console.log(newTask);
-
-            // Now, fetch the updated tasks after the POST request is complete
-            const updatedTasks = await fetchAll();
-
+            const updatedTasks = await fetchAll(userId);
             if (updatedTasks) {
                 setTasks(updatedTasks);
             }
@@ -95,32 +129,6 @@ function Home() {
         });
     }
 
-    function FilterBar() {
-        return (
-            <Grid container spacing={3}>
-                <Grid>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={toggleTaskForm}
-                    >
-                        Add New Item
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Button variant="outlined" color="primary">
-                        Show Priority
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Button variant="outlined" color="primary">
-                        Filter By Tags
-                    </Button>
-                </Grid>
-            </Grid>
-        );
-    }
-
     return (
         <Container style={{ height: "100vh" }}>
             <motion.div
@@ -136,11 +144,17 @@ function Home() {
                     {/* TaskTable (full width) */}
                     <Grid xs={12}>
                         <h1>CROO List</h1>
-                        <FilterBar />
+                        <ControlBar
+                            toggleTaskForm={toggleTaskForm}
+                            onFilterChange={handleFilterChange}
+                            statuses={statuses}
+                            categories={categories}
+                        />
                         <div style={{ marginTop: 16 }}>
                             <TaskTable
                                 taskData={tasks}
                                 removeOneTask={removeOneTask}
+                                statuses={statuses}
                             />
                         </div>
                     </Grid>
@@ -187,6 +201,8 @@ function Home() {
                                             handleSubmit={addToList}
                                             exitForm={toggleTaskForm}
                                             userId={userId}
+                                            statuses={statuses}
+                                            categories={categories}
                                         />
                                     </Grid>
                                 </motion.div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { getStatusColor, getCategoryColor } from "../styles/ButtonDetails";
 import { bodyCellStyle, headCellStyle } from "../styles/TableDetails";
+import ContextMenu from "./ContextMenu";
 import {
     TableContainer,
     Table,
@@ -15,16 +16,16 @@ import {
 } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+// import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WindowIcon from "@mui/icons-material/Window";
-import StarPurple500Icon from "@mui/icons-material/StarPurple500";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function FlagToggleButton() {
-    const [isFlagged, setIsFlagged] = useState(false);
+function FlagToggleButton({ currentPrioirty }) {
+    const [isFlagged, setIsFlagged] = useState(currentPrioirty);
 
     const handleToggleFlag = () => {
         setIsFlagged(!isFlagged);
@@ -39,25 +40,15 @@ function FlagToggleButton() {
     );
 }
 
-function DeleteButton(props) {
-    const { taskId, removeOneTask } = props;
-    const handleDelete = () => {
-        removeOneTask(taskId);
-    };
-
-    return (
-        <IconButton onClick={handleDelete} color="secondary">
-            <DeleteOutlineIcon />
-        </IconButton>
-    );
-}
-
-function TaskTable(props) {
-    const rows = props.taskData;
+function TaskTable({ taskData, removeOneTask, statuses }) {
+    const rows = taskData;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const statuses = ["Not Started", "In Progress", "Done"];
+    const { handleContextMenu, contextMenuComponent } = ContextMenu({
+        taskData,
+        removeOneTask,
+    });
 
     const handleStatusChange = (index, newStatus) => {
         // Add logic to update the status in your data structure
@@ -77,7 +68,7 @@ function TaskTable(props) {
     };
 
     return (
-        <TableContainer>
+        <TableContainer onContextMenu={(e) => e.preventDefault()}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -131,10 +122,10 @@ function TaskTable(props) {
                             Category
                         </TableCell>
                         <TableCell
-                            style={headCellStyle(false)}
+                            style={headCellStyle(true)}
                             sx={{ width: "10%" }}
                         >
-                            <StarPurple500Icon
+                            <ArrowDropDownCircleIcon
                                 style={{
                                     marginRight: 6,
                                     position: "relative",
@@ -142,12 +133,6 @@ function TaskTable(props) {
                                 }}
                             />
                             Priority
-                        </TableCell>
-                        <TableCell
-                            style={headCellStyle(true)}
-                            sx={{ width: "10%" }}
-                        >
-                            Delete
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -158,7 +143,12 @@ function TaskTable(props) {
                             page * rowsPerPage + rowsPerPage
                         )
                         .map((row, index) => (
-                            <TableRow key={index}>
+                            <TableRow
+                                key={index}
+                                onContextMenu={(event) =>
+                                    handleContextMenu(event, index)
+                                }
+                            >
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
@@ -246,26 +236,19 @@ function TaskTable(props) {
                                     </span>
                                 </TableCell>
                                 <TableCell
-                                    style={bodyCellStyle(false)}
-                                    align="left"
-                                    sx={{ width: "10%" }}
-                                >
-                                    <FlagToggleButton />
-                                </TableCell>
-                                <TableCell
                                     style={bodyCellStyle(true)}
                                     align="left"
                                     sx={{ width: "10%" }}
                                 >
-                                    <DeleteButton
-                                        taskId={row._id}
-                                        removeOneTask={props.removeOneTask}
+                                    <FlagToggleButton
+                                        currentPrioirty={row.flagged}
                                     />
                                 </TableCell>
                             </TableRow>
                         ))}
                 </TableBody>
             </Table>
+            {contextMenuComponent}
             <TablePagination
                 rowsPerPageOptions={[10, 25]}
                 component="div"
