@@ -19,15 +19,21 @@ function Home() {
         setShowTaskForm(!showTaskForm);
     };
 
+    /**
+     *  GET tasks based on filter
+     */
     const handleFilterChange = async (filterCriteria) => {
         let status = null;
         let category = null;
+        let flagged = null;
 
         // Check if the selected filter is a status or category
         if (statuses.includes(filterCriteria)) {
             status = filterCriteria;
         } else if (categories.includes(filterCriteria)) {
             category = filterCriteria;
+        } else if (filterCriteria === true) {
+            flagged = filterCriteria;
         }
 
         const filteredTasks = await fetchAll(
@@ -35,13 +41,13 @@ function Home() {
             status,
             null,
             category,
-            null
+            flagged
         );
         setTasks(filteredTasks);
     };
 
     /**
-     *  GETs all tasks from the DB
+     *  GETS all tasks from the DB for user
      */
     async function fetchAll(
         userId,
@@ -77,7 +83,7 @@ function Home() {
     }, []);
 
     /**
-     *  POSTs operation for inserting new task
+     *  POST operation for inserting new task
      */
     async function makePostCall(task) {
         try {

@@ -1,3 +1,7 @@
+const statuses = ["Not Started", "In Progress", "Done"];
+
+const categories = ["Personal", "School", "Work", "Sports"];
+
 const getStatusColor = (status) => {
     switch (status) {
         case "Not Started":
@@ -26,4 +30,4 @@ const getCategoryColor = (category) => {
     }
 };
 
-export { getStatusColor, getCategoryColor };
+export { statuses, categories, getStatusColor, getCategoryColor };

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { getStatusColor, getCategoryColor } from "../styles/ButtonDetails";
+import { getStatusColor, getCategoryColor } from "../styles/ButtonDesign";
 import { bodyCellStyle, headCellStyle } from "../styles/TableDetails";
 import ContextMenu from "./ContextMenu";
 import {
@@ -10,35 +10,17 @@ import {
     TableCell,
     TableBody,
     TablePagination,
-    IconButton,
     Select,
     MenuItem,
 } from "@mui/material";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-// import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WindowIcon from "@mui/icons-material/Window";
 import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
-
-function FlagToggleButton({ currentPrioirty }) {
-    const [isFlagged, setIsFlagged] = useState(currentPrioirty);
-
-    const handleToggleFlag = () => {
-        setIsFlagged(!isFlagged);
-    };
-
-    return (
-        <div>
-            <IconButton onClick={handleToggleFlag}>
-                {isFlagged ? <BookmarkIcon /> : <BookmarkBorderOutlinedIcon />}
-            </IconButton>
-        </div>
-    );
-}
 
 function TaskTable({ taskData, removeOneTask, statuses }) {
     const rows = taskData;
@@ -240,9 +222,19 @@ function TaskTable({ taskData, removeOneTask, statuses }) {
                                     align="left"
                                     sx={{ width: "10%" }}
                                 >
-                                    <FlagToggleButton
-                                        currentPrioirty={row.flagged}
-                                    />
+                                    {row.flagged ? (
+                                        <BookmarkIcon
+                                            style={{
+                                                color: "#e48c65",
+                                            }}
+                                        />
+                                    ) : (
+                                        <BookmarkBorderOutlinedIcon
+                                            style={{
+                                                color: "#e48c65",
+                                            }}
+                                        />
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}
