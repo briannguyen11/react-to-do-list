@@ -35,7 +35,7 @@ function Home() {
     /**
      *  GET tasks based on filter
      */
-    const handleFilterChange = async (filterCriteria) => {
+    async function handleFilterChange(filterCriteria) {
         let status = null;
         let category = null;
         let flagged = null;
@@ -57,7 +57,7 @@ function Home() {
             flagged
         );
         setTasks(filteredTasks);
-    };
+    }
 
     /**
      *  GETS all tasks from the DB for user
@@ -146,6 +146,34 @@ function Home() {
                 console.log("Task not found.");
             }
         });
+    }
+
+    /**
+     *  PUT operation to update one task
+     */
+    async function updateOneTask(taskId, taskData) {
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/tasks/${taskId}`,
+                taskData
+            );
+            if (response.status !== 200) {
+                console.error(
+                    "Failed to update task. Status:",
+                    response.status
+                );
+            }
+            // Get updated tasks list
+            const updatedTasks = await fetchAll(userId);
+            if (updatedTasks) {
+                setTasks(updatedTasks);
+            }
+        } catch (error) {
+            console.error(
+                "An error occurred while updating task:",
+                error.message
+            );
+        }
     }
 
     return (
@@ -267,6 +295,7 @@ function Home() {
                                         <TaskInfo
                                             taskId={taskId}
                                             toggleTaskInfo={toggleTaskInfo}
+                                            handleSave={updateOneTask}
                                         />
                                     </Grid>
                                 </motion.div>

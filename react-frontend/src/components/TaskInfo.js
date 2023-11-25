@@ -329,7 +329,7 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskInfo({ toggleTaskInfo, taskId }) {
+function TaskInfo({ taskId, toggleTaskInfo, handleSave }) {
     const [taskData, setTaskData] = useState(null);
     useEffect(() => {
         const fetchTaskData = async () => {
@@ -357,6 +357,12 @@ function TaskInfo({ toggleTaskInfo, taskId }) {
             [name]: value,
         }));
     }
+
+    function updateTask() {
+        handleSave(taskId, taskData);
+        toggleTaskInfo();
+    }
+
     return (
         <>
             {taskData && (
@@ -395,7 +401,11 @@ function TaskInfo({ toggleTaskInfo, taskId }) {
                         value={taskData.flagged}
                         onChange={handleChange}
                     />
-                    <Button variant="contained" color="primary">
+                    <Button
+                        onClick={updateTask}
+                        variant="contained"
+                        color="primary"
+                    >
                         Save
                     </Button>
                 </form>
