@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
     statuses,
     categories,
@@ -13,7 +13,6 @@ import {
     FormControl,
     Select,
 } from "@mui/material";
-
 import Grid from "@mui/material/Unstable_Grid2";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -24,7 +23,7 @@ import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlin
 import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import CircleIcon from "@mui/icons-material/Circle";
 
-// import dayjs from "dayjs";
+import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
@@ -330,9 +329,26 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskDetails({ toggleTaskInfo, taskInfo }) {
-    console.log(task);
-    const [taskData, setTaskData] = useState(taskInfo);
+function TaskDetails({ toggleTaskInfo, taskId }) {
+    const [taskData, setTaskData] = useState(null);
+    useEffect(() => {
+        const fetchTaskData = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:8000/tasks/${taskId}`
+                );
+                if (response.status === 200) {
+                    setTaskData(response.data);
+                }
+            } catch (error) {
+                console.error("An error occurred:", error.message);
+            }
+        };
+
+        if (taskId) {
+            fetchTaskData();
+        }
+    }, [taskId]);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -341,46 +357,50 @@ function TaskDetails({ toggleTaskInfo, taskInfo }) {
             [name]: value,
         }));
     }
-
     return (
-        <form>
-            <KeyboardDoubleArrowRightIcon onClick={toggleTaskInfo} />
-            <TitleInput
-                name="title"
-                value={taskData.title}
-                onChange={handleChange}
-            />
-            <SelectStatus
-                name="status"
-                value={taskData.status}
-                onChange={handleChange}
-                statuses={statuses}
-            />
-            <SelectCategory
-                name="category"
-                value={taskData.category}
-                onChange={handleChange}
-                categories={categories}
-            />
-            <SelectDate
-                name="date"
-                value={taskData.date}
-                onChange={handleChange}
-            />
-            <DescriptionInput
-                name="description"
-                value={taskData.description}
-                onChange={handleChange}
-            />
-            <SelectPrioirty
-                name="flagged"
-                value={taskData.flagged}
-                onChange={handleChange}
-            />
-            <Button variant="contained" color="primary">
-                Save
-            </Button>
-        </form>
+        <>
+            {taskData && (
+                <form>
+                    <KeyboardDoubleArrowRightIcon onClick={toggleTaskInfo} />
+
+                    <TitleInput
+                        name="title"
+                        value={taskData.title}
+                        onChange={handleChange}
+                    />
+                    <SelectStatus
+                        name="status"
+                        value={taskData.status}
+                        onChange={handleChange}
+                        statuses={statuses}
+                    />
+                    <SelectCategory
+                        name="category"
+                        value={taskData.category}
+                        onChange={handleChange}
+                        categories={categories}
+                    />
+                    <SelectDate
+                        name="date"
+                        value={dayjs(taskData.date)}
+                        onChange={handleChange}
+                    />
+                    <DescriptionInput
+                        name="description"
+                        value={taskData.description}
+                        onChange={handleChange}
+                    />
+                    <SelectPrioirty
+                        name="flagged"
+                        value={taskData.flagged}
+                        onChange={handleChange}
+                    />
+                    <Button variant="contained" color="primary">
+                        Save
+                    </Button>
+                </form>
+            )}
+        </>
     );
 }
 

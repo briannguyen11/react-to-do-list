@@ -13,7 +13,7 @@ import { Container } from "@mui/material";
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
-    const [taskInfoId, setTaskInfoId] = useState(null);
+    const [taskId, setTaskId] = useState(null);
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [showTaskInfo, setShowTaskInfo] = useState(false);
 
@@ -44,7 +44,7 @@ function Home() {
     // }
 
     const getTaskId = (id) => {
-        setTaskInfoId(id);
+        setTaskId(id);
     };
 
     /**
@@ -280,7 +280,7 @@ function Home() {
                                         }}
                                     >
                                         <TaskInfo
-                                            taskInfoId={taskInfoId}
+                                            taskId={taskId}
                                             toggleTaskInfo={toggleTaskInfo}
                                         />
                                     </Grid>
