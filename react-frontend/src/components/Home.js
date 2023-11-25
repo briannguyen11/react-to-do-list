@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import TaskForm from "./TaskFrom";
+import TaskForm from "./TaskForm";
 import TaskTable from "./TaskTable";
-import TaskDetails from "./TaskDetails";
+import TaskInfo from "./TaskInfo";
 import ControlBar from "./ControlBar";
 import { statuses, categories } from "../styles/ButtonDesign";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -279,8 +279,8 @@ function Home() {
                                             height: "100%",
                                         }}
                                     >
-                                        <TaskDetails
-                                            taskInfo={taskInfo}
+                                        <TaskInfo
+                                            taskInfoId={taskInfoId}
                                             toggleTaskInfo={toggleTaskInfo}
                                         />
                                     </Grid>

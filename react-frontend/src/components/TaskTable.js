@@ -26,7 +26,7 @@ import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function TaskTable({ tasks, removeOneTask, toggleTaskInfo, handleTaskInfo }) {
+function TaskTable({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
     const rows = tasks;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
