@@ -329,7 +329,7 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskDetails({ toggleTaskInfo, taskId }) {
+function TaskInfo({ toggleTaskInfo, taskId }) {
     const [taskData, setTaskData] = useState(null);
     useEffect(() => {
         const fetchTaskData = async () => {
@@ -404,4 +404,4 @@ function TaskDetails({ toggleTaskInfo, taskId }) {
     );
 }
 
-export default TaskDetails;
+export default TaskInfo;

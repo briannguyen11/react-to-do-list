@@ -28,21 +28,6 @@ function Home() {
     /**
      *  GET tasks based on id
      */
-    // async function getTaskInfoById(taskId) {
-    //     try {
-    //         const response = await axios.get(
-    //             `http://localhost:8000/tasks/${taskId}`
-    //         );
-    //         if (response.status === 200) {
-    //             console.log(response.data);
-    //             setTaskInfo(response.data);
-    //         }
-    //     } catch (error) {
-    //         console.error("An error occurred:", error.message);
-    //         return null;
-    //     }
-    // }
-
     const getTaskId = (id) => {
         setTaskId(id);
     };
@@ -246,7 +231,7 @@ function Home() {
                         {showTaskInfo && (
                             <>
                                 <motion.div
-                                    key="taskDetails"
+                                    key="TaskInfo"
                                     initial={{
                                         x: "100%",
                                         opacity: 0,
