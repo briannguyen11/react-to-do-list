@@ -151,8 +151,8 @@ app.get("/tasks", async (req, res) => {
 app.get("/tasks/:taskId", async (req, res) => {
     try {
         const taskId = req.params.taskId;
-        const result = await taskServices.findTaskById(taskId);
-        if (result) res.status(201).send({ task: result });
+        const taskInfo = await taskServices.findTaskById(taskId);
+        if (taskInfo) res.status(200).send(taskInfo);
     } catch (error) {
         console.log(error);
         res.status(500).send("An error occurred in the server.");

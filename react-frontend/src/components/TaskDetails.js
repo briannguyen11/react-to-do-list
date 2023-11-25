@@ -1,8 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import axios from "axios";
+import React, { useState } from "react";
 
-import { getStatusColor, getCategoryColor } from "../styles/ButtonDesign";
+import {
+    statuses,
+    categories,
+    getStatusColor,
+    getCategoryColor,
+} from "../styles/ButtonDesign";
 import {
     TextField,
     Button,
@@ -18,10 +21,10 @@ import SubjectIcon from "@mui/icons-material/Subject";
 import WindowIcon from "@mui/icons-material/Window";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-// import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
+import KeyboardDoubleArrowRightIcon from "@mui/icons-material/KeyboardDoubleArrowRight";
 import CircleIcon from "@mui/icons-material/Circle";
 
-import dayjs from "dayjs";
+// import dayjs from "dayjs";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
@@ -327,24 +330,9 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskInfo({ statuses, categories }) {
-    const { taskId } = useParams();
-    const [taskData, setTaskData] = useState(null);
-
-    useEffect(() => {
-        const fetchTask = async () => {
-            try {
-                console.log(taskId);
-                const response = await axios.get(
-                    `http://localhost:8000/tasks/${taskId}`
-                );
-                setTaskData(response.data.task);
-            } catch (error) {
-                console.error("Error fetching task details:", error.message);
-            }
-        };
-        fetchTask();
-    }, []);
+function TaskDetails({ toggleTaskInfo, taskInfo }) {
+    console.log(task);
+    const [taskData, setTaskData] = useState(taskInfo);
 
     function handleChange(event) {
         const { name, value } = event.target;
@@ -354,38 +342,46 @@ function TaskInfo({ statuses, categories }) {
         }));
     }
 
-    <form id="TaskDetails">
-        {/* <KeyboardDoubleArrowRightIcon onClick={exitForm} /> */}
-        <TitleInput
-            name="title"
-            value={taskData.title}
-            onChange={handleChange}
-        />
-        <SelectStatus
-            name="status"
-            value={taskData.status}
-            onChange={handleChange}
-            statuses={statuses}
-        />
-        <SelectCategory
-            name="category"
-            value={taskData.category}
-            onChange={handleChange}
-            categories={categories}
-        />
-        <SelectDate name="date" value={taskData.date} onChange={handleChange} />
-        <DescriptionInput
-            name="description"
-            value={taskData.description}
-            onChange={handleChange}
-        />
-        <SelectPrioirty
-            name="flagged"
-            value={taskData.flagged}
-            onChange={handleChange}
-        />
-        <Button>Save</Button>
-    </form>;
+    return (
+        <form>
+            <KeyboardDoubleArrowRightIcon onClick={toggleTaskInfo} />
+            <TitleInput
+                name="title"
+                value={taskData.title}
+                onChange={handleChange}
+            />
+            <SelectStatus
+                name="status"
+                value={taskData.status}
+                onChange={handleChange}
+                statuses={statuses}
+            />
+            <SelectCategory
+                name="category"
+                value={taskData.category}
+                onChange={handleChange}
+                categories={categories}
+            />
+            <SelectDate
+                name="date"
+                value={taskData.date}
+                onChange={handleChange}
+            />
+            <DescriptionInput
+                name="description"
+                value={taskData.description}
+                onChange={handleChange}
+            />
+            <SelectPrioirty
+                name="flagged"
+                value={taskData.flagged}
+                onChange={handleChange}
+            />
+            <Button variant="contained" color="primary">
+                Save
+            </Button>
+        </form>
+    );
 }
 
-export default TaskInfo;
+export default TaskDetails;

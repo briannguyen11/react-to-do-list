@@ -3,8 +3,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/Login";
 import SignUp from "./components/SignUp";
-import TaskDetails from "./components/TaskInfo";
-import TaskInfo from "./components/TaskInfo";
+import TaskInfo from "./components/TaskDetails";
 
 function MyApp() {
     return (

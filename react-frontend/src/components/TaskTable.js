@@ -1,6 +1,10 @@
 import React, { useState } from "react";
-import { getStatusColor, getCategoryColor } from "../styles/ButtonDesign";
-import { bodyCellStyle, headCellStyle } from "../styles/TableDetails";
+import {
+    statuses,
+    getStatusColor,
+    getCategoryColor,
+} from "../styles/ButtonDesign";
+import { bodyCellStyle, headCellStyle } from "../styles/TableDesign";
 import ContextMenu from "./ContextMenu";
 import {
     TableContainer,
@@ -22,14 +26,16 @@ import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function TaskTable({ taskData, removeOneTask, statuses }) {
-    const rows = taskData;
+function TaskTable({ tasks, removeOneTask, toggleTaskInfo, handleTaskInfo }) {
+    const rows = tasks;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const { handleContextMenu, contextMenuComponent } = ContextMenu({
-        taskData,
+        tasks,
         removeOneTask,
+        toggleTaskInfo,
+        getTaskId,
     });
 
     const handleStatusChange = (index, newStatus) => {

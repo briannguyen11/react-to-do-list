@@ -1,5 +1,10 @@
 import React, { useState } from "react";
-import { getStatusColor, getCategoryColor } from "../styles/ButtonDesign";
+import {
+    statuses,
+    categories,
+    getStatusColor,
+    getCategoryColor,
+} from "../styles/ButtonDesign";
 import {
     TextField,
     Button,
@@ -324,7 +329,7 @@ function SelectPrioirty({ name, value, onChange }) {
     );
 }
 
-function TaskForm({ userId, handleSubmit, exitForm, statuses, categories }) {
+function TaskForm({ userId, handleSubmit, toggleTaskForm }) {
     const [taskData, setTaskData] = useState({
         user: userId,
         title: "",
@@ -352,12 +357,12 @@ function TaskForm({ userId, handleSubmit, exitForm, statuses, categories }) {
             flagged: false,
             status: "Not Started",
         });
-        exitForm();
+        toggleTaskForm();
     }
 
     return (
         <form id="TaskForm">
-            <KeyboardDoubleArrowRightIcon onClick={exitForm} />
+            <KeyboardDoubleArrowRightIcon onClick={toggleTaskForm} />
             <TitleInput
                 name="title"
                 value={taskData.title}

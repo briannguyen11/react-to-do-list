@@ -1,13 +1,11 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
-function ContextMenu({ taskData, removeOneTask }) {
+function ContextMenu({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
     const [contextMenu, setContextMenu] = useState(null);
     const [clickedRowIndex, setClickedRowIndex] = useState(null);
-    // const [taskDetails, setTaskDetails] = useState(null);
-    const navigate = useNavigate();
 
     const handleContextMenu = (event, rowIndex) => {
         event.preventDefault();
@@ -25,15 +23,14 @@ function ContextMenu({ taskData, removeOneTask }) {
 
     const handleOpen = async () => {
         if (clickedRowIndex !== null) {
-            const taskId = taskData[clickedRowIndex]._id;
-            const taskDetailsUrl = `/tasks/${taskId}`;
-            navigate(taskDetailsUrl);
+            getTaskId(tasks[clickedRowIndex]._id);
+            toggleTaskInfo();
         }
         handleCloseContextMenu();
     };
 
     const handleDelete = () => {
-        removeOneTask(taskData[clickedRowIndex]._id);
+        removeOneTask(tasks[clickedRowIndex]._id);
         handleCloseContextMenu();
     };
 

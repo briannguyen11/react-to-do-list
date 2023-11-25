@@ -3,7 +3,9 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import TaskForm from "./TaskFrom";
 import TaskTable from "./TaskTable";
+import TaskDetails from "./TaskDetails";
 import ControlBar from "./ControlBar";
+import { statuses, categories } from "../styles/ButtonDesign";
 import Grid from "@mui/material/Unstable_Grid2";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import { Container } from "@mui/material";
@@ -11,12 +13,38 @@ import { Container } from "@mui/material";
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
+    const [taskInfoId, setTaskInfoId] = useState(null);
     const [showTaskForm, setShowTaskForm] = useState(false);
-    const statuses = ["Not Started", "In Progress", "Done"];
-    const categories = ["Personal", "School", "Work", "Sports"];
+    const [showTaskInfo, setShowTaskInfo] = useState(false);
 
     const toggleTaskForm = () => {
         setShowTaskForm(!showTaskForm);
+    };
+
+    const toggleTaskInfo = () => {
+        setShowTaskInfo(!showTaskInfo);
+    };
+
+    /**
+     *  GET tasks based on id
+     */
+    // async function getTaskInfoById(taskId) {
+    //     try {
+    //         const response = await axios.get(
+    //             `http://localhost:8000/tasks/${taskId}`
+    //         );
+    //         if (response.status === 200) {
+    //             console.log(response.data);
+    //             setTaskInfo(response.data);
+    //         }
+    //     } catch (error) {
+    //         console.error("An error occurred:", error.message);
+    //         return null;
+    //     }
+    // }
+
+    const getTaskId = (id) => {
+        setTaskInfoId(id);
     };
 
     /**
@@ -153,14 +181,13 @@ function Home() {
                         <ControlBar
                             toggleTaskForm={toggleTaskForm}
                             onFilterChange={handleFilterChange}
-                            statuses={statuses}
-                            categories={categories}
                         />
                         <div style={{ marginTop: 16 }}>
                             <TaskTable
-                                taskData={tasks}
+                                tasks={tasks}
                                 removeOneTask={removeOneTask}
-                                statuses={statuses}
+                                toggleTaskInfo={toggleTaskInfo}
+                                getTaskId={getTaskId}
                             />
                         </div>
                     </Grid>
@@ -205,10 +232,56 @@ function Home() {
                                     >
                                         <TaskForm
                                             handleSubmit={addToList}
-                                            exitForm={toggleTaskForm}
+                                            toggleTaskForm={toggleTaskForm}
                                             userId={userId}
-                                            statuses={statuses}
-                                            categories={categories}
+                                        />
+                                    </Grid>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+
+                    {/* TaskInfo (overlay) */}
+                    <AnimatePresence>
+                        {showTaskInfo && (
+                            <>
+                                <motion.div
+                                    key="taskDetails"
+                                    initial={{
+                                        x: "100%",
+                                        opacity: 0,
+                                        transition: easeIn,
+                                    }}
+                                    animate={{
+                                        x: 0,
+                                        opacity: 1,
+                                        boxShadow:
+                                            "-3px 0 3px rgba(0, 0, 0, 0.1)",
+                                    }}
+                                    exit={{
+                                        x: "100%",
+                                        opacity: 0,
+                                        transition: easeOut,
+                                    }}
+                                    style={{
+                                        position: "fixed",
+                                        top: 0,
+                                        right: 0,
+                                        width: "50%", // Adjust the width as needed
+                                        height: "100%",
+                                        backgroundColor: "rgba(255, 255, 255)",
+                                        zIndex: 2, // Ensure the form is on top
+                                    }}
+                                >
+                                    <Grid
+                                        xs={12}
+                                        style={{
+                                            height: "100%",
+                                        }}
+                                    >
+                                        <TaskDetails
+                                            taskInfo={taskInfo}
+                                            toggleTaskInfo={toggleTaskInfo}
                                         />
                                     </Grid>
                                 </motion.div>
