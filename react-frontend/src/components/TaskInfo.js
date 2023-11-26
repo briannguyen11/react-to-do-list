@@ -427,7 +427,7 @@ function TaskInfo({ taskId, toggleTaskInfo, handleSave }) {
                         onClick={updateTask}
                         variant="contained"
                         color="primary"
-                        style={{ "margin-top": "25px" }}
+                        style={{ marginTop: "25px" }}
                     >
                         Save
                     </Button>

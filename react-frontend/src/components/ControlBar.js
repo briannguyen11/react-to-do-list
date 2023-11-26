@@ -20,17 +20,15 @@ import Grid from "@mui/material/Unstable_Grid2";
 import CircleIcon from "@mui/icons-material/Circle";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
-import ViewWeekIcon from "@mui/icons-material/ViewWeek";
+import ViewWeekOutlinedIcon from "@mui/icons-material/ViewWeekOutlined";
 
-import "../styles/crooStyle.css";
-
-function ControlBar({ toggleTaskForm, onFilterChange }) {
+function ControlBar({ toggleTaskForm, changeTaskView, changeTableFilter }) {
     const [selectedFilter, setSelectedFilter] = useState("None");
 
     const handleFilterChange = (event) => {
         const value = event.target.value;
         setSelectedFilter(value);
-        onFilterChange(value === "None" ? undefined : value);
+        changeTableFilter(value === "None" ? undefined : value);
     };
 
     return (
@@ -41,7 +39,15 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                     <Button
                         variant="contained"
                         className="clearNavButton"
-                        // style={{ height: "50px", padding: "8px" }}
+                        style={{
+                            height: "40px",
+                            padding: "8px",
+                            backgroundColor: "transparent",
+                            color: "black",
+                            textTransform: "none",
+                            fontSize: "16px",
+                        }}
+                        onClick={() => changeTaskView("taskTable")}
                     >
                         <div
                             style={{
@@ -58,10 +64,20 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                     <Button
                         variant="contained"
                         className="clearNavButton"
-                        // style={{ height: "50px", padding: "8px" }}
+                        style={{
+                            height: "40px",
+                            padding: "8px",
+                            backgroundColor: "transparent",
+                            color: "black",
+                            textTransform: "none",
+                            fontSize: "16px",
+                        }}
+                        onClick={() => changeTaskView("taskBoard")}
                     >
                         <div style={{ display: "flex", alignItems: "center" }}>
-                            <ViewWeekIcon style={{ marginRight: "8px" }} />
+                            <ViewWeekOutlinedIcon
+                                style={{ marginRight: "8px" }}
+                            />
                             Baord
                         </div>
                     </Button>
@@ -81,7 +97,7 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                             label="Filter By"
                             value={selectedFilter}
                             onChange={handleFilterChange}
-                            style={{ width: "175px", height: "50px" }}
+                            style={{ width: "175px", height: "40px" }}
                             inputProps={{
                                 style: { padding: "0px", margin: "0" },
                             }}
@@ -90,6 +106,7 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                             <ListSubheader>Status</ListSubheader>
                             {statuses.map((status) => (
                                 <MenuItem key={status} value={status}>
+                                    {/* Status menu items for filter are smaller */}
                                     <div
                                         style={{
                                             backgroundColor:
@@ -97,15 +114,16 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                                                     .backgroundColor,
                                             display: "inline-flex",
                                             alignItems: "center",
-                                            borderRadius: 32,
-                                            padding: "4px 15px 4px 10px", // top right bottom left
+                                            borderRadius: 30,
+                                            padding: "2px 15px 2px 10px", // top right bottom left
+                                            fontSize: "14px",
                                         }}
                                     >
                                         <CircleIcon
                                             style={{
                                                 color: getStatusColor(status)
                                                     .iconColor,
-                                                fontSize: "14px",
+                                                fontSize: "12px",
                                                 marginRight: "4px",
                                             }}
                                         />
@@ -120,8 +138,9 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                                         style={{
                                             backgroundColor:
                                                 getCategoryColor(category),
-                                            borderRadius: 8,
-                                            padding: "4px 15px 4px 10px", // top right bottom left
+                                            borderRadius: 6,
+                                            padding: "2px 15px 2px 10px", // top right bottom left
+                                            fontSize: "14px",
                                         }}
                                     >
                                         {category}
@@ -153,7 +172,12 @@ function ControlBar({ toggleTaskForm, onFilterChange }) {
                         variant="contained"
                         color="primary"
                         onClick={toggleTaskForm}
-                        style={{ height: "50px", padding: "8px" }}
+                        style={{
+                            height: "40px",
+                            padding: "8px",
+                            textTransform: "none",
+                            fontSize: "16px",
+                        }}
                     >
                         New Item
                     </Button>

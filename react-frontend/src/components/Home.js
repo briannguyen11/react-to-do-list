@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
 import TaskForm from "./TaskForm";
 import TaskTable from "./TaskTable";
 import TaskInfo from "./TaskInfo";
+import TaskBoard from "./TaskBoard/KanbanBoard";
+import { useParams } from "react-router-dom";
 import ControlBar from "./ControlBar";
 import { statuses, categories } from "../styles/ButtonDesign";
 import Grid from "@mui/material/Unstable_Grid2";
@@ -14,6 +15,7 @@ function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
     const [taskId, setTaskId] = useState(null);
+    const [taskView, setTaskView] = useState("taskTable");
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [showTaskInfo, setShowTaskInfo] = useState(false);
 
@@ -23,6 +25,10 @@ function Home() {
 
     const toggleTaskInfo = () => {
         setShowTaskInfo(!showTaskInfo);
+    };
+
+    const handleTaskView = (selectedView) => {
+        setTaskView(selectedView);
     };
 
     /**
@@ -193,16 +199,20 @@ function Home() {
                         <h1>CROO List</h1>
                         <ControlBar
                             toggleTaskForm={toggleTaskForm}
-                            onFilterChange={handleFilterChange}
+                            changeTaskView={handleTaskView}
+                            changeTableFilter={handleFilterChange}
                         />
                         <div style={{ marginTop: 16 }}>
-                            <TaskTable
-                                tasks={tasks}
-                                removeOneTask={removeOneTask}
-                                updateOneTask={updateOneTask}
-                                toggleTaskInfo={toggleTaskInfo}
-                                getTaskId={getTaskId}
-                            />
+                            {taskView === "taskBoard" && <TaskBoard />}
+                            {taskView === "taskTable" && (
+                                <TaskTable
+                                    tasks={tasks}
+                                    removeOneTask={removeOneTask}
+                                    updateOneTask={updateOneTask}
+                                    toggleTaskInfo={toggleTaskInfo}
+                                    getTaskId={getTaskId}
+                                />
+                            )}
                         </div>
                     </Grid>
 

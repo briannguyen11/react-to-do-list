@@ -422,7 +422,7 @@ function TaskForm({ userId, handleSubmit, toggleTaskForm }) {
                 onClick={submitForm}
                 variant="contained"
                 color="primary"
-                style={{ "margin-top": "25px" }}
+                style={{ marginTop: "25px" }}
             >
                 Submit
             </Button>
