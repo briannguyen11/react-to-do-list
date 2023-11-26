@@ -9,7 +9,6 @@ const doneTest = ["d1", "d2", "d3"];
 function TaskBoard() {
     return (
         <DragDropContext>
-            <div>Hello Task Board</div>
             <div
                 style={{
                     display: "flex",

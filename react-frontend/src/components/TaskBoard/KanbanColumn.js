@@ -4,20 +4,32 @@ import { Droppable } from "react-beautiful-dnd";
 
 function KanbanColumn({ title, id, tasks }) {
     return (
-        <Container style={{ border: "2px" }}>
+        <Container>
             {title}
             <Droppable droppableId={id}>
                 {(provided, snapshot) => (
-                    <TaskList
+                    <div
                         ref={provided.innerRef}
-                        {...provided.droppableProps}
-                        isDraggingOver={snapshot.isDraggingOver}
+                        style={{
+                            background: snapshot.isDraggingOver
+                                ? "#5E8AAB"
+                                : "lightgrey",
+                            padding: 4,
+                            minHeight: 500,
+                            overflow: "hidden", // Hide the scrollbar
+                        }}
                     >
-                        {tasks.map((task, index) => (
-                            <Task key={index} index={index} task={task} />
-                        ))}
-                        {provided.placeholder}
-                    </TaskList>
+                        <div
+                            style={{
+                                overflowY: "auto", // Enable vertical scrolling
+                                paddingRight: 17, // Adjust for the scrollbar width
+                            }}
+                        >
+                            {tasks}
+
+                            {provided.placeholder}
+                        </div>
+                    </div>
                 )}
             </Droppable>
         </Container>
