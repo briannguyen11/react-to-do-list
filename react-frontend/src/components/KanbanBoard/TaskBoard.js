@@ -27,25 +27,25 @@ function TaskBoard({ userId, fetchBoardData, updateOneTask }) {
         // Get the task from the appropriate column
         const task =
             source.droppableId === "notStarted"
-                ? notStarted.find((item) => item.id === draggableId)
+                ? notStarted.find((item) => item._id === draggableId)
                 : source.droppableId === "inProgress"
-                  ? inProgress.find((item) => item.id === draggableId)
-                  : done.find((item) => item.id === draggableId);
+                  ? inProgress.find((item) => item._id === draggableId)
+                  : done.find((item) => item._id === draggableId);
 
         // Remove task from the source column
         setNotStarted((prevNotStarted) =>
             source.droppableId === "notStarted"
-                ? prevNotStarted.filter((item) => item.id !== draggableId)
+                ? prevNotStarted.filter((item) => item._id !== draggableId)
                 : prevNotStarted
         );
         setInProgress((prevInProgress) =>
             source.droppableId === "inProgress"
-                ? prevInProgress.filter((item) => item.id !== draggableId)
+                ? prevInProgress.filter((item) => item._id !== draggableId)
                 : prevInProgress
         );
         setDone((prevDone) =>
             source.droppableId === "done"
-                ? prevDone.filter((item) => item.id !== draggableId)
+                ? prevDone.filter((item) => item._id !== draggableId)
                 : prevDone
         );
 
