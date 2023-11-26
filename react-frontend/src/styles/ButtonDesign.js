@@ -5,13 +5,13 @@ const categories = ["Personal", "School", "Work", "Sports"];
 const getStatusColor = (status) => {
     switch (status) {
         case "Not Started":
-            return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
+            return { backgroundColor: "#e3e3e3", iconColor: "#767676" };
         case "In Progress":
             return { backgroundColor: "#ffebbd", iconColor: "#cc7722" };
         case "Done":
             return { backgroundColor: "#d2e7d6", iconColor: "#50835c" };
         default:
-            return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
+            return { backgroundColor: "#e3e3e3", iconColor: "#767676" };
     }
 };
 

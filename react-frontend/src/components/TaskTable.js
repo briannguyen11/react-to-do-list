@@ -26,7 +26,13 @@ import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function TaskTable({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
+function TaskTable({
+    tasks,
+    removeOneTask,
+    updateOneTask,
+    toggleTaskInfo,
+    getTaskId,
+}) {
     const rows = tasks;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
@@ -39,11 +45,12 @@ function TaskTable({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
     });
 
     const handleStatusChange = (index, newStatus) => {
-        // Add logic to update the status in your data structure
-        // For example, call a function passed as a prop to update the status.
-        // props.onStatusChange(index, newStatus);
-        console.log(index);
-        console.log(newStatus);
+        updateOneTask(rows[index]._id, { status: newStatus });
+    };
+
+    const handlePriorityChange = (index) => {
+        const newPriority = !rows[index].flagged;
+        updateOneTask(rows[index]._id, { flagged: newPriority });
     };
 
     const handleChangePage = (newPage) => {
@@ -232,13 +239,21 @@ function TaskTable({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
                                         <BookmarkIcon
                                             style={{
                                                 color: "#e48c65",
+                                                cursor: "pointer",
                                             }}
+                                            onClick={() =>
+                                                handlePriorityChange(index)
+                                            }
                                         />
                                     ) : (
                                         <BookmarkBorderOutlinedIcon
                                             style={{
                                                 color: "#e48c65",
+                                                cursor: "pointer",
                                             }}
+                                            onClick={() =>
+                                                handlePriorityChange(index)
+                                            }
                                         />
                                     )}
                                 </TableCell>

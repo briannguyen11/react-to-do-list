@@ -93,6 +93,10 @@ function SelectStatus({ name, value, onChange, statuses }) {
                             "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none", // Remove outline for outlined variant
                             },
+                            "&:hover": {
+                                backgroundColor: "#f0f0f0", // Set the background color on hover
+                            },
+                            width: "90%",
                         }}
                     >
                         {statuses.map((status) => (
@@ -159,6 +163,10 @@ function SelectCategory({ name, value, onChange, categories }) {
                             "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none", // Remove outline for outlined variant
                             },
+                            "&:hover": {
+                                backgroundColor: "#f0f0f0", // Set the background color on hover
+                            },
+                            width: "90%",
                         }}
                     >
                         {categories.map((category) => (
@@ -215,6 +223,10 @@ function SelectDate({ name, value, onChange }) {
                             "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none", // Remove outline for outlined variant
                             },
+                            "&:hover": {
+                                backgroundColor: "#f0f0f0", // Set the background color on hover
+                            },
+                            width: "90%",
                         }}
                     />
                 </LocalizationProvider>
@@ -260,13 +272,19 @@ function DescriptionInput({ name, value, onChange }) {
                             "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none", // Remove outline for outlined variant
                             },
+                            "&:hover": {
+                                backgroundColor: "#f0f0f0", // Set the background color on hover
+                            },
                             "&:focus-within": {
                                 "& .MuiOutlinedInput-notchedOutline": {
                                     borderColor: "black", // Set the outline color when focused
                                 },
                                 boxShadow: "0 4px 8px rgba(0, 0, 0, 0.4)", // Add shadow effect on focus
+                                "&:hover": {
+                                    backgroundColor: "initial", // Remove hover effect when focused
+                                },
                             },
-                            width: "98%",
+                            width: "90%",
                         },
                     }}
                     sx={{
@@ -318,6 +336,10 @@ function SelectPrioirty({ name, value, onChange }) {
                             "& .MuiOutlinedInput-notchedOutline": {
                                 border: "none", // Remove outline for outlined variant
                             },
+                            "&:hover": {
+                                backgroundColor: "#f0f0f0", // Set the background color on hover
+                            },
+                            width: "90%",
                         }}
                     >
                         <MenuItem value={false}>No</MenuItem>
@@ -373,6 +395,7 @@ function TaskForm({ userId, handleSubmit, toggleTaskForm }) {
                 value={taskData.status}
                 onChange={handleChange}
                 statuses={statuses}
+                style={{ "&:hover": { backgroundColor: "#f0f0f0" } }}
             />
             <SelectCategory
                 name="category"
@@ -395,7 +418,12 @@ function TaskForm({ userId, handleSubmit, toggleTaskForm }) {
                 value={taskData.flagged}
                 onChange={handleChange}
             />
-            <Button onClick={submitForm} variant="contained" color="primary">
+            <Button
+                onClick={submitForm}
+                variant="contained"
+                color="primary"
+                style={{ "margin-top": "25px" }}
+            >
                 Submit
             </Button>
         </form>

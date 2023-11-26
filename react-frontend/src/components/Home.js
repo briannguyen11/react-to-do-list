@@ -199,6 +199,7 @@ function Home() {
                             <TaskTable
                                 tasks={tasks}
                                 removeOneTask={removeOneTask}
+                                updateOneTask={updateOneTask}
                                 toggleTaskInfo={toggleTaskInfo}
                                 getTaskId={getTaskId}
                             />

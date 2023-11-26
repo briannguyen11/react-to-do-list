@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import VerticalSplitIcon from "@mui/icons-material/VerticalSplit";
 
 function ContextMenu({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
     const [contextMenu, setContextMenu] = useState(null);
@@ -33,11 +35,6 @@ function ContextMenu({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
         handleCloseContextMenu();
     };
 
-    const contextMenuItems = [
-        { label: "Open", action: handleOpen },
-        { label: "Delete", action: handleDelete },
-    ];
-
     const contextMenuComponent = (
         <Menu
             open={contextMenu !== null}
@@ -48,12 +45,20 @@ function ContextMenu({ tasks, removeOneTask, toggleTaskInfo, getTaskId }) {
                     ? { top: contextMenu.mouseY, left: contextMenu.mouseX }
                     : undefined
             }
+            disableAutoFocusItem
         >
-            {contextMenuItems.map((item, index) => (
-                <MenuItem key={index} onClick={item.action}>
-                    {item.label}
-                </MenuItem>
-            ))}
+            <MenuItem onClick={handleOpen}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <VerticalSplitIcon style={{ marginRight: "8px" }} />
+                    Open
+                </div>
+            </MenuItem>
+            <MenuItem onClick={handleDelete}>
+                <div style={{ display: "flex", alignItems: "center" }}>
+                    <DeleteOutlineIcon style={{ marginRight: "8px" }} />
+                    Delete
+                </div>
+            </MenuItem>
         </Menu>
     );
 
