@@ -1,8 +1,9 @@
 import React from "react";
+import TaskCard from "./TaskCard";
 import { Container } from "@mui/material";
 import { Droppable } from "react-beautiful-dnd";
 
-function KanbanColumn({ title, id, tasks }) {
+function TaskColumn({ title, id, tasks }) {
     return (
         <Container>
             {title}
@@ -25,7 +26,13 @@ function KanbanColumn({ title, id, tasks }) {
                                 paddingRight: 17, // Adjust for the scrollbar width
                             }}
                         >
-                            {tasks}
+                            {tasks.map((task, index) => (
+                                <TaskCard
+                                    key={index}
+                                    index={index}
+                                    task={task}
+                                />
+                            ))}
 
                             {provided.placeholder}
                         </div>
@@ -36,4 +43,4 @@ function KanbanColumn({ title, id, tasks }) {
     );
 }
 
-export default KanbanColumn;
+export default TaskColumn;

@@ -1,14 +1,9 @@
 import React from "react";
+import { Draggable } from "react-beautiful-dnd";
 
 function TaskCard({ task, index }) {
-    // return (
-    // <Draggable
-    //     draggableId={`${task.id}`}
-    //     key={task.id}
-    //     index={index}
-    // ></Draggable>
     return (
-        <Draggable draggableId={task.id} index={index}>
+        <Draggable draggableId={`${task._id}`} index={index}>
             {(provided, snapshot) => (
                 <div
                     ref={provided.innerRef}

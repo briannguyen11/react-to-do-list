@@ -3,7 +3,7 @@ import axios from "axios";
 import TaskForm from "./TaskForm";
 import TaskTable from "./TaskTable";
 import TaskInfo from "./TaskInfo";
-import TaskBoard from "./TaskBoard/KanbanBoard";
+import TaskBoard from "./KanbanBoard/TaskBoard";
 import { useParams } from "react-router-dom";
 import ControlBar from "./ControlBar";
 import { statuses, categories } from "../styles/ButtonDesign";
@@ -203,7 +203,13 @@ function Home() {
                             changeTableFilter={handleFilterChange}
                         />
                         <div style={{ marginTop: 16 }}>
-                            {taskView === "taskBoard" && <TaskBoard />}
+                            {taskView === "taskBoard" && (
+                                <TaskBoard
+                                    userId={userId}
+                                    fetchBoardData={fetchAll}
+                                    updateOneTask={updateOneTask}
+                                />
+                            )}
                             {taskView === "taskTable" && (
                                 <TaskTable
                                     tasks={tasks}
