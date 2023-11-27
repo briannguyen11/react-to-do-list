@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import TaskColumn from "./TaskColumn";
 import { DragDropContext } from "react-beautiful-dnd";
+import Grid from "@mui/material/Unstable_Grid2";
 
 function TaskBoard({ tasks, updateOneTask }) {
     const [notStarted, setNotStarted] = useState([]);
@@ -74,26 +75,25 @@ function TaskBoard({ tasks, updateOneTask }) {
 
     return (
         <DragDropContext onDragEnd={handleDragEnd}>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    flexDirection: "row",
-                }}
-            >
-                <TaskColumn
-                    title={"Not Started"}
-                    id={"notStarted"}
-                    tasks={notStarted}
-                />
-                <TaskColumn
-                    title={"In Progress"}
-                    id={"inProgress"}
-                    tasks={inProgress}
-                />
-                <TaskColumn title={"Done"} id={"done"} tasks={done} />
-            </div>
+            <Grid container spacing={2}>
+                <Grid xs={4}>
+                    <TaskColumn
+                        title={"Not Started"}
+                        id={"notStarted"}
+                        tasks={notStarted}
+                    />
+                </Grid>
+                <Grid xs={4}>
+                    <TaskColumn
+                        title={"In Progress"}
+                        id={"inProgress"}
+                        tasks={inProgress}
+                    />
+                </Grid>
+                <Grid xs={4}>
+                    <TaskColumn title={"Done"} id={"done"} tasks={done} />
+                </Grid>
+            </Grid>
         </DragDropContext>
     );
 }

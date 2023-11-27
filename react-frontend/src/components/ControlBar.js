@@ -5,7 +5,7 @@ import {
     categories,
     getStatusColor,
     getCategoryColor,
-} from "../styles/ButtonDesign";
+} from "../styles/StatusAndCategory";
 
 import {
     Button,
@@ -112,7 +112,7 @@ function ControlBar({ toggleTaskForm, changeTaskView, changeTableFilter }) {
                                         style={{
                                             backgroundColor:
                                                 getStatusColor(status)
-                                                    .backgroundColor,
+                                                    .buttonColor,
                                             display: "inline-flex",
                                             alignItems: "center",
                                             borderRadius: 30,

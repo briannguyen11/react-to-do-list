@@ -4,17 +4,18 @@ import TaskForm from "./TaskForm";
 import TaskTable from "./TaskTable";
 import TaskInfo from "./TaskInfo";
 import TaskBoard from "./KanbanBoard/TaskBoard";
-import { useParams } from "react-router-dom";
 import ControlBar from "./ControlBar";
-import { statuses, categories } from "../styles/ButtonDesign";
-import Grid from "@mui/material/Unstable_Grid2";
+import { useParams } from "react-router-dom";
+import { statuses, categories } from "../styles/StatusAndCategory";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import { Container } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
     const [taskId, setTaskId] = useState(null);
+    const [filter, setFilter] = useState(null);
     const [taskView, setTaskView] = useState("taskTable");
     const [showTaskForm, setShowTaskForm] = useState(false);
     const [showTaskInfo, setShowTaskInfo] = useState(false);
@@ -45,6 +46,8 @@ function Home() {
         let status = null;
         let category = null;
         let flagged = null;
+
+        setFilter(filterCriteria);
 
         // Check if the selected filter is a status or category
         if (statuses.includes(filterCriteria)) {
@@ -168,11 +171,17 @@ function Home() {
                     "Failed to update task. Status:",
                     response.status
                 );
+                return;
             }
+
             // Get updated tasks list
-            const updatedTasks = await fetchAll(userId);
-            if (updatedTasks) {
-                setTasks(updatedTasks);
+            if (filter) {
+                handleFilterChange(filter);
+            } else {
+                const updatedTasks = await fetchAll(userId);
+                if (updatedTasks) {
+                    setTasks(updatedTasks);
+                }
             }
         } catch (error) {
             console.error(

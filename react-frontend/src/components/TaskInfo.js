@@ -5,7 +5,7 @@ import {
     categories,
     getStatusColor,
     getCategoryColor,
-} from "../styles/ButtonDesign";
+} from "../styles/StatusAndCategory";
 import {
     TextField,
     Button,

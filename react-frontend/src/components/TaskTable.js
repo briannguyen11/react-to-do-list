@@ -3,7 +3,7 @@ import {
     statuses,
     getStatusColor,
     getCategoryColor,
-} from "../styles/ButtonDesign";
+} from "../styles/StatusAndCategory";
 import { bodyCellStyle, headCellStyle } from "../styles/TableDesign";
 import ContextMenu from "./ContextMenu";
 import {
@@ -176,7 +176,7 @@ function TaskTable({
                                                         backgroundColor:
                                                             getStatusColor(
                                                                 status
-                                                            ).backgroundColor,
+                                                            ).buttonColor,
                                                         display: "inline-flex",
                                                         alignItems: "center",
                                                         borderRadius: 32,

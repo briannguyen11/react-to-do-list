@@ -4,7 +4,7 @@ import {
     categories,
     getStatusColor,
     getCategoryColor,
-} from "../styles/ButtonDesign";
+} from "../styles/StatusAndCategory";
 import {
     TextField,
     Button,
@@ -104,8 +104,7 @@ function SelectStatus({ name, value, onChange, statuses }) {
                                 <div
                                     style={{
                                         backgroundColor:
-                                            getStatusColor(status)
-                                                .backgroundColor,
+                                            getStatusColor(status).buttonColor,
                                         display: "inline-flex",
                                         alignItems: "center",
                                         borderRadius: 32,
