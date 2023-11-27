@@ -104,8 +104,7 @@ function SelectStatus({ name, value, onChange, statuses }) {
                                 <div
                                     style={{
                                         backgroundColor:
-                                            getStatusColor(status)
-                                                .backgroundColor,
+                                            getStatusColor(status).buttonColor,
                                         display: "inline-flex",
                                         alignItems: "center",
                                         borderRadius: 32,
@@ -427,7 +426,11 @@ function TaskInfo({ taskId, toggleTaskInfo, handleSave }) {
                         onClick={updateTask}
                         variant="contained"
                         color="primary"
-                        style={{ marginTop: "25px" }}
+                        style={{
+                            marginTop: "25px",
+                            textTransform: "none",
+                            fontSize: "16px",
+                        }}
                     >
                         Save
                     </Button>

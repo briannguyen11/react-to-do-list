@@ -1,17 +1,19 @@
 const bodyCellStyle = (hasRightBorder) => ({
     borderRight: hasRightBorder ? "none" : "1px solid #ddd",
     padding: 8,
-    color: "#000",
-    fontFamily: "Montserrat , sans-serif",
+    color: "black",
+    fontFamily: "Roboto, sans-serif",
     fontSize: "16px",
+    fontWeight: 500,
 });
 
 const headCellStyle = (hasRightBorder) => ({
-    borderBottom: "3px solid #ddd",
     borderRight: hasRightBorder ? "none" : "1px solid #ddd",
     padding: 8,
     color: "rgba(128, 128, 128, 0.8)",
-    fontFamily: "Montserrat , sans-serif",
+    fontFamily: "Roboto, sans-serif",
+    fontSize: "16px",
+    fontWeight: 500,
 });
 
 export { bodyCellStyle, headCellStyle };

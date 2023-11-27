@@ -15,11 +15,17 @@ function TaskCard({ task, index }) {
                                 userSelect: "none",
                                 padding: 16,
                                 margin: "0 0 8px 0",
-                                minHeight: "50px",
+                                minHeight: "20px",
+                                borderRadius: 6,
+                                border: "1px solid rgba(0, 0, 0, 0.1)",
                                 backgroundColor: snapshot.isDragging
-                                    ? "#263B4A"
-                                    : "#456C86",
-                                color: "white",
+                                    ? "#1976d2"
+                                    : "white",
+                                fontFamily: "Roboto, sans-serif",
+                                fontSize: "16px",
+                                fontWeight: 400,
+                                color: snapshot.isDragging ? "white" : "black",
+                                boxShadow: "0px 1px 1px rgba(0, 0, 0, 0.1)",
                                 ...provided.draggableProps.style,
                             }}
                         >

@@ -205,18 +205,43 @@ function Home() {
                 >
                     {/* TaskTable (full width) */}
                     <Grid xs={12}>
-                        <h1>CROO List</h1>
+                        <h1
+                            style={{
+                                display: "flex",
+                                alignItems: "center", // Align items vertically in the center
+                                color: "black",
+                                fontSize: "50px",
+                                fontFamily: "Roboto, sans-serif",
+                                paddingTop: "50px",
+                                paddingBottom: "25px",
+                                margin: 0,
+                            }}
+                        >
+                            <span
+                                role="img"
+                                aria-label="checkmark emoji"
+                                style={{ marginRight: "10px" }}
+                            >
+                                📚
+                            </span>{" "}
+                            CROO Task List
+                        </h1>
                         <ControlBar
                             toggleTaskForm={toggleTaskForm}
                             changeTaskView={handleTaskView}
                             changeTableFilter={handleFilterChange}
                         />
-                        <div style={{ marginTop: 16 }}>
+                        <div>
                             {taskView === "taskBoard" && (
-                                <TaskBoard
-                                    tasks={tasks}
-                                    updateOneTask={updateOneTask}
-                                />
+                                <div style={{ marginTop: 8 }}>
+                                    <TaskBoard
+                                        tasks={tasks}
+                                        updateOneTask={updateOneTask}
+                                        removeOneTask={removeOneTask}
+                                        toggleTaskInfo={toggleTaskInfo}
+                                        getTaskId={getTaskId}
+                                    />
+                                </div>
                             )}
                             {taskView === "taskTable" && (
                                 <TaskTable

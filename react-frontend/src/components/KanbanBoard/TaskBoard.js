@@ -3,7 +3,13 @@ import TaskColumn from "./TaskColumn";
 import { DragDropContext } from "react-beautiful-dnd";
 import Grid from "@mui/material/Unstable_Grid2";
 
-function TaskBoard({ tasks, updateOneTask }) {
+function TaskBoard({
+    tasks,
+    updateOneTask,
+    removeOneTask,
+    toggleTaskInfo,
+    getTaskId,
+}) {
     const [notStarted, setNotStarted] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
@@ -81,6 +87,9 @@ function TaskBoard({ tasks, updateOneTask }) {
                         title={"Not Started"}
                         id={"notStarted"}
                         tasks={notStarted}
+                        removeOneTask={removeOneTask}
+                        toggleTaskInfo={toggleTaskInfo}
+                        getTaskId={getTaskId}
                     />
                 </Grid>
                 <Grid xs={4}>
@@ -88,10 +97,20 @@ function TaskBoard({ tasks, updateOneTask }) {
                         title={"In Progress"}
                         id={"inProgress"}
                         tasks={inProgress}
+                        removeOneTask={removeOneTask}
+                        toggleTaskInfo={toggleTaskInfo}
+                        getTaskId={getTaskId}
                     />
                 </Grid>
                 <Grid xs={4}>
-                    <TaskColumn title={"Done"} id={"done"} tasks={done} />
+                    <TaskColumn
+                        title={"Done"}
+                        id={"done"}
+                        tasks={done}
+                        removeOneTask={removeOneTask}
+                        toggleTaskInfo={toggleTaskInfo}
+                        getTaskId={getTaskId}
+                    />
                 </Grid>
             </Grid>
         </DragDropContext>

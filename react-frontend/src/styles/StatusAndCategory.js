@@ -5,13 +5,29 @@ const categories = ["Personal", "School", "Work", "Sports"];
 const getStatusColor = (status) => {
     switch (status) {
         case "Not Started":
-            return { buttonColor: "#e3e3e3", iconColor: "#767676" };
+            return {
+                buttonColor: "#e6e6e6",
+                iconColor: "#767676",
+                backgroundColor: "#f5f5f5",
+            };
         case "In Progress":
-            return { buttonColor: "#ffebbd", iconColor: "#cc7722" };
+            return {
+                buttonColor: "#ffebbd",
+                iconColor: "#cc7722",
+                backgroundColor: "#fffaf0",
+            };
         case "Done":
-            return { buttonColor: "#d2e7d6", iconColor: "#50835c" };
+            return {
+                buttonColor: "#d2e7d6",
+                iconColor: "#50835c",
+                backgroundColor: "#f4f9f4",
+            };
         default:
-            return { buttondColor: "#e3e3e3", iconColor: "#767676" };
+            return {
+                buttondColor: "#e3e3e3",
+                iconColor: "#767676",
+                backgroundColor: "#f0f0f0",
+            };
     }
 };
 
