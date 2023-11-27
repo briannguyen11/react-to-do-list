@@ -5,7 +5,6 @@ import dotenv from "dotenv";
 
 import taskServices from "./models/task-services.js";
 import userServices from "./models/user-services.js";
-// import user from "./models/user.js";
 
 const app = express();
 const port = 8000;
@@ -144,6 +143,18 @@ app.get("/tasks", async (req, res) => {
     } catch (error) {
         console.log(error);
         res.status(500).send("An error ocurred in the server.");
+    }
+});
+
+// GET by ID:
+app.get("/tasks/:taskId", async (req, res) => {
+    try {
+        const taskId = req.params.taskId;
+        const taskInfo = await taskServices.findTaskById(taskId);
+        if (taskInfo) res.status(200).send(taskInfo);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("An error occurred in the server.");
     }
 });
 

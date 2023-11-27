@@ -1,28 +1,95 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
-import TaskForm from "./TaskFrom";
+import TaskForm from "./TaskForm";
 import TaskTable from "./TaskTable";
-import Grid from "@mui/material/Unstable_Grid2";
+import TaskInfo from "./TaskInfo";
+import TaskBoard from "./KanbanBoard/TaskBoard";
+import ControlBar from "./ControlBar";
+import { useParams } from "react-router-dom";
+import { statuses, categories } from "../styles/StatusAndCategory";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
-import { Button, Container } from "@mui/material";
+import { Container } from "@mui/material";
+import Grid from "@mui/material/Unstable_Grid2";
 
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
+    const [taskId, setTaskId] = useState(null);
+    const [filter, setFilter] = useState(null);
+    const [taskView, setTaskView] = useState("taskTable");
     const [showTaskForm, setShowTaskForm] = useState(false);
+    const [showTaskInfo, setShowTaskInfo] = useState(false);
 
     const toggleTaskForm = () => {
         setShowTaskForm(!showTaskForm);
     };
 
+    const toggleTaskInfo = () => {
+        setShowTaskInfo(!showTaskInfo);
+    };
+
+    const handleTaskView = (selectedView) => {
+        setTaskView(selectedView);
+    };
+
     /**
-     *  GETs all tasks from the DB
+     *  GET tasks based on id
      */
-    async function fetchAll() {
+    const getTaskId = (id) => {
+        setTaskId(id);
+    };
+
+    /**
+     *  GET tasks based on filter
+     */
+    async function handleFilterChange(filterCriteria) {
+        let status = null;
+        let category = null;
+        let flagged = null;
+
+        setFilter(filterCriteria);
+
+        // Check if the selected filter is a status or category
+        if (statuses.includes(filterCriteria)) {
+            status = filterCriteria;
+        } else if (categories.includes(filterCriteria)) {
+            category = filterCriteria;
+        } else if (filterCriteria === true || filterCriteria === false) {
+            flagged = filterCriteria;
+        }
+
+        const filteredTasks = await fetchAll(
+            userId,
+            status,
+            null,
+            category,
+            flagged
+        );
+        setTasks(filteredTasks);
+    }
+
+    /**
+     *  GETS all tasks from the DB for user
+     */
+    async function fetchAll(
+        userId,
+        status = null,
+        date = null,
+        category = null,
+        flagged = null
+    ) {
         try {
+            const queryParams = {
+                params: {
+                    status,
+                    date,
+                    category,
+                    flagged,
+                },
+            };
             const response = await axios.get(
-                `http://localhost:8000/users/${userId}`
+                `http://localhost:8000/users/${userId}`,
+                queryParams
             );
             return response.data.tasks_list;
         } catch (error) {
@@ -30,14 +97,15 @@ function Home() {
             return false;
         }
     }
+
     useEffect(() => {
-        fetchAll().then((result) => {
+        fetchAll(userId).then((result) => {
             if (result) setTasks(result);
         });
     }, []);
 
     /**
-     *  POSTs operation for inserting new task
+     *  POST operation for inserting new task
      */
     async function makePostCall(task) {
         try {
@@ -51,22 +119,24 @@ function Home() {
             return false;
         }
     }
-    function addToList(task) {
-        makePostCall(task).then((result) => {
-            if (result && result.status === 201) {
-                const newTask = result.data;
-                setTasks([...tasks, newTask]);
+
+    async function addToList(task) {
+        const result = await makePostCall(task);
+        if (result && result.status === 201) {
+            const updatedTasks = await fetchAll(userId);
+            if (updatedTasks) {
+                setTasks(updatedTasks);
             }
-        });
+        }
     }
 
     /**
      *  DELETE operation to delete task
      */
-    async function makeDeleteCall(id) {
+    async function makeDeleteCall(taskId) {
         try {
             const response = await axios.delete(
-                `http://localhost:8000/tasks/${id}`
+                `http://localhost:8000/users/${userId}?id=${taskId}`
             );
             console.log(response);
             return response;
@@ -75,41 +145,50 @@ function Home() {
             return false;
         }
     }
-    function removeOneTask(id) {
-        makeDeleteCall(id).then((result) => {
+
+    function removeOneTask(taskId) {
+        makeDeleteCall(taskId).then((result) => {
             if (result && result.status === 204) {
-                const updated = tasks.filter((task) => task._id !== id);
+                const updated = tasks.filter((task) => task._id !== taskId);
                 setTasks(updated);
-            } else if (result.status === 404) {
+            } else if (result && result.status === 404) {
                 console.log("Task not found.");
             }
         });
     }
 
-    function FilterBar() {
-        return (
-            <Grid container spacing={3}>
-                <Grid>
-                    <Button
-                        variant="contained"
-                        color="primary"
-                        onClick={toggleTaskForm}
-                    >
-                        Add New Item
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Button variant="outlined" color="primary">
-                        Show Priority
-                    </Button>
-                </Grid>
-                <Grid>
-                    <Button variant="outlined" color="primary">
-                        Filter By Tags
-                    </Button>
-                </Grid>
-            </Grid>
-        );
+    /**
+     *  PUT operation to update one task
+     */
+    async function updateOneTask(taskId, taskData) {
+        try {
+            const response = await axios.put(
+                `http://localhost:8000/tasks/${taskId}`,
+                taskData
+            );
+            if (response.status !== 200) {
+                console.error(
+                    "Failed to update task. Status:",
+                    response.status
+                );
+                return;
+            }
+
+            // Get updated tasks list
+            if (filter) {
+                handleFilterChange(filter);
+            } else {
+                const updatedTasks = await fetchAll(userId);
+                if (updatedTasks) {
+                    setTasks(updatedTasks);
+                }
+            }
+        } catch (error) {
+            console.error(
+                "An error occurred while updating task:",
+                error.message
+            );
+        }
     }
 
     return (
@@ -126,13 +205,53 @@ function Home() {
                 >
                     {/* TaskTable (full width) */}
                     <Grid xs={12}>
-                        <h1>CROO List</h1>
-                        <FilterBar />
-                        <div style={{ marginTop: 16 }}>
-                            <TaskTable
-                                taskData={tasks}
-                                removeTask={removeOneTask}
-                            />
+                        <h1
+                            style={{
+                                display: "flex",
+                                alignItems: "center", // Align items vertically in the center
+                                color: "black",
+                                fontSize: "50px",
+                                fontFamily: "Roboto, sans-serif",
+                                paddingTop: "50px",
+                                paddingBottom: "25px",
+                                margin: 0,
+                            }}
+                        >
+                            <span
+                                role="img"
+                                aria-label="checkmark emoji"
+                                style={{ marginRight: "10px" }}
+                            >
+                                📚
+                            </span>{" "}
+                            CROO Task List
+                        </h1>
+                        <ControlBar
+                            toggleTaskForm={toggleTaskForm}
+                            changeTaskView={handleTaskView}
+                            changeTableFilter={handleFilterChange}
+                        />
+                        <div>
+                            {taskView === "taskBoard" && (
+                                <div style={{ marginTop: 8 }}>
+                                    <TaskBoard
+                                        tasks={tasks}
+                                        updateOneTask={updateOneTask}
+                                        removeOneTask={removeOneTask}
+                                        toggleTaskInfo={toggleTaskInfo}
+                                        getTaskId={getTaskId}
+                                    />
+                                </div>
+                            )}
+                            {taskView === "taskTable" && (
+                                <TaskTable
+                                    tasks={tasks}
+                                    removeOneTask={removeOneTask}
+                                    updateOneTask={updateOneTask}
+                                    toggleTaskInfo={toggleTaskInfo}
+                                    getTaskId={getTaskId}
+                                />
+                            )}
                         </div>
                     </Grid>
 
@@ -176,8 +295,57 @@ function Home() {
                                     >
                                         <TaskForm
                                             handleSubmit={addToList}
-                                            exitForm={toggleTaskForm}
+                                            toggleTaskForm={toggleTaskForm}
                                             userId={userId}
+                                        />
+                                    </Grid>
+                                </motion.div>
+                            </>
+                        )}
+                    </AnimatePresence>
+
+                    {/* TaskInfo (overlay) */}
+                    <AnimatePresence>
+                        {showTaskInfo && (
+                            <>
+                                <motion.div
+                                    key="TaskInfo"
+                                    initial={{
+                                        x: "100%",
+                                        opacity: 0,
+                                        transition: easeIn,
+                                    }}
+                                    animate={{
+                                        x: 0,
+                                        opacity: 1,
+                                        boxShadow:
+                                            "-3px 0 3px rgba(0, 0, 0, 0.1)",
+                                    }}
+                                    exit={{
+                                        x: "100%",
+                                        opacity: 0,
+                                        transition: easeOut,
+                                    }}
+                                    style={{
+                                        position: "fixed",
+                                        top: 0,
+                                        right: 0,
+                                        width: "50%", // Adjust the width as needed
+                                        height: "100%",
+                                        backgroundColor: "rgba(255, 255, 255)",
+                                        zIndex: 2, // Ensure the form is on top
+                                    }}
+                                >
+                                    <Grid
+                                        xs={12}
+                                        style={{
+                                            height: "100%",
+                                        }}
+                                    >
+                                        <TaskInfo
+                                            taskId={taskId}
+                                            toggleTaskInfo={toggleTaskInfo}
+                                            handleSave={updateOneTask}
                                         />
                                     </Grid>
                                 </motion.div>

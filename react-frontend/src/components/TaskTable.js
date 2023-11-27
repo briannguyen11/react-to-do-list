@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-
+import {
+    statuses,
+    getStatusColor,
+    getCategoryColor,
+} from "../styles/StatusAndCategory";
+import { bodyCellStyle, headCellStyle } from "../styles/TableDesign";
+import ContextMenu from "./ContextMenu";
 import {
     TableContainer,
     Table,
@@ -8,90 +14,43 @@ import {
     TableCell,
     TableBody,
     TablePagination,
-    IconButton,
     Select,
     MenuItem,
 } from "@mui/material";
-
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import WindowIcon from "@mui/icons-material/Window";
-import StarPurple500Icon from "@mui/icons-material/StarPurple500";
+import ArrowDropDownCircleIcon from "@mui/icons-material/ArrowDropDownCircle";
 import ScatterPlotIcon from "@mui/icons-material/ScatterPlot";
 import CircleIcon from "@mui/icons-material/Circle";
 
-function DeleteButton() {
-    const handleDelete = () => {
-        // Implement the delete logic here
-    };
-
-    return (
-        <IconButton onClick={handleDelete} color="secondary">
-            <DeleteOutlineIcon />
-        </IconButton>
-    );
-}
-
-function FlagToggleButton() {
-    const [isFlagged, setIsFlagged] = useState(false);
-
-    const handleToggleFlag = () => {
-        setIsFlagged(!isFlagged);
-    };
-
-    return (
-        <div>
-            <IconButton onClick={handleToggleFlag}>
-                {isFlagged ? <BookmarkIcon /> : <BookmarkBorderOutlinedIcon />}
-            </IconButton>
-        </div>
-    );
-}
-
-function TaskTable(props) {
-    const rows = props.taskData;
+function TaskTable({
+    tasks,
+    removeOneTask,
+    updateOneTask,
+    toggleTaskInfo,
+    getTaskId,
+}) {
+    const rows = tasks;
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(10);
 
-    const statuses = ["Not Started", "In Progress", "Done"];
+    const { handleContextMenu, contextMenuComponent } = ContextMenu({
+        tasks,
+        removeOneTask,
+        toggleTaskInfo,
+        getTaskId,
+    });
 
     const handleStatusChange = (index, newStatus) => {
-        // Add logic to update the status in your data structure
-        // For example, call a function passed as a prop to update the status.
-        // props.onStatusChange(index, newStatus);
-        console.log(index);
-        console.log(newStatus);
+        updateOneTask(rows[index]._id, { status: newStatus });
     };
 
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Not Started":
-                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
-            case "In Progress":
-                return { backgroundColor: "#ffebbd", iconColor: "#cc7722" };
-            case "Done":
-                return { backgroundColor: "#d2e7d6", iconColor: "#50835c" };
-            default:
-                return { backgroundColor: "#f0f0f0", iconColor: "#767676" };
-        }
-    };
-
-    const getCategoryColor = (category) => {
-        switch (category) {
-            case "Personal":
-                return "#ffdddd"; // Red background for Personal
-            case "Work":
-                return "#ffffcc"; // Yellow background for Work
-            case "School":
-                return "#d9ffd9"; // Green background for School
-            case "Sports":
-                return "#c7e1ff"; // Blue background for Sports
-            default:
-                return "#f0f0f0"; // Default background color
-        }
+    const handlePriorityChange = (index) => {
+        const newPriority = !rows[index].flagged;
+        updateOneTask(rows[index]._id, { flagged: newPriority });
     };
 
     const handleChangePage = (newPage) => {
@@ -103,30 +62,14 @@ function TaskTable(props) {
         setPage(0);
     };
 
-    const bodyCellStyle = (hasRightBorder) => ({
-        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
-        padding: 8,
-        color: "#000",
-        fontFamily: "Montserrat , sans-serif",
-        fontSize: "16px",
-    });
-
-    const headCellStyle = (hasRightBorder) => ({
-        borderBottom: "3px solid #ddd",
-        borderRight: hasRightBorder ? "none" : "1px solid #ddd",
-        padding: 8,
-        color: "rgba(128, 128, 128, 0.8)",
-        fontFamily: "Montserrat , sans-serif",
-    });
-
     return (
-        <TableContainer>
+        <TableContainer onContextMenu={(e) => e.preventDefault()}>
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
                         <TableCell
                             style={headCellStyle(false)}
-                            sx={{ width: "10%" }}
+                            sx={{ width: "5%" }}
                         >
                             <ScatterPlotIcon
                                 style={{
@@ -174,10 +117,10 @@ function TaskTable(props) {
                             Category
                         </TableCell>
                         <TableCell
-                            style={headCellStyle(false)}
+                            style={headCellStyle(true)}
                             sx={{ width: "10%" }}
                         >
-                            <StarPurple500Icon
+                            <ArrowDropDownCircleIcon
                                 style={{
                                     marginRight: 6,
                                     position: "relative",
@@ -185,12 +128,6 @@ function TaskTable(props) {
                                 }}
                             />
                             Priority
-                        </TableCell>
-                        <TableCell
-                            style={headCellStyle(true)}
-                            sx={{ width: "10%" }}
-                        >
-                            Delete
                         </TableCell>
                     </TableRow>
                 </TableHead>
@@ -201,11 +138,16 @@ function TaskTable(props) {
                             page * rowsPerPage + rowsPerPage
                         )
                         .map((row, index) => (
-                            <TableRow key={index}>
+                            <TableRow
+                                key={index}
+                                onContextMenu={(event) =>
+                                    handleContextMenu(event, index)
+                                }
+                            >
                                 <TableCell
                                     style={bodyCellStyle(false)}
                                     align="left"
-                                    sx={{ width: "10%" }}
+                                    sx={{ width: "5%" }}
                                 >
                                     <Select
                                         value={row.status}
@@ -221,11 +163,7 @@ function TaskTable(props) {
                                                 {
                                                     border: "none", // Remove outline for outlined variant
                                                 },
-                                            backgroundColor: getStatusColor(
-                                                row.status
-                                            ).backgroundColor,
-                                            borderRadius: 8, // Set border-radius
-                                            height: 35,
+                                            height: 25,
                                         }}
                                     >
                                         {statuses.map((status) => (
@@ -233,18 +171,30 @@ function TaskTable(props) {
                                                 key={status}
                                                 value={status}
                                             >
-                                                <CircleIcon
+                                                <div
                                                     style={{
-                                                        color: getStatusColor(
-                                                            status
-                                                        ).iconColor,
-                                                        fontSize: "14px",
-                                                        marginRight: "4px",
-                                                        verticalAlign: "middle",
-                                                        marginTop: "-4px",
+                                                        backgroundColor:
+                                                            getStatusColor(
+                                                                status
+                                                            ).buttonColor,
+                                                        display: "inline-flex",
+                                                        alignItems: "center",
+                                                        borderRadius: 32,
+                                                        padding:
+                                                            "4px 15px 4px 10px", // top right bottom left
                                                     }}
-                                                />
-                                                {status}
+                                                >
+                                                    <CircleIcon
+                                                        style={{
+                                                            color: getStatusColor(
+                                                                status
+                                                            ).iconColor,
+                                                            fontSize: "14px",
+                                                            marginRight: "4px",
+                                                        }}
+                                                    />
+                                                    {status}
+                                                </div>
                                             </MenuItem>
                                         ))}
                                     </Select>
@@ -273,29 +223,45 @@ function TaskTable(props) {
                                             backgroundColor: getCategoryColor(
                                                 row.category
                                             ),
+                                            borderRadius: 8,
+                                            padding: "4px 15px 4px 10px", // top right bottom left
                                         }}
                                     >
                                         {row.category}
                                     </span>
                                 </TableCell>
                                 <TableCell
-                                    style={bodyCellStyle(false)}
-                                    align="left"
-                                    sx={{ width: "10%" }}
-                                >
-                                    <FlagToggleButton />
-                                </TableCell>
-                                <TableCell
                                     style={bodyCellStyle(true)}
                                     align="left"
                                     sx={{ width: "10%" }}
                                 >
-                                    <DeleteButton />
+                                    {row.flagged ? (
+                                        <BookmarkIcon
+                                            style={{
+                                                color: "#e48c65",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() =>
+                                                handlePriorityChange(index)
+                                            }
+                                        />
+                                    ) : (
+                                        <BookmarkBorderOutlinedIcon
+                                            style={{
+                                                color: "#e48c65",
+                                                cursor: "pointer",
+                                            }}
+                                            onClick={() =>
+                                                handlePriorityChange(index)
+                                            }
+                                        />
+                                    )}
                                 </TableCell>
                             </TableRow>
                         ))}
                 </TableBody>
             </Table>
+            {contextMenuComponent}
             <TablePagination
                 rowsPerPageOptions={[10, 25]}
                 component="div"
