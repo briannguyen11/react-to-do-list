@@ -39,8 +39,8 @@ function TaskBoard({
             source.droppableId === "notStarted"
                 ? notStarted.find((item) => item._id === draggableId)
                 : source.droppableId === "inProgress"
-                  ? inProgress.find((item) => item._id === draggableId)
-                  : done.find((item) => item._id === draggableId);
+                ? inProgress.find((item) => item._id === draggableId)
+                : done.find((item) => item._id === draggableId);
 
         // Remove task from the source column
         setNotStarted((prevNotStarted) =>
@@ -73,8 +73,8 @@ function TaskBoard({
             destination.droppableId === "notStarted"
                 ? "Not Started"
                 : destination.droppableId === "inProgress"
-                  ? "In Progress"
-                  : "Done";
+                ? "In Progress"
+                : "Done";
 
         await updateOneTask(draggableId, { status: updatedStatus });
     };
