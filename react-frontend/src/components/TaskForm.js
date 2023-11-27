@@ -299,7 +299,7 @@ function DescriptionInput({ name, value, onChange }) {
     );
 }
 
-function SelectPrioirty({ name, value, onChange }) {
+function SelectPriority({ name, value, onChange }) {
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
     };
@@ -320,7 +320,7 @@ function SelectPrioirty({ name, value, onChange }) {
                 ) : (
                     <BookmarkBorderOutlinedIcon sx={{ marginRight: "10px" }} />
                 )}
-                <p>Prioirty</p>
+                <p>Priority</p>
             </Grid>
 
             {/* Right side */}
@@ -412,7 +412,7 @@ function TaskForm({ userId, handleSubmit, toggleTaskForm }) {
                 value={taskData.description}
                 onChange={handleChange}
             />
-            <SelectPrioirty
+            <SelectPriority
                 name="flagged"
                 value={taskData.flagged}
                 onChange={handleChange}
