@@ -2,22 +2,25 @@ import React, { useState, useEffect } from "react";
 import TaskColumn from "./TaskColumn";
 import { DragDropContext } from "react-beautiful-dnd";
 
-function TaskBoard({ userId, fetchBoardData, updateOneTask }) {
+function TaskBoard({ tasks, updateOneTask }) {
     const [notStarted, setNotStarted] = useState([]);
     const [inProgress, setInProgress] = useState([]);
     const [done, setDone] = useState([]);
 
     useEffect(() => {
-        fetchBoardData(userId, "Not Started").then((result) => {
-            if (result) setNotStarted(result);
-        });
-        fetchBoardData(userId, "In Progress").then((result) => {
-            if (result) setInProgress(result);
-        });
-        fetchBoardData(userId, "Done").then((result) => {
-            if (result) setDone(result);
-        });
-    }, [userId]);
+        // Filter tasks based on their status and update the local state
+        const notStartedTasks = tasks.filter(
+            (task) => task.status === "Not Started"
+        );
+        const inProgressTasks = tasks.filter(
+            (task) => task.status === "In Progress"
+        );
+        const doneTasks = tasks.filter((task) => task.status === "Done");
+
+        setNotStarted(notStartedTasks);
+        setInProgress(inProgressTasks);
+        setDone(doneTasks);
+    }, [tasks]);
 
     const handleDragEnd = async (result) => {
         const { destination, source, draggableId } = result;

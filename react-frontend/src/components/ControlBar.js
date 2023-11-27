@@ -19,6 +19,7 @@ import {
 import Grid from "@mui/material/Unstable_Grid2";
 import CircleIcon from "@mui/icons-material/Circle";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
+import BookmarkBorderOutlinedIcon from "@mui/icons-material/BookmarkBorderOutlined";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import ViewWeekOutlinedIcon from "@mui/icons-material/ViewWeekOutlined";
 
@@ -162,6 +163,22 @@ function ControlBar({ toggleTaskForm, changeTaskView, changeTableFilter }) {
                                         }}
                                     />
                                     Flagged
+                                </div>
+                            </MenuItem>
+                            <MenuItem value={false}>
+                                <div
+                                    style={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <BookmarkBorderOutlinedIcon
+                                        style={{
+                                            color: "#e48c65",
+                                            marginRight: "8px",
+                                        }}
+                                    />
+                                    Non-Flagged
                                 </div>
                             </MenuItem>
                         </Select>

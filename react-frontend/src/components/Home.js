@@ -51,7 +51,7 @@ function Home() {
             status = filterCriteria;
         } else if (categories.includes(filterCriteria)) {
             category = filterCriteria;
-        } else if (filterCriteria === true) {
+        } else if (filterCriteria === true || filterCriteria === false) {
             flagged = filterCriteria;
         }
 
@@ -86,7 +86,7 @@ function Home() {
             };
             const response = await axios.get(
                 `http://localhost:8000/users/${userId}`,
-                status || date || category || flagged ? queryParams : undefined
+                queryParams
             );
             return response.data.tasks_list;
         } catch (error) {
@@ -205,8 +205,7 @@ function Home() {
                         <div style={{ marginTop: 16 }}>
                             {taskView === "taskBoard" && (
                                 <TaskBoard
-                                    userId={userId}
-                                    fetchBoardData={fetchAll}
+                                    tasks={tasks}
                                     updateOneTask={updateOneTask}
                                 />
                             )}
