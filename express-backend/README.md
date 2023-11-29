@@ -1,9 +1,6 @@
 # Backend
 
-<details>
-<summary>Endpoints</summary>
-<p>
-
+## Endpoints
 -   Root: "/"
     -   GET: returns "Hello World"
 -   Login: "/login"
@@ -36,12 +33,8 @@
         -   Accepts "user", "categories", "date", "flagged" and "completed" from **query**
         -   Retrieves tasks, can be filtered by user as well as user and other field
     -   POST: - Accepts representation of task from **body** - Attempts to add the task to database
-</p>
-</details>
-<details>
-<summary>Models</summary>
-<p>
 
+## Models
 -   User:
     -   email:
         -   String, required
