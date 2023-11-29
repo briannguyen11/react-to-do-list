@@ -93,7 +93,7 @@ function ControlBar({ toggleTaskForm, changeTaskView, changeTableFilter }) {
                                 <ViewWeekOutlinedIcon
                                     style={{ marginRight: "8px" }}
                                 />
-                                Baord
+                                Board
                             </div>
                         </Button>
                     </Grid>
