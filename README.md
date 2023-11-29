@@ -9,11 +9,11 @@ This project is a to-do-list website that enables users to create, update and de
 - Arman Onbirbak
 
 ### Documentation
-[Environment Setup](docs/setup.md)
+[Environment Setup](docs/setup.md) (Last updated 11/29/23)
 
-[Figma Mockup](docs/FigmaMockup.pdf)
+[Figma Mockup](docs/FigmaMockup.pdf) (Last updated 10/26/23)
 
-[Class Diagram](docs/ClassDiagram.png)
+[Class Diagram](docs/ClassDiagram.png) (Last updated 11/16/23)
 
 [Backend Overview](express-backend/README.md)
 
