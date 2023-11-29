@@ -1,12 +1,11 @@
-// import { Navigate } from "react-router-dom";
-import { useAuth } from "./useAuth";
+import { Navigate } from "react-router-dom";
+import { useAuth } from "./AuthProvider";
 
 export const ProtectedRoute = ({ children }) => {
-    const { user } = useAuth() || {};
-    if (!user) {
-        return children;
-        // user is not authenticated
-        // return <Navigate to="/" />;
+    const { value } = useAuth();
+    console.log(value.token);
+    if (!value.token) {
+        return <Navigate to="/" replace />;
     }
     return children;
 };
