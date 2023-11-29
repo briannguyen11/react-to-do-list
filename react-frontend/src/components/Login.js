@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
+import { AuthProvider } from "./useAuth";
 
 function Login() {
     const navigate = useNavigate();
@@ -37,6 +38,7 @@ function Login() {
     }
 
     async function handleSubmit(e, user) {
+        const { login } = AuthProvider();
         e.preventDefault(); // Prevent the default form behavior
         try {
             // Request to check user login
@@ -46,6 +48,7 @@ function Login() {
             if (response && response.status === 200) {
                 // Successful login
                 const userId = response.data;
+                login(userId);
                 navigate(`/home/${userId}`);
                 setUserLogin({
                     email: "",
