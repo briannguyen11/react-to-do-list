@@ -1,4 +1,5 @@
 import React from "react";
+<<<<<<< HEAD
 import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
@@ -10,8 +11,17 @@ root.render(
         <App />
     </React.StrictMode>
 );
+=======
+import ReactDOMClient from "react-dom/client";
+import MyApp from "./MyApp";
+import "./index.css";
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// create the containtner
+const container = document.getElementById("root");
+>>>>>>> 8545870 (slowly implementing landing page)
+
+// create a root
+const root = ReactDOMClient.createRoot(container);
+
+// intial render: Render an element to the Root
+root.render(<MyApp />);
