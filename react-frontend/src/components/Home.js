@@ -5,14 +5,13 @@ import TaskTable from "./TaskTable";
 import TaskInfo from "./TaskInfo";
 import TaskBoard from "./KanbanBoard/TaskBoard";
 import ControlBar from "./ControlBar";
-import { useParams } from "react-router-dom";
 import { statuses, categories } from "../styles/StatusAndCategory";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
 function Home() {
-    const { userId } = useParams();
+    const userId = localStorage.getItem("token");
     const [tasks, setTasks] = useState([]);
     const [taskId, setTaskId] = useState(null);
     const [filter, setFilter] = useState(null);

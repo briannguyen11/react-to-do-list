@@ -21,6 +21,14 @@ function MyApp() {
                             </ProtectedRoute>
                         }
                     />
+                    <Route
+                        path="*"
+                        element={
+                            <ProtectedRoute>
+                                <Home />
+                            </ProtectedRoute>
+                        }
+                    />
                 </Routes>
             </Router>
         </AuthProvider>
