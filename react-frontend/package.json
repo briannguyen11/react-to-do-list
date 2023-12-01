@@ -31,9 +31,10 @@
     "scripts": {
         "start": "react-scripts start",
         "build": "react-scripts build",
-        "test": "react-scripts test",
+        "test": "CI=true react-scripts test --transformIgnorePatterns \"node_modules/(?!axios)/\"",
         "eject": "react-scripts eject"
     },
+
     "eslintConfig": {
         "extends": [
             "react-app",
@@ -53,6 +54,10 @@
         ]
     },
     "devDependencies": {
+        "@babel/core": "^7.23.5",
+        "@babel/preset-env": "^7.23.5",
+        "@babel/preset-react": "^7.23.3",
+        "babel-jest": "^29.7.0",
         "eslint-config-prettier": "^9.0.0",
         "eslint-plugin-prettier": "^5.0.1",
         "prettier": "^3.1.0"

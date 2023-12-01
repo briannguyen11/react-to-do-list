@@ -26,5 +26,4 @@ function MyApp() {
         </AuthProvider>
     );
 }
-
 export default MyApp;
