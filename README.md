@@ -17,13 +17,16 @@ This project is a to-do-list website that enables users to create, update and de
 
 [Backend Overview](express-backend/README.md)
 
-### Linting and Style Guidelines
+### Linting and Style Guidelines:
 - Project is using ESlint with prettierrc, can run using npx eslint
 - ESlint and Prettier vscode extensions used
 - Basic Guidelines:
-    - Use 4 spaces for indentation.
-    - End statements with semicolons.
-    - Use double quotes for string literals.
-    - Add spaces within object literals' braces {}.
-    - Limit the line width to 80 characters.
-    - Avoid trailing commas except in function parameter lists for ES5 JavaScript syntax.
+    - Use 4 spaces for indentation
+    - End statements with semicolons
+    - Use double quotes for string literals
+    - Add spaces within object literals' braces {}
+    - Limit the line width to 80 characters
+    - Avoid trailing commas except in function parameter lists for ES5 JavaScript syntax
+
+### Code Coverage Report (Last updated 12/1/23):
+![image](https://github.com/briannguyen11/react-to-do-list/assets/81583127/a9bb3fda-5de6-44bc-8c60-867d6caad07d)
