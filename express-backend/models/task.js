@@ -29,7 +29,7 @@ const TaskSchema = new Schema(
         },
         category: {
             type: String,
-            required: false,
+            required: true,
             trim: true,
             enum: ["Personal", "Sports", "School", "Work"],
         },

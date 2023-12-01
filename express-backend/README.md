@@ -25,14 +25,12 @@
     -   DELETE:
         -   Accepts id of **user** from **params** and id of **existing task** from **query**
         -   Attempts to delete task from task list and remove from user tasks field
--   Tasks: "/tasks
-    -   **Probably needs to change**
-        -   Need to figure out if this is even used or if it's done through user task list
-        -   "user" field probably needs to be removed since it's duplicate information
+-   Tasks with id: "/tasks/:id"
     -   GET:
-        -   Accepts "user", "categories", "date", "flagged" and "completed" from **query**
-        -   Retrieves tasks, can be filtered by user as well as user and other field
-    -   POST: - Accepts representation of task from **body** - Attempts to add the task to database
+        -   Accepts id of **task** from **params**
+        -   Retrieves task
+    -   PUT:
+        -   Accepts representation of **task** from **body** and id of **user** from params
 
 ## Models
 -   User:
@@ -48,12 +46,10 @@
     -   description:
         -   String, required
     -   categories:
-        -   String, not required
+        -   String, required
     -   date:
         -   Date, required
     -   flagged:
         -   Boolean, required
-    -   completed:
-       - String, required
-<p>
-</details>
+    -   status:
+        -   String, required
