@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
     statuses,
     getStatusColor,
@@ -13,7 +13,6 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    TablePagination,
     Select,
     MenuItem,
 } from "@mui/material";
@@ -34,8 +33,6 @@ function TaskTable({
     getTaskId,
 }) {
     const rows = tasks;
-    const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
 
     const { handleContextMenu, contextMenuComponent } = ContextMenu({
         tasks,
@@ -53,17 +50,11 @@ function TaskTable({
         updateOneTask(rows[index]._id, { flagged: newPriority });
     };
 
-    const handleChangePage = (newPage) => {
-        setPage(newPage);
-    };
-
-    const handleChangeRowsPerPage = (event) => {
-        setRowsPerPage(parseInt(event.target.value, 10));
-        setPage(0);
-    };
-
     return (
-        <TableContainer onContextMenu={(e) => e.preventDefault()}>
+        <TableContainer
+            style={{ maxHeight: 600, overflowY: "auto" }}
+            onContextMenu={(e) => e.preventDefault()}
+        >
             <Table sx={{ minWidth: 650 }} aria-label="simple table">
                 <TableHead>
                     <TableRow>
@@ -132,145 +123,126 @@ function TaskTable({
                     </TableRow>
                 </TableHead>
                 <TableBody>
-                    {rows
-                        .slice(
-                            page * rowsPerPage,
-                            page * rowsPerPage + rowsPerPage
-                        )
-                        .map((row, index) => (
-                            <TableRow
-                                key={index}
-                                onContextMenu={(event) =>
-                                    handleContextMenu(event, index)
-                                }
+                    {rows.map((row, index) => (
+                        <TableRow
+                            key={index}
+                            onContextMenu={(event) =>
+                                handleContextMenu(event, index)
+                            }
+                        >
+                            <TableCell
+                                style={bodyCellStyle(false)}
+                                align="left"
+                                sx={{ width: "5%" }}
                             >
-                                <TableCell
-                                    style={bodyCellStyle(false)}
-                                    align="left"
-                                    sx={{ width: "5%" }}
+                                <Select
+                                    value={row.status}
+                                    onChange={(e) =>
+                                        handleStatusChange(
+                                            index,
+                                            e.target.value
+                                        )
+                                    }
+                                    IconComponent={() => null}
+                                    sx={{
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                            border: "none", // Remove outline for outlined variant
+                                        },
+                                        height: 25,
+                                    }}
                                 >
-                                    <Select
-                                        value={row.status}
-                                        onChange={(e) =>
-                                            handleStatusChange(
-                                                index,
-                                                e.target.value
-                                            )
-                                        }
-                                        IconComponent={() => null}
-                                        sx={{
-                                            "& .MuiOutlinedInput-notchedOutline":
-                                                {
-                                                    border: "none", // Remove outline for outlined variant
-                                                },
-                                            height: 25,
-                                        }}
-                                    >
-                                        {statuses.map((status) => (
-                                            <MenuItem
-                                                key={status}
-                                                value={status}
+                                    {statuses.map((status) => (
+                                        <MenuItem key={status} value={status}>
+                                            <div
+                                                style={{
+                                                    backgroundColor:
+                                                        getStatusColor(status)
+                                                            .buttonColor,
+                                                    display: "inline-flex",
+                                                    alignItems: "center",
+                                                    borderRadius: 32,
+                                                    padding:
+                                                        "4px 15px 4px 10px", // top right bottom left
+                                                }}
                                             >
-                                                <div
+                                                <CircleIcon
                                                     style={{
-                                                        backgroundColor:
-                                                            getStatusColor(
-                                                                status
-                                                            ).buttonColor,
-                                                        display: "inline-flex",
-                                                        alignItems: "center",
-                                                        borderRadius: 32,
-                                                        padding:
-                                                            "4px 15px 4px 10px", // top right bottom left
+                                                        color: getStatusColor(
+                                                            status
+                                                        ).iconColor,
+                                                        fontSize: "14px",
+                                                        marginRight: "4px",
                                                     }}
-                                                >
-                                                    <CircleIcon
-                                                        style={{
-                                                            color: getStatusColor(
-                                                                status
-                                                            ).iconColor,
-                                                            fontSize: "14px",
-                                                            marginRight: "4px",
-                                                        }}
-                                                    />
-                                                    {status}
-                                                </div>
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </TableCell>
-                                <TableCell
-                                    style={bodyCellStyle(false)}
-                                    component="th"
-                                    scope="row"
+                                                />
+                                                {status}
+                                            </div>
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </TableCell>
+                            <TableCell
+                                style={bodyCellStyle(false)}
+                                component="th"
+                                scope="row"
+                            >
+                                {row.title}
+                            </TableCell>
+                            <TableCell
+                                style={bodyCellStyle(false)}
+                                align="left"
+                                sx={{ width: "15%" }}
+                            >
+                                {new Date(row.date).toLocaleDateString()}
+                            </TableCell>
+                            <TableCell
+                                style={bodyCellStyle(false)}
+                                align="left"
+                                sx={{ width: "15%" }}
+                            >
+                                <span
+                                    style={{
+                                        backgroundColor: getCategoryColor(
+                                            row.category
+                                        ),
+                                        borderRadius: 8,
+                                        padding: "4px 15px 4px 10px", // top right bottom left
+                                    }}
                                 >
-                                    {row.title}
-                                </TableCell>
-                                <TableCell
-                                    style={bodyCellStyle(false)}
-                                    align="left"
-                                    sx={{ width: "15%" }}
-                                >
-                                    {new Date(row.date).toLocaleDateString()}
-                                </TableCell>
-                                <TableCell
-                                    style={bodyCellStyle(false)}
-                                    align="left"
-                                    sx={{ width: "15%" }}
-                                >
-                                    <span
+                                    {row.category}
+                                </span>
+                            </TableCell>
+                            <TableCell
+                                style={bodyCellStyle(true)}
+                                align="left"
+                                sx={{ width: "10%" }}
+                            >
+                                {row.flagged ? (
+                                    <BookmarkIcon
                                         style={{
-                                            backgroundColor: getCategoryColor(
-                                                row.category
-                                            ),
-                                            borderRadius: 8,
-                                            padding: "4px 15px 4px 10px", // top right bottom left
+                                            color: "#e48c65",
+                                            cursor: "pointer",
                                         }}
-                                    >
-                                        {row.category}
-                                    </span>
-                                </TableCell>
-                                <TableCell
-                                    style={bodyCellStyle(true)}
-                                    align="left"
-                                    sx={{ width: "10%" }}
-                                >
-                                    {row.flagged ? (
-                                        <BookmarkIcon
-                                            style={{
-                                                color: "#e48c65",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                                handlePriorityChange(index)
-                                            }
-                                        />
-                                    ) : (
-                                        <BookmarkBorderOutlinedIcon
-                                            style={{
-                                                color: "#e48c65",
-                                                cursor: "pointer",
-                                            }}
-                                            onClick={() =>
-                                                handlePriorityChange(index)
-                                            }
-                                        />
-                                    )}
-                                </TableCell>
-                            </TableRow>
-                        ))}
+                                        onClick={() =>
+                                            handlePriorityChange(index)
+                                        }
+                                    />
+                                ) : (
+                                    <BookmarkBorderOutlinedIcon
+                                        style={{
+                                            color: "#e48c65",
+                                            cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                            handlePriorityChange(index)
+                                        }
+                                    />
+                                )}
+                            </TableCell>
+                        </TableRow>
+                    ))}
                 </TableBody>
             </Table>
             {contextMenuComponent}
-            <TablePagination
-                rowsPerPageOptions={[10, 25]}
-                component="div"
-                count={rows.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-            />
         </TableContainer>
     );
 }
