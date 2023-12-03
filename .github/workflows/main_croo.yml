@@ -8,9 +8,9 @@ on:
         branches: ["main"]
     workflow_dispatch:
 
-defaults:
-    run:
-        working-directory: ./express-backend
+# defaults:
+#     run:
+#         working-directory: ./express-backend
 
 env:
     AZURE_WEBAPP_PACKAGE_PATH: ./express-backend # set this to the path to your web app project, defaults to the repository root
@@ -28,7 +28,7 @@ jobs:
                   node-version: "18.x"
 
             - name: npm install, build, and test
-              working-directory: express-backend
+              working-directory: ./express-backend
               run: |
                   npm install
                   npm run build --if-present
@@ -47,7 +47,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                   name: node-app
-                  path: expressjs-backend/release.zip
+                  path: express-backend/release.zip
 
     deploy:
         runs-on: ubuntu-latest
