@@ -28,11 +28,12 @@ jobs:
                   node-version: "18.x"
 
             - name: npm install, build, and test
+              working-directory: express-backend
               run: |
                   npm install
                   npm run build --if-present
                   npm run test --if-present
-                  working-directory: express-backend
+            
               env:
                   MONGO_DB: ${{ secrets.MONGO_DB }}
                   MONGO_USER: ${{ secrets.MONGO_USER }}
