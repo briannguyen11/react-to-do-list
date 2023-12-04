@@ -4,17 +4,21 @@ import { fakeAuth } from "./FakeAuth";
 const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(null);
+    // Load token from localStorage on initial render
+    const storedToken = localStorage.getItem("token");
+    const [token, setToken] = useState(storedToken);
 
     const handleLogin = async () => {
-        const token = await fakeAuth();
-        console.log("handleLogin token: " + token);
-        setToken(token);
+        const newToken = await fakeAuth();
+        console.log("handleLogin token: " + newToken);
+        setToken(newToken);
+        localStorage.setItem("token", token);
     };
 
     const handleLogout = () => {
         console.log("handleLogout");
         setToken(null);
+        localStorage.removeItem("token");
     };
 
     const value = {

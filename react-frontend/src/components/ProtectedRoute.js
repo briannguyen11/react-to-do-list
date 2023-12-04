@@ -1,10 +1,9 @@
 import { Navigate } from "react-router-dom";
-import { useAuth } from "./AuthProvider";
 
 export const ProtectedRoute = ({ children }) => {
-    const { value } = useAuth();
-    console.log(value.token);
-    if (!value.token) {
+    const storedToken = localStorage.getItem("token");
+    console.log(storedToken);
+    if (storedToken == "null" || storedToken == null) {
         return <Navigate to="/" replace />;
     }
     return children;

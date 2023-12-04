@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
-import { useAuth } from "./AuthProvider";
 
 // const LOGIN_API_URL = "http://localhost:8000/login";
 const LOGIN_API_URL = "https://croolist.azurewebsites.net/login";
 
 function Login() {
-    const { value } = useAuth();
     const navigate = useNavigate();
+    localStorage.removeItem("token");
     const [userLogin, setUserLogin] = useState({
         email: "",
         password: "",
@@ -48,8 +47,8 @@ function Login() {
             if (response && response.status === 200) {
                 // Successful login
                 const userId = response.data;
-                value.token = response.data;
-                navigate(`/home/${userId}`);
+                localStorage.setItem("token", userId);
+                navigate(`/home/`);
                 setUserLogin({
                     email: "",
                     password: "",
