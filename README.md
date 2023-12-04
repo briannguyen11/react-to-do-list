@@ -1,5 +1,5 @@
 ## To-Do-CROO CROO List 
-[![Node.js CI](https://github.com/briannguyen11/react-to-do-list/actions/workflows/node.js.yml/badge.svg)](https://github.com/briannguyen11/react-to-do-list/actions/workflows/node.js.yml) [![Frontend React CI](https://github.com/briannguyen11/react-to-do-list/actions/workflows/frontend-react-ci.yml/badge.svg)](https://github.com/briannguyen11/react-to-do-list/actions/workflows/frontend-react-ci.yml)
+[![Node.js CI](https://github.com/briannguyen11/react-to-do-list/actions/workflows/node.js.yml/badge.svg)](https://github.com/briannguyen11/react-to-do-list/actions/workflows/node.js.yml) [![Frontend React CI](https://github.com/briannguyen11/react-to-do-list/actions/workflows/frontend-react-ci.yml/badge.svg)](https://github.com/briannguyen11/react-to-do-list/actions/workflows/frontend-react-ci.yml) [![Build and deploy Node.js app to Azure Web App - croo](https://github.com/briannguyen11/react-to-do-list/actions/workflows/main_croo.yml/badge.svg)](https://github.com/briannguyen11/react-to-do-list/actions/workflows/main_croo.yml)
 ### Project Overview:
 This project is a to-do-list website that enables users to create, update and delete tasks so that they can improve their productivity. Users can view their tasks as part of a table or a board with support for filtering tasks by various fields.
 
