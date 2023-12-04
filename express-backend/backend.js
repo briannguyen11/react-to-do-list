@@ -123,30 +123,8 @@ app.delete("/users/:id", async (req, res) => {
     else res.status(404).send("Resource not found.");
 });
 
-// Tasks:
+// Tasks with id
 // GET:
-app.get("/tasks", async (req, res) => {
-    try {
-        const user = req.query["user"];
-        const category = req.query["categories"];
-        const date = req.query["date"];
-        const flagged = req.query["flagged"];
-        const status = req.query["status"];
-        const result = await taskServices.getTasks(
-            user,
-            category,
-            date,
-            flagged,
-            status
-        );
-        res.status(200).send({ tasks_list: result });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send("An error ocurred in the server.");
-    }
-});
-
-// GET by ID:
 app.get("/tasks/:taskId", async (req, res) => {
     try {
         const taskId = req.params.taskId;
@@ -158,15 +136,7 @@ app.get("/tasks/:taskId", async (req, res) => {
     }
 });
 
-// POST:
-app.post("/tasks", async (req, res) => {
-    const task = req.body;
-    const savedTask = await taskServices.addTask(task);
-    if (savedTask) res.status(201).send(savedTask);
-    else res.status(500).end();
-});
-
-// Tasks with id
+// PUT:
 app.put("/tasks/:id", async (req, res) => {
     const task = req.body;
     const taskId = req.params["id"];
