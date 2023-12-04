@@ -3,6 +3,9 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
 
+// const USERS_API_URL = "http://localhost:8000/users";
+const USERS_API_URL = "https://croolist.azurewebsites.net/users";
+
 function SignUp() {
     const navigate = useNavigate();
     const [userData, setUserData] = useState({
@@ -20,10 +23,7 @@ function SignUp() {
 
     async function createUser(user) {
         try {
-            const response = await axios.post(
-                "http://localhost:8000/users",
-                user
-            );
+            const response = await axios.post(`${USERS_API_URL}`, user);
             return response;
         } catch (error) {
             if (error.response && error.response.status === 409) {

@@ -4,6 +4,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button, TextField, Typography, Container } from "@mui/material";
 import { useAuth } from "./AuthProvider";
 
+// const LOGIN_API_URL = "http://localhost:8000/login";
+const LOGIN_API_URL = "https://croolist.azurewebsites.net/login";
+
 function Login() {
     const { value } = useAuth();
     const navigate = useNavigate();
@@ -21,10 +24,7 @@ function Login() {
 
     async function checkUser(user) {
         try {
-            const response = await axios.post(
-                "http://localhost:8000/login",
-                user
-            );
+            const response = await axios.post(`${LOGIN_API_URL}`, user);
             return response;
         } catch (error) {
             if (error.response && error.response.status === 401) {

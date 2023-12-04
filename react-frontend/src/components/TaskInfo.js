@@ -28,6 +28,9 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { MobileDatePicker } from "@mui/x-date-pickers/MobileDatePicker";
 
+// const TASKS_API_URL = "http://localhost:8000/tasks"
+const TASKS_API_URL = "https://croolist.azurewebsites.net/tasks";
+
 function TitleInput({ name, value, onChange }) {
     const handleInputChange = (event) => {
         onChange({ target: { name, value: event.target.value } });
@@ -355,9 +358,7 @@ function TaskInfo({ taskId, toggleTaskInfo, handleSave }) {
     useEffect(() => {
         const fetchTaskData = async () => {
             try {
-                const response = await axios.get(
-                    `http://localhost:8000/tasks/${taskId}`
-                );
+                const response = await axios.get(`${TASKS_API_URL}/${taskId}`);
                 if (response.status === 200) {
                     setTaskData(response.data);
                 }

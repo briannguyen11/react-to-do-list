@@ -11,6 +11,11 @@ import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
 
+// const USERS_API_URL = "http://localhost:8000/users";
+const USERS_API_URL = "https://croolist.azurewebsites.net/users";
+// const TASKS_API_URL = "http://localhost:8000/tasks"
+const TASKS_API_URL = "https://croolist.azurewebsites.net/tasks";
+
 function Home() {
     const { userId } = useParams();
     const [tasks, setTasks] = useState([]);
@@ -88,7 +93,7 @@ function Home() {
                 },
             };
             const response = await axios.get(
-                `http://localhost:8000/users/${userId}`,
+                `${USERS_API_URL}/${userId}`,
                 queryParams
             );
             return response.data.tasks_list;
@@ -110,7 +115,7 @@ function Home() {
     async function makePostCall(task) {
         try {
             const response = await axios.post(
-                `http://localhost:8000/users/${userId}`,
+                `${USERS_API_URL}/${userId}`,
                 task
             );
             return response;
@@ -136,7 +141,7 @@ function Home() {
     async function makeDeleteCall(taskId) {
         try {
             const response = await axios.delete(
-                `http://localhost:8000/users/${userId}?id=${taskId}`
+                `${USERS_API_URL}/${userId}?id=${taskId}`
             );
             console.log(response);
             return response;
@@ -163,7 +168,7 @@ function Home() {
     async function updateOneTask(taskId, taskData) {
         try {
             const response = await axios.put(
-                `http://localhost:8000/tasks/${taskId}`,
+                `${TASKS_API_URL}${taskId}`,
                 taskData
             );
             if (response.status !== 200) {
