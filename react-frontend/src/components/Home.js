@@ -167,7 +167,7 @@ function Home() {
     async function updateOneTask(taskId, taskData) {
         try {
             const response = await axios.put(
-                `${TASKS_API_URL}${taskId}`,
+                `${TASKS_API_URL}/${taskId}`,
                 taskData
             );
             if (response.status !== 200) {
