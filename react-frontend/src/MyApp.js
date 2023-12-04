@@ -14,7 +14,7 @@ function MyApp() {
                     <Route path="/" element={<Login />} />
                     <Route path="/sign-up" element={<SignUp />} />
                     <Route
-                        path="/home/:userId"
+                        path="/home/"
                         element={
                             <ProtectedRoute>
                                 <Home />
