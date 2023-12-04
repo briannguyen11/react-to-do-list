@@ -6,5 +6,6 @@ export const ProtectedRoute = ({ children }) => {
     if (storedToken == "null" || storedToken == null) {
         return <Navigate to="/" replace />;
     }
+    window.history.pushState(null, null, "/home/");
     return children;
 };
