@@ -9,6 +9,9 @@ import { statuses, categories } from "../styles/StatusAndCategory";
 import { motion, AnimatePresence, easeIn, easeOut } from "framer-motion";
 import { Container } from "@mui/material";
 import Grid from "@mui/material/Unstable_Grid2";
+import { Button } from "@mui/material";
+import LogoutIcon from "@mui/icons-material/Logout";
+import { useNavigate } from "react-router-dom";
 
 // const USERS_API_URL = "http://localhost:8000/users";
 const USERS_API_URL = "https://croolist.azurewebsites.net/users";
@@ -16,6 +19,11 @@ const USERS_API_URL = "https://croolist.azurewebsites.net/users";
 const TASKS_API_URL = "https://croolist.azurewebsites.net/tasks";
 
 function Home() {
+    const navigate = useNavigate();
+    const handleLogout = () => {
+        navigate("/");
+    };
+
     const userId = localStorage.getItem("token");
     const [tasks, setTasks] = useState([]);
     const [taskId, setTaskId] = useState(null);
@@ -229,6 +237,22 @@ function Home() {
                                 📚
                             </span>{" "}
                             CROO Task List
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                startIcon={<LogoutIcon />}
+                                onClick={handleLogout}
+                                style={{
+                                    height: "56px", // Increase the height to make the icon more prominent
+                                    width: "102px", // Make the button square
+                                    padding: "8px",
+                                    textTransform: "none",
+                                    fontSize: "16px",
+                                    marginLeft: "auto",
+                                }}
+                            >
+                                Logout
+                            </Button>
                         </h1>
                         <ControlBar
                             toggleTaskForm={toggleTaskForm}

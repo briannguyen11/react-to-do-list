@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, TextField, Typography, Container } from "@mui/material";
+import {
+    Button,
+    TextField,
+    Typography,
+    Container,
+    Snackbar,
+    Alert,
+} from "@mui/material";
 
 // const LOGIN_API_URL = "http://localhost:8000/login";
 const LOGIN_API_URL = "https://croolist.azurewebsites.net/login";
@@ -13,6 +20,10 @@ function Login() {
         email: "",
         password: "",
     });
+    const [showIncorrectPasswordOverlay, setShowIncorrectPasswordOverlay] =
+        useState(false);
+    const [showUserNotFoundOverlay, setShowUserNotFoundOverlay] =
+        useState(false);
 
     function handleChange(event) {
         setUserLogin({
@@ -27,9 +38,11 @@ function Login() {
             return response;
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                alert("Incorrect password");
+                // Show incorrect password overlay
+                setShowIncorrectPasswordOverlay(true);
             } else if (error.response && error.response.status === 404) {
-                alert("User does not exist");
+                // Show user not found overlay
+                setShowUserNotFoundOverlay(true);
             } else {
                 console.error("Unexpected error:", error);
             }
@@ -61,6 +74,11 @@ function Login() {
         }
     }
 
+    const handleCloseOverlays = () => {
+        setShowIncorrectPasswordOverlay(false);
+        setShowUserNotFoundOverlay(false);
+    };
+
     return (
         <Container component="main" maxWidth="xs">
             <div
@@ -78,7 +96,36 @@ function Login() {
                 >
                     ToDo Croo
                 </Typography>
+
+                {/* Incorrect Password Overlay */}
+                <Snackbar
+                    open={showIncorrectPasswordOverlay}
+                    autoHideDuration={6000}
+                    onClose={handleCloseOverlays}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    style={{ position: "absolute", top: "7%" }}
+                >
+                    <Alert severity="error" onClose={handleCloseOverlays}>
+                        Incorrect password. Please try again.
+                    </Alert>
+                </Snackbar>
+
+                {/* User Not Found Overlay */}
+                <Snackbar
+                    open={showUserNotFoundOverlay}
+                    autoHideDuration={6000}
+                    onClose={handleCloseOverlays}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    style={{ position: "absolute", top: "7%" }}
+                >
+                    <Alert severity="error" onClose={handleCloseOverlays}>
+                        User does not exist.
+                    </Alert>
+                </Snackbar>
+
                 <form onSubmit={(e) => handleSubmit(e, userLogin)}>
+                    {/* Logo or other content goes here */}
+
                     <TextField
                         variant="outlined"
                         margin="normal"
