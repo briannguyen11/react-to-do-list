@@ -1,15 +1,30 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { Button, TextField, Typography, Container, Alert } from "@mui/material";
+import logo from '../assets/ToDoCroo_transparent.png'; 
+import {
+    Button,
+    TextField,
+    Typography,
+    Container,
+    Snackbar,
+    Alert,
+} from "@mui/material";
+
+// const LOGIN_API_URL = "http://localhost:8000/login";
+const LOGIN_API_URL = "https://croolist.azurewebsites.net/login";
 
 function Login() {
     const navigate = useNavigate();
+    localStorage.removeItem("token");
     const [userLogin, setUserLogin] = useState({
         email: "",
         password: "",
     });
-    const [loginError, setLoginError] = useState(''); // State for handling login errors
+    const [showIncorrectPasswordOverlay, setShowIncorrectPasswordOverlay] =
+        useState(false);
+    const [showUserNotFoundOverlay, setShowUserNotFoundOverlay] =
+        useState(false);
 
     function handleChange(event) {
         setUserLogin({
@@ -20,38 +35,50 @@ function Login() {
 
     async function checkUser(user) {
         try {
-            const response = await axios.post(
-                "http://localhost:8000/login",
-                user
-            );
+            const response = await axios.post(`${LOGIN_API_URL}`, user);
             return response;
         } catch (error) {
-            if (error.response) {
-                // Handle different error statuses
-                if (error.response.status === 401) {
-                    setLoginError("Incorrect password");
-                } else if (error.response.status === 404) {
-                    setLoginError("User does not exist");
-                } else {
-                    setLoginError("An unexpected error occurred");
-                }
+            if (error.response && error.response.status === 401) {
+                // Show incorrect password overlay
+                setShowIncorrectPasswordOverlay(true);
+            } else if (error.response && error.response.status === 404) {
+                // Show user not found overlay
+                setShowUserNotFoundOverlay(true);
             } else {
-                setLoginError("Could not connect to the server");
+                console.error("Unexpected error:", error);
             }
             return false;
         }
     }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        const response = await checkUser(userLogin);
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+        try {
+            // Request to check user login
+            const response = await checkUser(user);
 
-        if (response && response.status === 200) {
-            const userId = response.data;
-            navigate(`/home/${userId}`);
-            setUserLogin({ email: "", password: "" });
+            // Handle request result
+            if (response && response.status === 200) {
+                // Successful login
+                const userId = response.data;
+                localStorage.setItem("token", userId);
+                navigate(`/home/`);
+                setUserLogin({
+                    email: "",
+                    password: "",
+                });
+            } else {
+                console.error("Failed to login");
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
         }
     }
+
+    const handleCloseOverlays = () => {
+        setShowIncorrectPasswordOverlay(false);
+        setShowUserNotFoundOverlay(false);
+    };
 
     return (
         <Container component="main" maxWidth="xs">
@@ -63,15 +90,38 @@ function Login() {
                     alignItems: "center",
                 }}
             >
-                <Typography
-                    component="h1"
-                    variant="h3"
-                    style={{ fontWeight: "bold", margin: "20px 0" }}
+                <img src={logo} alt="ToDo Croo Logo" style={{ width: '350px', margin: '40px 0 2px' }} /> {/* Logo added here */}
+                 
+
+                {/* Incorrect Password Overlay */}
+                <Snackbar
+                    open={showIncorrectPasswordOverlay}
+                    autoHideDuration={6000}
+                    onClose={handleCloseOverlays}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    style={{ position: "absolute", top: "5%" }}
                 >
-                    ToDo Croo
-                </Typography>
-                {loginError && <Alert severity="error">{loginError}</Alert>} {/* Display login error */}
-                <form onSubmit={handleSubmit}>
+                    <Alert severity="error" onClose={handleCloseOverlays}>
+                        Invalid username/password. Please try again.
+                    </Alert>
+                </Snackbar>
+
+                {/* User Not Found Overlay */}
+                <Snackbar
+                    open={showUserNotFoundOverlay}
+                    autoHideDuration={6000}
+                    onClose={handleCloseOverlays}
+                    anchorOrigin={{ vertical: "top", horizontal: "center" }}
+                    style={{ position: "absolute", top: "5%" }}
+                >
+                    <Alert severity="error" onClose={handleCloseOverlays}>
+                        Invalid username/password. Please try again.
+                    </Alert>
+                </Snackbar>
+
+                <form onSubmit={(e) => handleSubmit(e, userLogin)}>
+                    {/* Logo or other content goes here */}
+
                     <TextField
                         variant="outlined"
                         margin="normal"
