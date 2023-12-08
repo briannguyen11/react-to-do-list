@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
-import { Button, TextField, Typography, Container, Alert } from "@mui/material";
+import { Button, TextField, Typography, Container } from "@mui/material";
+
+// const USERS_API_URL = "http://localhost:8000/users";
+const USERS_API_URL = "https://croolist.azurewebsites.net/users";
 
 function SignUp() {
     const navigate = useNavigate();
@@ -10,7 +13,6 @@ function SignUp() {
         password: "",
         confirmPassword: "",
     });
-    const [signupError, setSignupError] = useState(''); // State for handling signup errors
 
     function handleChange(event) {
         setUserData({
@@ -21,38 +23,54 @@ function SignUp() {
 
     async function createUser(user) {
         try {
-            const response = await axios.post(
-                "http://localhost:8000/users",
-                user
-            );
+            const response = await axios.post(`${USERS_API_URL}`, user);
             return response;
         } catch (error) {
             if (error.response && error.response.status === 409) {
-                setSignupError("User already exists");
+                alert("User already exists");
             } else {
-                setSignupError("An unexpected error occurred");
+                console.error("Unexpected error:", error);
             }
             return false;
         }
     }
 
-    async function handleSubmit(e) {
-        e.preventDefault();
-        setSignupError(''); // Reset the error message
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+        try {
+            //email validation check
+            if (!isValidEmail(user.email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+            // Confirm passwords
+            if (user.password !== user.confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
 
-        // Confirm passwords
-        if (userData.password !== userData.confirmPassword) {
-            setSignupError("Passwords do not match");
-            return;
-        }
+            // Request to create user
+            const response = await createUser(user);
 
-        const user = { email: userData.email, password: userData.password };
-        const response = await createUser(user);
-
-        if (response && response.status === 201) {
-            const newUserId = response.data;
-            navigate(`/home/${newUserId}`);
-            setUserData({ email: "", password: "", confirmPassword: "" });
+            // Handle request result
+            if (response && response.status === 201) {
+                // Successful creation of user
+                const userId = response.data;
+                navigate(`/home/${userId}`);
+                setUserData({
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                });
+            } else {
+                console.error("Failed to create user");
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
         }
     }
 
@@ -73,8 +91,7 @@ function SignUp() {
                 >
                     ToDo Croo
                 </Typography>
-                {signupError && <Alert severity="error">{signupError}</Alert>} {/* Display signup error */}
-                <form onSubmit={handleSubmit}>
+                <form onSubmit={(e) => handleSubmit(e, userData)}>
                     <TextField
                         variant="outlined"
                         margin="normal"
