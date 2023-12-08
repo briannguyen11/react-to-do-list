@@ -14,12 +14,49 @@ function SignUp() {
         confirmPassword: "",
     });
 
+    // Add a new state for showing the verification message
+    const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+
     function handleChange(event) {
         setUserData({
             ...userData,
             [event.target.name]: event.target.value,
         });
     }
+    
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+
+        try {
+            // Confirm passwords
+            if (user.password !== user.confirmPassword) {
+                alert("Passwords do not match");
+                return;
+            }
+
+            // Request to create user
+            const response = await createUser(user);
+
+            // Handle request result
+            if (response && response.status === 201) {
+                // Successful creation of user
+                navigate(`/home/${response.data}`);
+                setUserData({
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                });
+                // Show the verification message
+                setShowVerificationMessage(true);
+            } else {
+                console.error("Failed to create user");
+            }
+        } catch (error) {
+            console.error("Unexpected error:", error);
+        }
+    }
+        
+    
 
     async function createUser(user) {
         try {
@@ -140,6 +177,17 @@ function SignUp() {
                     >
                         {"Already have an account? Sign In"}
                     </Link>
+                    {/* Add Snackbar here to show the verification message */}
+                    <Snackbar
+                        open={showVerificationMessage}
+                        autoHideDuration={6000}
+                        onClose={() => setShowVerificationMessage(false)}
+                        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                    >
+                        <Alert onClose={() => setShowVerificationMessage(false)} severity="info">
+                            Registration successful! Please check your email to verify your account.
+                        </Alert>
+                    </Snackbar>
                 </form>
             </div>
         </Container>
