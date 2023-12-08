@@ -1,6 +1,8 @@
 import userModel from "./user.js";
 import taskServices from "./task-services.js";
 import bcrypt from 'bcrypt';
+import { sendVerificationEmail } from './emailService';
+import crypto from 'crypto'; // For generating the token
 
 const saltRounds = 10;
 
@@ -45,14 +47,23 @@ async function addUser(user) {
             return { status: "exists" };
         }
 
+        // Generate a token for email verification
+        const verificationToken = crypto.randomBytes(20).toString('hex');
+
+        // Send verification email
+        sendVerificationEmail(user.email, verificationToken);
+
+        // Save the verification token with the user
+        const userToAdd = new userModel({
+            ...user,
+            password: hashedPassword,
+            isEmailVerified: false,
+            emailVerificationToken: verificationToken
+        });
+
         // Hash the password before storing it
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);
 
-        // If no existing user, proceed to add the new user
-        const userToAdd = new userModel({
-            ...user,
-            password: hashedPassword
-        });
         const savedUser = await userToAdd.save();
 
         return { status: "success", userId: savedUser._id };
