@@ -33,6 +33,19 @@ function Login() {
         });
     }
 
+    function isValidEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    async function handleSubmit(e, user) {
+        e.preventDefault(); // Prevent the default form behavior
+
+        if (!isValidEmail(user.email)) {
+            alert("Please enter a valid email address.");
+            return;
+        }
+
     async function checkUser(user) {
         try {
             const response = await axios.post(`${LOGIN_API_URL}`, user);
@@ -50,7 +63,7 @@ function Login() {
             return false;
         }
     }
-
+}
     async function handleSubmit(e, user) {
         e.preventDefault(); // Prevent the default form behavior
         try {
