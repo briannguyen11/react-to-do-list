@@ -1,17 +1,16 @@
 import userModel from "./user.js";
-import taskModel from "./task.js";
 import taskServices from "./task-services.js";
 import bcrypt from 'bcrypt';
 
 const saltRounds = 10;
 
-// Given a email, returns a list of users with matching emails
+// Given a user, returns valid status and user id if there is a user with matching email and password in database
 async function validateUser(user) {
     try {
         const existingUser = await userModel.findOne({ email: user.email });
         if (existingUser) {
-            const match = await bcrypt.compare(user.password, existingUser.password);
-            if (match) {
+            const passwordMatch = await bcrypt.compare(user.password, existingUser.password);
+            if (passwordMatch) {
                 return { status: "valid", userId: existingUser._id };
             } else {
                 return { status: "invalid" };
@@ -25,13 +24,13 @@ async function validateUser(user) {
     }
 }
 
-// Given a email, returns a list of users with matching emails
+// Given an email, returns a list of users with matching emails
 async function getUsers(email) {
     let result;
     if (email === undefined) {
         result = await userModel.find();
     } else {
-        result = await findUserByName(email);
+        result = await userModel.find({ email: email });
     }
 
     return result;
@@ -46,14 +45,14 @@ async function addUser(user) {
             return { status: "exists" };
         }
 
-        // Hash the password before saving the new user
+        // Hash the password before storing it
         const hashedPassword = await bcrypt.hash(user.password, saltRounds);
-        const userToAdd = new userModel({
-            email: user.email,
-            password: hashedPassword,
-            tasks: user.tasks || [] // Assuming tasks is an optional field
-        });
 
+        // If no existing user, proceed to add the new user
+        const userToAdd = new userModel({
+            ...user,
+            password: hashedPassword
+        });
         const savedUser = await userToAdd.save();
 
         return { status: "success", userId: savedUser._id };
@@ -66,7 +65,6 @@ async function addUser(user) {
 // Given a userId and optional task fields, returns subset of user tasks matching fields
 async function getUserTasks(userId, status, date, category, flagged) {
     let result;
-
     try {
         const user = await findUserAndTasksById(userId);
 
@@ -76,17 +74,18 @@ async function getUserTasks(userId, status, date, category, flagged) {
 
         const tasks = user.tasks;
 
-        if (status !== undefined) {
+        if (status !== undefined && status !== null) {
             result = tasks.filter((task) => task.status === status);
-        } else if (date !== undefined) {
+        } else if (date !== undefined && date !== null) {
             const queryDate = new Date(date);
             result = tasks.filter((task) => {
                 const taskDate = new Date(task.date);
                 return queryDate.getTime() === taskDate.getTime();
             });
-        } else if (category !== undefined) {
+        } else if (category !== undefined && category !== null) {
             result = tasks.filter((task) => task.category === category);
-        } else if (flagged !== undefined) {
+        } else if (flagged !== undefined && flagged !== null) {
+            console.log("HEY");
             result = tasks.filter(
                 (task) => task.flagged === (flagged === "true")
             );
@@ -105,14 +104,22 @@ async function getUserTasks(userId, status, date, category, flagged) {
 async function addTaskToUser(userId, task) {
     let updatedUser;
     try {
+        const user = await userModel.findById(userId);
+
         const taskToAdd = await taskServices.addTask(task);
+
+        if (!user) {
+            throw new Error("User not found");
+        }
 
         if (!taskToAdd) {
             throw new Error("Task not found");
         }
 
-        updatedUser = await userModel.findByIdAndUpdate(userId, {
-            $push: { tasks: taskToAdd._id },
+        const taskId = taskToAdd._id;
+
+        await userModel.findByIdAndUpdate(userId, {
+            $push: { tasks: taskId },
         });
 
         updatedUser = await findUserById(userId);
@@ -120,44 +127,39 @@ async function addTaskToUser(userId, task) {
         console.log(error);
         updatedUser = null;
     }
-
     return updatedUser;
 }
 
 // Given a userId and a taskId, deletes the task and removes it from the user
 async function deleteTaskFromUser(userId, taskId) {
+    let updatedUser;
     try {
-        const deletedTask = await taskModel.findByIdAndDelete(taskId);
-
-        if (!deletedTask) {
-            throw new Error("Task not found");
-        }
-
         const user = await userModel.findById(userId);
 
         if (!user) {
             throw new Error("User not found");
         }
 
-        // Remove the taskId from the user's tasks array
-        user.tasks = user.tasks.filter(
-            (userTaskId) => userTaskId.toString() !== taskId
-        );
+        const deletedTask = await taskServices.deleteTask(taskId);
 
-        // Save the updated user
-        return await user.save();
+        if (!deletedTask) {
+            throw new Error("Task not found");
+        }
+
+        await userModel.findByIdAndUpdate(userId, {
+            $pull: { tasks: taskId },
+        });
+
+        updatedUser = await findUserById(userId);
     } catch (error) {
         console.log(error);
-        return null;
+        updatedUser = null;
     }
+    return updatedUser;
 }
 
-async function deleteUser(id) {
-    return await userModel.findByIdAndDelete(id);
-}
-
-async function findUserByName(email) {
-    return await userModel.find({ email });
+async function findOneUserByName(email) {
+    return await userModel.findOne({ email });
 }
 
 async function findUserAndTasksById(userId) {
@@ -172,9 +174,9 @@ export default {
     validateUser,
     addUser,
     getUsers,
-    deleteUser,
     addTaskToUser,
     getUserTasks,
     deleteTaskFromUser,
     findUserById,
+    findOneUserByName,
 };
